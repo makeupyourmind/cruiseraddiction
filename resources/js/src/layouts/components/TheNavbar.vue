@@ -114,8 +114,8 @@
 
 			<!-- USER META -->
 			<div class="the-navbar__user-meta flex items-center">
-				<div class="text-right leading-tight hidden sm:block">
-					<p class="font-semibold">John Doe</p>
+				<div v-if="show === true" class="text-right leading-tight hidden sm:block">
+					<p class="font-semibold">{{name}}</p>
 					<small>Available</small>
 				</div>
 				<vs-dropdown vs-custom-content vs-trigger-click class="cursor-pointer">
@@ -127,7 +127,7 @@
 							<li class="flex py-2 px-4 cursor-pointer hover:bg-primary hover:text-white" @click="$router.push('/apps/todo')"><feather-icon icon="CheckSquareIcon" svgClasses="w-4 h-4"></feather-icon> <span class="ml-2">Tasks</span></li>
 							<li class="flex py-2 px-4 cursor-pointer hover:bg-primary hover:text-white" @click="$router.push('/apps/chat')"><feather-icon icon="MessageSquareIcon" svgClasses="w-4 h-4"></feather-icon> <span class="ml-2">Chat</span></li>
 							<vs-divider class="m-1"></vs-divider>
-							<li class="flex py-2 px-4 cursor-pointer hover:bg-primary hover:text-white" @click="$router.push('/pages/login')"><feather-icon icon="LogOutIcon" svgClasses="w-4 h-4"></feather-icon> <span class="ml-2">Logout</span></li>
+							<li class="flex py-2 px-4 cursor-pointer hover:bg-primary hover:text-white" @click="logout"><feather-icon icon="LogOutIcon" svgClasses="w-4 h-4"></feather-icon> <span class="ml-2">Logout</span></li>
 						</ul>
 					</vs-dropdown-menu>
 				</vs-dropdown>
@@ -140,8 +140,10 @@
 
 <script>
 import VxAutoSuggest from '@/components/vx-auto-suggest/VxAutoSuggest.vue';
-import VuePerfectScrollbar from 'vue-perfect-scrollbar'
-import draggable from 'vuedraggable'
+import VuePerfectScrollbar from 'vue-perfect-scrollbar';
+import draggable from 'vuedraggable';
+import { mapGetters} from "vuex";
+import {Token} from "@/store/tokenStorage"
 
 export default {
     name: "the-navbar",
@@ -176,8 +178,18 @@ export default {
             if (this.showBookmarkPagesDropdown) this.showBookmarkPagesDropdown = false
         }
     },
+    created(){
+        // if (localStorage.getItem("tokenUser") !== null) {
+        //     this.$store.dispatch("getStorage", JSON.parse(localStorage.getItem("tokenUser")))
+        // }
+    },
     computed: {
         // HELPER
+        ...mapGetters({
+            show: 'prof',
+            name: 'name',
+        }),
+
         sidebarWidth() {
             return this.$store.state.sidebarWidth;
         },
@@ -217,6 +229,10 @@ export default {
         },
     },
     methods: {
+        logout(){
+            this.$router.push('/pages/login');
+            Token.destroyToken()
+        },
         showSidebar() {
             this.$store.commit('TOGGLE_IS_SIDEBAR_ACTIVE', true);
         },

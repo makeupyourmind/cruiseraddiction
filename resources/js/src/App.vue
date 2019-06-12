@@ -16,9 +16,19 @@
 
 <script>
 import themeConfig from '@/../themeConfig.js'
+import {Token} from "./store/tokenStorage";
 
 export default {
     watch: {
+        '$route'( to, from){
+            const block_route = to.path;
+            if(Token.getToken()){
+                switch(block_route){
+                    case '/pages/login': this.$router.replace('/')
+                }
+            }
+            // debugger
+        },
         '$store.state.theme'(val) {
             this.toggleClassInBody(val);
         }

@@ -263,6 +263,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue_perfect_scrollbar__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(vue_perfect_scrollbar__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var vuedraggable__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vuedraggable */ "./node_modules/vuedraggable/dist/vuedraggable.common.js");
 /* harmony import */ var vuedraggable__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(vuedraggable__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var _store_tokenStorage__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/store/tokenStorage */ "./resources/js/src/store/tokenStorage.js");
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 //
 //
 //
@@ -403,6 +409,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+
+
 
 
 
@@ -469,8 +477,14 @@ __webpack_require__.r(__webpack_exports__);
       if (this.showBookmarkPagesDropdown) this.showBookmarkPagesDropdown = false;
     }
   },
-  computed: {
-    // HELPER
+  created: function created() {// if (localStorage.getItem("tokenUser") !== null) {
+    //     this.$store.dispatch("getStorage", JSON.parse(localStorage.getItem("tokenUser")))
+    // }
+  },
+  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_3__["mapGetters"])({
+    show: 'prof',
+    name: 'name'
+  }), {
     sidebarWidth: function sidebarWidth() {
       return this.$store.state.sidebarWidth;
     },
@@ -504,8 +518,12 @@ __webpack_require__.r(__webpack_exports__);
         this.$store.dispatch('arrangeStarredPagesMore', list);
       }
     }
-  },
+  }),
   methods: {
+    logout: function logout() {
+      this.$router.push('/pages/login');
+      _store_tokenStorage__WEBPACK_IMPORTED_MODULE_4__["Token"].destroyToken();
+    },
     showSidebar: function showSidebar() {
       this.$store.commit('TOGGLE_IS_SIDEBAR_ACTIVE', true);
     },
@@ -2210,17 +2228,21 @@ var render = function() {
               "div",
               { staticClass: "the-navbar__user-meta flex items-center" },
               [
-                _c(
-                  "div",
-                  { staticClass: "text-right leading-tight hidden sm:block" },
-                  [
-                    _c("p", { staticClass: "font-semibold" }, [
-                      _vm._v("John Doe")
-                    ]),
-                    _vm._v(" "),
-                    _c("small", [_vm._v("Available")])
-                  ]
-                ),
+                _vm.show === true
+                  ? _c(
+                      "div",
+                      {
+                        staticClass: "text-right leading-tight hidden sm:block"
+                      },
+                      [
+                        _c("p", { staticClass: "font-semibold" }, [
+                          _vm._v(_vm._s(_vm.name))
+                        ]),
+                        _vm._v(" "),
+                        _c("small", [_vm._v("Available")])
+                      ]
+                    )
+                  : _vm._e(),
                 _vm._v(" "),
                 _c(
                   "vs-dropdown",
@@ -2361,11 +2383,7 @@ var render = function() {
                               {
                                 staticClass:
                                   "flex py-2 px-4 cursor-pointer hover:bg-primary hover:text-white",
-                                on: {
-                                  click: function($event) {
-                                    return _vm.$router.push("/pages/login")
-                                  }
-                                }
+                                on: { click: _vm.logout }
                               },
                               [
                                 _c("feather-icon", {
