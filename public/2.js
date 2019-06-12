@@ -9,6 +9,7 @@
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _main__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../main */ "./resources/js/src/main.js");
 //
 //
 //
@@ -94,14 +95,43 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      email: '',
-      password: '',
+      email: "qwert@a.com",
+      password: "lalalalala",
       checkbox_remember_me: false
     };
+  },
+  computed: {// validateForm() {
+    //     return this.email != '' && this.password != '';
+    // },
+    // profile(){
+    //     return
+    // }
+  },
+  methods: {
+    registerUser: function registerUser() {
+      this.$router.push('/pages/register');
+    },
+    login: function login() {
+      var _this = this;
+
+      return this.$validator.validateAll().then(function (result) {
+        if (result) {
+          var payload = {
+            email: _this.email,
+            password: _this.password
+          };
+          return _this.$store.dispatch("SIGN_IN", payload);
+        }
+
+        return false; // }).then(res => console.log("-------------------------",res) /*&& this.$router.push('/')*/)
+      }).then(function (res) {
+        return res && _this.$router.push('/');
+      });
+    }
   }
 });
 
@@ -233,13 +263,16 @@ var render = function() {
                           ]),
                           _vm._v(" "),
                           _c("vs-input", {
-                            staticClass: "w-full no-icon-border",
-                            attrs: {
-                              name: "email",
-                              icon: "icon icon-user",
-                              "icon-pack": "feather",
-                              "label-placeholder": "Email"
-                            },
+                            directives: [
+                              {
+                                name: "validate",
+                                rawName: "v-validate",
+                                value: "required|email",
+                                expression: "'required|email'"
+                              }
+                            ],
+                            staticClass: "mt-5 w-full",
+                            attrs: { placeholder: "Your Email", name: "email" },
                             model: {
                               value: _vm.email,
                               callback: function($$v) {
@@ -249,14 +282,38 @@ var render = function() {
                             }
                           }),
                           _vm._v(" "),
+                          _c(
+                            "span",
+                            {
+                              directives: [
+                                {
+                                  name: "show",
+                                  rawName: "v-show",
+                                  value: _vm.errors.has("email"),
+                                  expression: "errors.has('email')"
+                                }
+                              ],
+                              staticClass: "text-danger text-sm"
+                            },
+                            [_vm._v(_vm._s(_vm.errors.first("email")))]
+                          ),
+                          _vm._v(" "),
                           _c("vs-input", {
-                            staticClass: "w-full mt-6 no-icon-border",
+                            directives: [
+                              {
+                                name: "validate",
+                                rawName: "v-validate",
+                                value: "required|min:6|max:10",
+                                expression: "'required|min:6|max:10'"
+                              }
+                            ],
+                            ref: "password",
+                            staticClass: "mt-5 w-full",
                             attrs: {
                               type: "password",
-                              name: "password",
-                              icon: "icon icon-lock",
-                              "icon-pack": "feather",
-                              "label-placeholder": "Password"
+                              placeholder: "Password",
+                              laceholder: "Your Password",
+                              name: "password"
                             },
                             model: {
                               value: _vm.password,
@@ -266,6 +323,22 @@ var render = function() {
                               expression: "password"
                             }
                           }),
+                          _vm._v(" "),
+                          _c(
+                            "span",
+                            {
+                              directives: [
+                                {
+                                  name: "show",
+                                  rawName: "v-show",
+                                  value: _vm.errors.has("password"),
+                                  expression: "errors.has('password')"
+                                }
+                              ],
+                              staticClass: "text-danger text-sm"
+                            },
+                            [_vm._v(_vm._s(_vm.errors.first("password")))]
+                          ),
                           _vm._v(" "),
                           _c(
                             "div",
@@ -288,20 +361,32 @@ var render = function() {
                                 [_vm._v("Remember Me")]
                               ),
                               _vm._v(" "),
-                              _c("router-link", { attrs: { to: "#" } }, [
-                                _vm._v("Forgot Password?")
-                              ])
+                              _c(
+                                "router-link",
+                                { attrs: { to: "/pages/forgot-password" } },
+                                [_vm._v("Forgot Password?")]
+                              )
                             ],
                             1
                           ),
                           _vm._v(" "),
-                          _c("vs-button", { attrs: { type: "border" } }, [
-                            _vm._v("Register")
-                          ]),
+                          _c(
+                            "vs-button",
+                            {
+                              attrs: { type: "border" },
+                              on: { click: _vm.registerUser }
+                            },
+                            [_vm._v("Register")]
+                          ),
                           _vm._v(" "),
-                          _c("vs-button", { staticClass: "float-right" }, [
-                            _vm._v("Login")
-                          ]),
+                          _c(
+                            "vs-button",
+                            {
+                              staticClass: "float-right",
+                              on: { click: _vm.login }
+                            },
+                            [_vm._v("Login")]
+                          ),
                           _vm._v(" "),
                           _c("vs-divider", [_vm._v("OR")]),
                           _vm._v(" "),
@@ -459,18 +544,8 @@ var render = function() {
                                     ]
                                   )
                                 ]
-                              ),
-                              _vm._v(" "),
-                              _c(
-                                "vs-button",
-                                {
-                                  staticClass: "mt-4",
-                                  attrs: { color: "#eb5424" }
-                                },
-                                [_vm._v("Auth0")]
                               )
-                            ],
-                            1
+                            ]
                           )
                         ],
                         1

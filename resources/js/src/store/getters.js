@@ -9,7 +9,8 @@
 
 
 const getters = {
-
+    prof: state => state.userId.show,
+    name: state => state.userId._id
 	// COMPONENT
 		// vx-autosuggest
 	// starredPages: state => state.navbarSearchAndPinList.data.filter((page) => page.highlightAction),
