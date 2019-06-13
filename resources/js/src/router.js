@@ -39,13 +39,25 @@ const router = new Router({
       // =============================================================================
           {
             path: '/',
-            name: 'home',
-            component: () => import('./views/Home.vue'),
+            name: 'Stock management',
+            component: () => import('./views/stockManagement.vue'),
+            meta:{
+                pageTitle: "Stock Management"
+            }
           },
+
+
           {
             path: '/page2',
             name: 'page2',
             component: () => import('./views/Page2.vue'),
+            meta: {
+                breadcrumb: [
+                    { title: 'Stock Management', url: '/' },
+                    { title: 'page2', active: true },
+                ],
+                pageTitle: 'page2',
+              },
           },
         ],
       },
@@ -92,6 +104,11 @@ const router = new Router({
                 meta: {
                     rule: 'editor'
                 }
+            },
+            {
+                path: '/pages/no-authorized',
+                name: 'NotAuthorized',
+                component: () => import('@/views/pages/NotAuthorized.vue')
             },
         ]
       },

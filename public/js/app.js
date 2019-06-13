@@ -61315,20 +61315,20 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "request", function() { return request; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "response", function() { return response; });
-/* harmony import */ var _store_tokenStorage__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../store/tokenStorage */ "./resources/js/src/store/tokenStorage.js");
-// import router from '../router/index.js'
+/* harmony import */ var _router__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../router */ "./resources/js/src/router.js");
+/* harmony import */ var _store_tokenStorage__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../store/tokenStorage */ "./resources/js/src/store/tokenStorage.js");
+
 
 var request = function request(_request, next) {
   _request.url = "".concat(_request.root).concat(_request.url);
-  var asdf = _store_tokenStorage__WEBPACK_IMPORTED_MODULE_0__["Token"].getToken();
-  debugger;
-  asdf && _request.headers.set('Authorization', "Bearer ".concat(_store_tokenStorage__WEBPACK_IMPORTED_MODULE_0__["Token"].getToken()));
+  var asdf = _store_tokenStorage__WEBPACK_IMPORTED_MODULE_1__["Token"].getToken();
+  asdf && _request.headers.set('Authorization', "Bearer ".concat(_store_tokenStorage__WEBPACK_IMPORTED_MODULE_1__["Token"].getToken()));
   return next();
 };
 var response = function response(request, next) {
   next(function (response) {
     if (response.status == 403 || response.status == 401) {
-      router.push('/login');
+      console.log("figidsyfigsdifsyidgfoys"); // router.push('/pages/no-authorized')
     }
   });
 };
@@ -62101,22 +62101,35 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
     // =============================================================================
     path: '',
     component: function component() {
-      return Promise.all(/*! import() */[__webpack_require__.e(1), __webpack_require__.e(0)]).then(__webpack_require__.bind(null, /*! ./layouts/main/Main.vue */ "./resources/js/src/layouts/main/Main.vue"));
+      return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(4), __webpack_require__.e(2)]).then(__webpack_require__.bind(null, /*! ./layouts/main/Main.vue */ "./resources/js/src/layouts/main/Main.vue"));
     },
     children: [// =============================================================================
     // Theme Routes
     // =============================================================================
     {
       path: '/',
-      name: 'home',
+      name: 'Stock management',
       component: function component() {
-        return __webpack_require__.e(/*! import() */ 5).then(__webpack_require__.bind(null, /*! ./views/Home.vue */ "./resources/js/src/views/Home.vue"));
+        return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(1), __webpack_require__.e(3)]).then(__webpack_require__.bind(null, /*! ./views/stockManagement.vue */ "./resources/js/src/views/stockManagement.vue"));
+      },
+      meta: {
+        pageTitle: "Stock Management"
       }
     }, {
       path: '/page2',
       name: 'page2',
       component: function component() {
-        return __webpack_require__.e(/*! import() */ 9).then(__webpack_require__.bind(null, /*! ./views/Page2.vue */ "./resources/js/src/views/Page2.vue"));
+        return __webpack_require__.e(/*! import() */ 12).then(__webpack_require__.bind(null, /*! ./views/Page2.vue */ "./resources/js/src/views/Page2.vue"));
+      },
+      meta: {
+        breadcrumb: [{
+          title: 'Stock Management',
+          url: '/'
+        }, {
+          title: 'page2',
+          active: true
+        }],
+        pageTitle: 'page2'
       }
     }]
   }, // =============================================================================
@@ -62125,7 +62138,7 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
   {
     path: '',
     component: function component() {
-      return __webpack_require__.e(/*! import() */ 8).then(__webpack_require__.bind(null, /*! @/layouts/full-page/FullPage.vue */ "./resources/js/src/layouts/full-page/FullPage.vue"));
+      return __webpack_require__.e(/*! import() */ 11).then(__webpack_require__.bind(null, /*! @/layouts/full-page/FullPage.vue */ "./resources/js/src/layouts/full-page/FullPage.vue"));
     },
     children: [// =============================================================================
     // PAGES
@@ -62134,19 +62147,19 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
       path: '/pages/login',
       name: 'pageLogin',
       component: function component() {
-        return __webpack_require__.e(/*! import() */ 2).then(__webpack_require__.bind(null, /*! @/views/pages/Login.vue */ "./resources/js/src/views/pages/Login.vue"));
+        return __webpack_require__.e(/*! import() */ 5).then(__webpack_require__.bind(null, /*! @/views/pages/Login.vue */ "./resources/js/src/views/pages/Login.vue"));
       }
     }, {
       path: '/pages/error-404',
       name: 'pageError404',
       component: function component() {
-        return __webpack_require__.e(/*! import() */ 7).then(__webpack_require__.bind(null, /*! @/views/pages/Error404.vue */ "./resources/js/src/views/pages/Error404.vue"));
+        return __webpack_require__.e(/*! import() */ 9).then(__webpack_require__.bind(null, /*! @/views/pages/Error404.vue */ "./resources/js/src/views/pages/Error404.vue"));
       }
     }, {
       path: '/pages/register',
       name: 'pageRegister',
       component: function component() {
-        return __webpack_require__.e(/*! import() */ 4).then(__webpack_require__.bind(null, /*! @/views/pages/Register.vue */ "./resources/js/src/views/pages/Register.vue"));
+        return __webpack_require__.e(/*! import() */ 7).then(__webpack_require__.bind(null, /*! @/views/pages/Register.vue */ "./resources/js/src/views/pages/Register.vue"));
       },
       meta: {
         rule: 'editor'
@@ -62155,7 +62168,7 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
       path: '/pages/forgot-password',
       name: 'pageForgotPassword',
       component: function component() {
-        return __webpack_require__.e(/*! import() */ 3).then(__webpack_require__.bind(null, /*! @/views/pages/ForgotPassword.vue */ "./resources/js/src/views/pages/ForgotPassword.vue"));
+        return __webpack_require__.e(/*! import() */ 6).then(__webpack_require__.bind(null, /*! @/views/pages/ForgotPassword.vue */ "./resources/js/src/views/pages/ForgotPassword.vue"));
       },
       meta: {
         rule: 'editor'
@@ -62164,10 +62177,16 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
       path: '/pages/reset-password',
       name: 'pageResetPassword',
       component: function component() {
-        return __webpack_require__.e(/*! import() */ 6).then(__webpack_require__.bind(null, /*! @/views/pages/ResetPassword.vue */ "./resources/js/src/views/pages/ResetPassword.vue"));
+        return __webpack_require__.e(/*! import() */ 8).then(__webpack_require__.bind(null, /*! @/views/pages/ResetPassword.vue */ "./resources/js/src/views/pages/ResetPassword.vue"));
       },
       meta: {
         rule: 'editor'
+      }
+    }, {
+      path: '/pages/no-authorized',
+      name: 'NotAuthorized',
+      component: function component() {
+        return __webpack_require__.e(/*! import() */ 10).then(__webpack_require__.bind(null, /*! @/views/pages/NotAuthorized.vue */ "./resources/js/src/views/pages/NotAuthorized.vue"));
       }
     }]
   }, // Redirect to 404 page, if no match found
@@ -62250,9 +62269,10 @@ var actions = {
   // ////////////////////////////////////////////
   SIGN_UP: function SIGN_UP(_ref10, payload) {
     var commit = _ref10.commit;
-    return vue__WEBPACK_IMPORTED_MODULE_0___default.a.http.post("api/register", payload).then(function (response) {
+    return vue__WEBPACK_IMPORTED_MODULE_0___default.a.http.post("api/register", payload).then(function () {
       return true;
-    })["catch"](function (errors) {
+    })["catch"](function (error) {
+      console.log(error);
       return false;
     });
   },
@@ -62261,9 +62281,7 @@ var actions = {
     return vue__WEBPACK_IMPORTED_MODULE_0___default.a.http.post("api/login", payload).then(function (response) {
       commit("SET_SIGN_IN", response);
       return true;
-      debugger;
-    })["catch"](function (error) {
-      debugger;
+    })["catch"](function () {
       return false;
     });
   },

@@ -57,10 +57,9 @@ const actions = {
     SIGN_UP({commit}, payload) {
         return Vue.http
             .post(`api/register`, payload)
-            .then(response => {
-                return true
-            })
-            .catch(errors => {
+            .then(() => true)
+            .catch(error =>{
+                console.log(error)
                 return false
             })
     },
@@ -69,14 +68,8 @@ const actions = {
             .then(response =>{
                 commit("SET_SIGN_IN", response);
                 return true;
-                debugger
-
             })
-            .catch(error => {
-                debugger
-
-                return false
-            })
+            .catch(() => false )
     },
     getStorage({commit}, payload){
         commit("setStorage", payload)
