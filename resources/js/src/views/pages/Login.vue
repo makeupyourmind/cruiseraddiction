@@ -116,8 +116,11 @@ export default {
                     return this.$store.dispatch("SIGN_IN", payload)
                 }
                 return false;
-            // }).then(res => console.log("-------------------------",res) /*&& this.$router.push('/')*/)
-            }).then(res => res && this.$router.push('/'))
+
+            }).then(res => res ? this.$router.push('/') : this.$vs.notify({
+                   title:'Error',
+                   text:'Incorrect email or password.',
+                   color:'danger'}))
         }
     }
 }

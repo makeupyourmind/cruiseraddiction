@@ -22,8 +22,8 @@
 export default [
   {
     url: "/",
-    name: "Home",
-    slug: "home",
+    name: "Stock Management",
+    slug: "stock management ",
     icon: "HomeIcon",
   },
   {
