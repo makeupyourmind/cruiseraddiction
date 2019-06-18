@@ -59,8 +59,11 @@ const actions = {
             .post(`api/register`, payload)
             .then(() => true)
             .catch(error =>{
-                console.log(error)
-                return false
+                if(error.status === 404){
+                    return error.status
+                }else{
+                    return false
+                }
             })
     },
     SIGN_IN({commit}, payload){
@@ -71,8 +74,14 @@ const actions = {
             })
             .catch(() => false )
     },
-    getStorage({commit}, payload){
-        commit("setStorage", payload)
+    GET_DELETE_MODULE({commit}, payload){
+        commit("SET_DELETE_MODULE", payload)
+    },
+    GET_SHOW_BUNDLE_SINGLE({commit}, payload){
+        commit("SET_SHOW_BUNDLE_SINGLE", payload)
+    },
+    GET_EDIT_STORE({commit}, payload){
+        commit("SET_EDIT_STORE", payload)
     }
 }
 

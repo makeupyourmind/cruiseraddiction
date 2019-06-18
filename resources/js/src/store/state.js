@@ -39,15 +39,10 @@ const state = {
     // ////////////////////////////////////////////
     // MY STATES
     // ////////////////////////////////////////////
-    userId: {
-        token: "",
-        show: false
-
-    },
-    userIdDef: {
-        token: "",
-        show: false
-    },
+    showDelete:false,
+    module: false,
+    showTable: false,
+    store_edit: {}
 }
 
 export default state

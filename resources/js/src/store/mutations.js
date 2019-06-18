@@ -94,14 +94,19 @@ const mutations = {
     // ////////////////////////////////////////////
 
     SET_SIGN_IN(state, payload){
-        state.userId.show = true;
-        state.userId.token = `Bearer ${payload.body.data.token}`;
         Token.saveToken(payload.body.data.token)
-        // localStorage.setItem("tokenUser", JSON.stringify(state.userId));
     },
-    setStorage(state, payload){
-        state.userId = Object.assign({}, payload)
+    SET_DELETE_MODULE(state, payload){
+        state.showDelete = payload
+    },
+    SET_SHOW_BUNDLE_SINGLE(state, payload){
+        state.module = payload.module;
+        state.showTable = payload.showTable;
+    },
+    SET_EDIT_STORE(state, payload){
+        state.store_edit = payload
     }
 }
+
 
 export default mutations

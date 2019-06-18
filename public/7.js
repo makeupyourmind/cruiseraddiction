@@ -118,11 +118,11 @@ __webpack_require__.r(__webpack_exports__);
 
         return false;
       }).then(function (res) {
-        return res ? _this.$router.push('/pages/login') : _this.$vs.notify({
+        return res === 404 ? _this.$vs.notify({
           title: 'Danger',
           text: 'The email has already been taken.',
           color: 'warning'
-        });
+        }) : res ? _this.$router.push('/pages/login') : '';
       });
     }
   }
