@@ -265,11 +265,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuedraggable__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(vuedraggable__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
 /* harmony import */ var _store_tokenStorage__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/store/tokenStorage */ "./resources/js/src/store/tokenStorage.js");
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-//
 //
 //
 //
@@ -481,10 +476,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     //     this.$store.dispatch("getStorage", JSON.parse(localStorage.getItem("tokenUser")))
     // }
   },
-  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_3__["mapGetters"])({
-    show: 'prof',
-    name: 'name'
-  }), {
+  computed: {
+    // HELPER
     sidebarWidth: function sidebarWidth() {
       return this.$store.state.sidebarWidth;
     },
@@ -518,7 +511,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         this.$store.dispatch('arrangeStarredPagesMore', list);
       }
     }
-  }),
+  },
   methods: {
     logout: function logout() {
       this.$router.push('/pages/login');
@@ -2228,21 +2221,11 @@ var render = function() {
               "div",
               { staticClass: "the-navbar__user-meta flex items-center" },
               [
-                _vm.show === true
-                  ? _c(
-                      "div",
-                      {
-                        staticClass: "text-right leading-tight hidden sm:block"
-                      },
-                      [
-                        _c("p", { staticClass: "font-semibold" }, [
-                          _vm._v(_vm._s(_vm.name))
-                        ]),
-                        _vm._v(" "),
-                        _c("small", [_vm._v("Available")])
-                      ]
-                    )
-                  : _vm._e(),
+                _c(
+                  "div",
+                  { staticClass: "text-right leading-tight hidden sm:block" },
+                  [_c("small", [_vm._v("Available")])]
+                ),
                 _vm._v(" "),
                 _c(
                   "vs-dropdown",

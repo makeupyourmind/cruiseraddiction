@@ -1,13 +1,3 @@
-<!-- =========================================================================================
-    File Name: AgGridTable.vue
-    Description: Ag Grid table
-    ----------------------------------------------------------------------------------------
-    Item Name: Vuesax Admin - VueJS Dashboard Admin Template
-    Author: Pixinvent
-    Author URL: http://www.themeforest.net/user/pixinvent
-========================================================================================== -->
-
-
 <template>
     <div id="ag-grid-demo">
         <vx-card>
@@ -57,6 +47,7 @@
                 :animateRows="true"
                 :floatingFilter="true"
                 :pagination="true"
+                @cellClicked="test($event)"
                 :paginationPageSize="paginationPageSize"
                 :suppressPaginationPanel="true">
             </ag-grid-vue>
@@ -65,6 +56,7 @@
                     :max="maxPageNumbers"
                     v-model="currentPage" />
         </vx-card>
+        <button @click="select()">test</button>
     </div>
 </template>
 
@@ -72,7 +64,7 @@
     import { AgGridVue } from "ag-grid-vue"
     import contacts from './data.json'
     import singlebundle from '../components/SingleBundle/singleBundle'
-    import '../../../assets/scss/agGridStyleOverride.scss'
+
 
     export default {
         components: {
@@ -87,7 +79,7 @@
                 gridApi: null,
                 defaultColDef: {
                     sortable: true,
-                    editable: true,
+                    editable: false,
                     resizable: true,
                     suppressMenu: true
                 },
@@ -126,7 +118,7 @@
                         headerName: 'Qty',
                         field: 'qty',
                         filter: true,
-                        width: 50,
+                        width: 75,
                     },
                     {
                         headerName: 'Min Stock',
@@ -164,19 +156,23 @@
                         filter: true,
                         width: 125,
                     },
+                    {
+                        headerName: 'Categories',
+                        field: 'categories',
+                        filter: true,
+                        width: 125,
+                    },
+                    {
+                        headerName: 'Tags',
+                        field: 'tags',
+                        filter: true,
+                        width: 125,
+                    },
                 ],
                 contacts: contacts,
             }
         },
-        watch: {
-            '$store.state.windowWidth'(val) {
-                if(val <= 576) {
-                    this.maxPageNumbers = 4;
-                    this.gridOptions.columnApi.setColumnPinned('email', null);
-                }
-                else this.gridOptions.columnApi.setColumnPinned('email', 'left')
-            }
-        },
+
         computed: {
 
             paginationPageSize() {
@@ -201,7 +197,19 @@
             updateSearchQuery(val) {
                 this.gridApi.setQuickFilter(val);
             },
-
+            test(e){
+                if(e.colDef.headerName === 'PartNumber'){
+                    console.log(e.data)
+                    this.$store.dispatch("GET_SHOW_BUNDLE_SINGLE", {module: true, showTable:false});
+                    this.$store.dispatch("GET_EDIT_STORE", e.data)
+                }
+            },
+            select(){
+                const selectedNodes = this.gridApi.getSelectedNodes();
+                console.log(selectedNodes)
+                // debugger;
+                // console.log(this.columnDefs.filter(item => item.checkboxSelection).map(item => ))
+            }
         },
         mounted() {
             this.gridApi = this.gridOptions.api;

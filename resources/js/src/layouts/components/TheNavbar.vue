@@ -114,8 +114,7 @@
 
 			<!-- USER META -->
 			<div class="the-navbar__user-meta flex items-center">
-				<div v-if="show === true" class="text-right leading-tight hidden sm:block">
-					<p class="font-semibold">{{name}}</p>
+				<div class="text-right leading-tight hidden sm:block">
 					<small>Available</small>
 				</div>
 				<vs-dropdown vs-custom-content vs-trigger-click class="cursor-pointer">
@@ -185,10 +184,6 @@ export default {
     },
     computed: {
         // HELPER
-        ...mapGetters({
-            show: 'prof',
-            name: 'name',
-        }),
 
         sidebarWidth() {
             return this.$store.state.sidebarWidth;

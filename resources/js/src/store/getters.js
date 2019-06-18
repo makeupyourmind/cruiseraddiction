@@ -9,9 +9,12 @@
 
 
 const getters = {
-    prof: state => state.userId.show,
-    name: state => state.userId._id
-	// COMPONENT
+    SHOWDELETE: state => state.showDelete,
+    SHOWBUNDLESINGLE: state => state.module,
+    SHOWTABLE: state => state.showTable,
+    STORE_EDIT: state => state.store_edit
+
+    // COMPONENT
 		// vx-autosuggest
 	// starredPages: state => state.navbarSearchAndPinList.data.filter((page) => page.highlightAction),
 }

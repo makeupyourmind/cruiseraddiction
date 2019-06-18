@@ -104,10 +104,10 @@
                         return this.$store.dispatch("SIGN_UP", payload)
                     }
                     return false
-                }).then(res => res ? this.$router.push('/pages/login') : this.$vs.notify({
+                }).then(res => res === 404 ? this.$vs.notify({
                     title:'Danger',
                     text: 'The email has already been taken.',
-                    color:'warning'}))
+                    color:'warning'}) : res ? this.$router.push('/pages/login') : '' )
             }
         }
 
