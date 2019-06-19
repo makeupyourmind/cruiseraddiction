@@ -12,7 +12,7 @@ const getters = {
     SHOWDELETE: state => state.showDelete,
     SHOWBUNDLESINGLE: state => state.module,
     SHOWTABLE: state => state.showTable,
-    STORE_EDIT: state => state.store_edit
+    STORE_EDIT: state => state.moduleStock
 
     // COMPONENT
 		// vx-autosuggest

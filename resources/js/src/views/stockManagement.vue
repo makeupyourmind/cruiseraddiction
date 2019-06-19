@@ -48,7 +48,9 @@
                 :floatingFilter="true"
                 :pagination="true"
                 @cellClicked="test($event)"
+                :context="context"
                 :paginationPageSize="paginationPageSize"
+                :frameworkComponents="frameworkComponents"
                 :suppressPaginationPanel="true">
             </ag-grid-vue>
                 <vs-pagination
@@ -64,8 +66,11 @@
     import { AgGridVue } from "ag-grid-vue"
     import contacts from './data.json'
     import singlebundle from '../components/SingleBundle/singleBundle'
-
-
+    import test from '../components/SingleBundle/cellRenderer'
+    import Vue from 'vue'
+    let SquareComponent = Vue.extend({
+        template: '<vs-chip color="primary" >{{params.valueFormatted}}</vs-chip>',
+    });
     export default {
         components: {
             AgGridVue,
@@ -83,98 +88,105 @@
                     resizable: true,
                     suppressMenu: true
                 },
-                columnDefs: [
-                    {
-                        width: 75,
-                        checkboxSelection: true,
-                        headerCheckboxSelectionFilteredOnly: true,
-                        headerCheckboxSelection: true,
-                    },
-                    {
-                        headerName: 'Brand',
-                        field: 'brand',
-                        filter: true,
-                        width: 175,
-                    },
-                    {
-                        headerName: 'PartNumber',
-                        field: 'part number',
-                        filter: true,
-                        width: 175,
-                    },
-                    {
-                        headerName: 'Description',
-                        field: 'description',
-                        filter: true,
-                        width: 250,
-                    },
-                    {
-                        headerName: 'Stores',
-                        field: 'stores',
-                        filter: true,
-                        width: 250,
-                    },
-                    {
-                        headerName: 'Qty',
-                        field: 'qty',
-                        filter: true,
-                        width: 75,
-                    },
-                    {
-                        headerName: 'Min Stock',
-                        field: 'min stock',
-                        filter: true,
-                        width: 150,
-                    },
-                    {
-                        headerName: 'List price',
-                        field: 'list price',
-                        filter: true,
-                        width: 100,
-                    },
-                    {
-                        headerName: 'Min price',
-                        field: 'min price',
-                        filter: true,
-                        width: 100,
-                    },
-                    {
-                        headerName: 'max price',
-                        field: 'max price',
-                        filter: true,
-                        width: 125,
-                    },
-                    {
-                        headerName: 'Last Modified',
-                        field: 'last modified',
-                        filter: true,
-                        width: 250,
-                    },
-                    {
-                        headerName: 'Location',
-                        field: 'location',
-                        filter: true,
-                        width: 125,
-                    },
-                    {
-                        headerName: 'Categories',
-                        field: 'categories',
-                        filter: true,
-                        width: 125,
-                    },
-                    {
-                        headerName: 'Tags',
-                        field: 'tags',
-                        filter: true,
-                        width: 125,
-                    },
-                ],
+                frameworkComponents:null,
+                columnDefs: null,
                 contacts: contacts,
+                context: null
             }
         },
-
+        beforeMount(){
+            this.columnDefs = [
+                {
+                    width: 75,
+                    checkboxSelection: true,
+                    headerCheckboxSelectionFilteredOnly: true,
+                    headerCheckboxSelection: true,
+                },
+                {
+                    headerName: 'Brand',
+                    field: 'brand',
+                    filter: true,
+                    width: 175,
+                },
+                {
+                    headerName: 'PartNumber',
+                    field: 'partNum',
+                    filter: true,
+                    width: 175,
+                },
+                {
+                    headerName: 'Description',
+                    field: 'description',
+                    filter: true,
+                    width: 250,
+                },
+                {
+                    headerName: 'Stores',
+                    field: 'stores',
+                    filter: true,
+                    width: 250,
+                },
+                {
+                    headerName: 'Qty',
+                    field: 'qty',
+                    filter: true,
+                    width: 75,
+                },
+                {
+                    headerName: 'Min Stock',
+                    field: 'minStock',
+                    filter: true,
+                    width: 150,
+                },
+                {
+                    headerName: 'List price',
+                    field: 'listPrice',
+                    filter: true,
+                    width: 100,
+                },
+                {
+                    headerName: 'Min price',
+                    field: 'minPrice',
+                    filter: true,
+                    width: 100,
+                },
+                {
+                    headerName: 'Max price',
+                    field: 'maxPrice',
+                    filter: true,
+                    width: 125,
+                },
+                {
+                    headerName: 'Last Modified',
+                    field: 'last modified',
+                    filter: true,
+                    width: 250,
+                },
+                {
+                    headerName: 'Location',
+                    field: 'location',
+                    filter: true,
+                    width: 125,
+                },
+                {
+                    headerName: 'Categories',
+                    field: 'categories',
+                    filter: true,
+                    width: 125,
+                },
+                {
+                    headerName: 'Tags',
+                    field: 'chips',
+                    cellRenderer: "test",
+                    width: 125,
+                },
+            ];
+            this.context = { componentParent: this };
+            this.frameworkComponents= {
+                test: SquareComponent
+            }
+        },
         computed: {
-
             paginationPageSize() {
                 if(this.gridApi) return this.gridApi.paginationGetPageSize()
                 else return 50
@@ -198,15 +210,20 @@
                 this.gridApi.setQuickFilter(val);
             },
             test(e){
+                // console.log(e)
                 if(e.colDef.headerName === 'PartNumber'){
-                    console.log(e.data)
-                    this.$store.dispatch("GET_SHOW_BUNDLE_SINGLE", {module: true, showTable:false});
+                    if(e.data.showTable){
+                        this.$store.dispatch("GET_SHOW_BUNDLE_SINGLE", {module: true, showTable:true});
+                    }else{
+                        this.$store.dispatch("GET_SHOW_BUNDLE_SINGLE", {module: true, showTable:false});
+                    }
                     this.$store.dispatch("GET_EDIT_STORE", e.data)
+
                 }
             },
             select(){
                 const selectedNodes = this.gridApi.getSelectedNodes();
-                console.log(selectedNodes)
+                // console.log(selectedNodes)
                 // debugger;
                 // console.log(this.columnDefs.filter(item => item.checkboxSelection).map(item => ))
             }
@@ -226,5 +243,11 @@
     }
     .ag-header-cell:first-child{
         padding: 0 24px!important;
+    }
+    .ag-theme-material .ag-cell{
+        line-height: 0!important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 </style>

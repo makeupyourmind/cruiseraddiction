@@ -10,7 +10,7 @@
             <div v-if="fillTable === false">
                 <form @submit.prevent class="display: flex; flex-direction: column">
                     <vue-simple-suggest
-                        v-model="brand"
+                        v-model="moduleStock.brand"
                         placeholder="Part Number"
                         :list="simpleSuggestionList"
                         :filter-by-query="true">
@@ -18,30 +18,30 @@
                     <vs-input
                         name="partNum"
                         label-placeholder="Part Number"
-                        v-model="partNum"
+                        v-model="moduleStock.partNum"
                         class="w-full mb-6" />
                     <vs-input
                         name="description"
                         label-placeholder="Description"
-                        v-model="description"
+                        v-model="moduleStock.description"
                         class="w-full mb-6" />
                     <vs-input
                         name="descriptionFull"
                         label-placeholder="Description Full"
-                        v-model="descriptionFull"
+                        v-model="moduleStock.descriptionFull"
                         class="w-full mb-6" />
                     <ul class="demo-alignment">
                         <li>
-                            <vs-checkbox v-model="checkBox1" vs-value="ebay">Ebay</vs-checkbox>
+                            <vs-checkbox v-model="moduleStock.stores" vs-value="ebay">Ebay</vs-checkbox>
                         </li>
                         <li>
-                            <vs-checkbox v-model="checkBox1" vs-value="amazon">Amazon</vs-checkbox>
+                            <vs-checkbox v-model="moduleStock.stores" vs-value="amazon">Amazon</vs-checkbox>
                         </li>
                         <li>
-                            <vs-checkbox v-model="checkBox1" vs-value="magento">Magento</vs-checkbox>
+                            <vs-checkbox v-model="moduleStock.stores" vs-value="magento">Magento</vs-checkbox>
                         </li>
                         <li>
-                            <vs-checkbox v-model="checkBox1" vs-value="other">Other</vs-checkbox>
+                            <vs-checkbox v-model="moduleStock.stores" vs-value="other">Other</vs-checkbox>
                         </li>
                     </ul>
 
@@ -56,35 +56,45 @@
                     <vs-input
                         name="minStock"
                         label-placeholder="Min Stock"
-                        v-model="minStock"
+                        v-model="moduleStock.minStock"
                         class="w-full mb-6" />
                     <vs-input
                         name="current"
                         v-if="showTable === true"
                         label-placeholder="Current"
                         disabled="disabled"
-                        v-model="current"
+                        v-model="moduleStock.current"
                         class="w-full mb-6" />
                     <vs-input
                         v-else
                         name="current"
                         label-placeholder="Current"
-                        v-model="current"
+                        v-model="moduleStock.current"
+                        class="w-full mb-6" />
+                    <vs-input
+                        name="listPrice"
+                        label-placeholder="List Price"
+                        v-model="moduleStock.listPrice"
                         class="w-full mb-6" />
                     <vs-input
                         name="minPrice"
                         label-placeholder="Min Price"
-                        v-model="minPrice"
+                        v-model="moduleStock.minPrice"
+                        class="w-full mb-6" />
+                    <vs-input
+                        name="maxPrice"
+                        label-placeholder="Max Price"
+                        v-model="moduleStock.maxPrice"
                         class="w-full mb-6" />
                     <vs-input
                         name="location"
                         label-placeholder="Location"
-                        v-model="location"
+                        v-model="moduleStock.location"
                         class="w-full mb-6" />
                     <vs-input
                         name="categories"
                         label-placeholder="Categories"
-                        v-model="categories"
+                        v-model="moduleStock.categories"
                         class="w-full mb-6"
                         style="width:100%!important"
                     />
@@ -93,7 +103,7 @@
                             <vs-input
                                 name="chips"
                                 label-placeholder="Find & add tags"
-                                v-model="chip"
+                                v-model="moduleStock.chip"
                                 class="mt-0"
                             />
                             <vs-button style="box-sizing: content-box" color="primary" @click="addChip" type="filled">Add</vs-button>
@@ -101,7 +111,7 @@
                         <vs-chip
                             :key="chip"
                             @click="removeChip(chip)"
-                            v-for="chip in chips"
+                            v-for="chip in moduleStock.chips"
                             color="primary"
                             closable
                             style="margin: 15px 5px">
@@ -119,6 +129,7 @@
                 <form-else :table_store="table_store" @saveChanges="saveChanges"></form-else>
             </div>
         </VuePerfectScrollbar>
+        {{moduleStock}}
     </vs-prompt>
 </template>
 
@@ -138,19 +149,6 @@
             "form-else":formElse
         },
         data:() =>({
-
-            brand:"",
-            partNum:"",
-            description:"",
-            descriptionFull:"",
-            minStock:"",
-            current:"",
-            minPrice:"",
-            location:"",
-            categories:"",
-            chips: [],
-            chip: "",
-            checkBox1: [],
             fillTable: false,
             //scroll
             settings: {
@@ -158,13 +156,15 @@
                 wheelSpeed: 0.30,
             },
             test: false,
-            table_store:[]
-
+            table_store:[],
+            moduleStock: null,
         }),
+        created(){
+            this.moduleStock = Object.assign({}, this.$store.getters.STORE_EDIT)
+        },
         computed:{
             ...mapGetters({
                 showTable: 'SHOWTABLE',
-                edit_store: 'STORE_EDIT'
             }),
             showBundleSingle:{
                 set (val) {
@@ -185,31 +185,23 @@
             },
             saveChanges(val){
                 this.table_store = val;
+                console.log(this.table_store)
                 this.fillTable = false
             },
             clearFields() {
-                this.table_store.splice(0, this.table_store.length);
-                this.checkBox1.splice(0, this.checkBox1.length);
                 this.fillTable = false;
-                this.$store.dispatch("GET_SHOW_BUNDLE_SINGLE", false);
-                this.partNum = "";
-                this.description = "";
-                this.descriptionFull = "";
-                this.minStock = "";
-                this.current = "";
-                this.minPrice = "";
-                this.location = "";
-                this.categories = "";
+                this.$store.dispatch("GET_SHOW_BUNDLE_SINGLE", {module:false, showTable:false});
             },
             addChip(){
-                this.chips.push(this.chip);
+                this.moduleStock.chips.push(this.moduleStock.chip);
                 this.chip = ''
             },
             removeChip(item) {
-                this.chips.splice(this.chips.indexOf(item), 1)
+                this.moduleStock.chips.splice(this.moduleStock.chips.indexOf(item), 1)
             },
             create() {
                 this.clearFields();
+
                 // return this.$validator.validateAll()
                 //     .then(result => {
                 //         if(result){

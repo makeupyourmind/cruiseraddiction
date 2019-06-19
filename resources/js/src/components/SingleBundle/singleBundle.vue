@@ -24,9 +24,9 @@
         </vs-dropdown>
 
         <deleteConfirm></deleteConfirm>
-
-        <showModulSingleBungle></showModulSingleBungle>
-
+        <div v-if="show === true">
+            <showModulSingleBungle></showModulSingleBungle>
+        </div>
     </div>
 </template>
 
@@ -43,6 +43,11 @@
         data:()=>({
             showTable: false,
         }),
+        computed:{
+          show(){
+              return this.$store.getters.SHOWBUNDLESINGLE
+          }
+        },
         methods:{
             createBundle(){
                 this.$store.dispatch("GET_SHOW_BUNDLE_SINGLE", {module: true, showTable: true});

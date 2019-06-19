@@ -42,7 +42,38 @@ const state = {
     showDelete:false,
     module: false,
     showTable: false,
-    store_edit: {}
+    moduleStock: {
+        brand:"",
+        partNum:"",
+        description:"",
+        descriptionFull:"",
+        minStock:"",
+        current:"",
+        listPrice: "",
+        maxPrice: "",
+        minPrice:"",
+        location:"",
+        categories:"",
+        chips: [],
+        chip: "",
+        stores: [],
+    },
+    moduleStockDef: {
+        brand:"",
+        partNum:"",
+        description:"",
+        descriptionFull:"",
+        minStock:"",
+        current:"",
+        listPrice: "",
+        maxPrice: "",
+        minPrice:"",
+        location:"",
+        categories:"",
+        chips: [],
+        chip: "",
+        stores: [],
+    }
 }
 
 export default state
