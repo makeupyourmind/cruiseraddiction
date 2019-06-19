@@ -62173,7 +62173,7 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
     // =============================================================================
     path: '',
     component: function component() {
-      return Promise.all(/*! import() */[__webpack_require__.e(13), __webpack_require__.e(4), __webpack_require__.e(2)]).then(__webpack_require__.bind(null, /*! ./layouts/main/Main.vue */ "./resources/js/src/layouts/main/Main.vue"));
+      return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(4), __webpack_require__.e(2)]).then(__webpack_require__.bind(null, /*! ./layouts/main/Main.vue */ "./resources/js/src/layouts/main/Main.vue"));
     },
     children: [// =============================================================================
     // Theme Routes
@@ -62182,7 +62182,7 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
       path: '/',
       name: 'Stock management',
       component: function component() {
-        return Promise.all(/*! import() */[__webpack_require__.e(13), __webpack_require__.e(1), __webpack_require__.e(3)]).then(__webpack_require__.bind(null, /*! ./views/stockManagement.vue */ "./resources/js/src/views/stockManagement.vue"));
+        return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(1), __webpack_require__.e(3)]).then(__webpack_require__.bind(null, /*! ./views/stockManagement.vue */ "./resources/js/src/views/stockManagement.vue"));
       },
       meta: {
         pageTitle: "Stock Management"
@@ -62405,7 +62405,7 @@ var getters = {
     return state.showTable;
   },
   STORE_EDIT: function STORE_EDIT(state) {
-    return state.store_edit;
+    return state.moduleStock;
   } // COMPONENT
   // vx-autosuggest
   // starredPages: state => state.navbarSearchAndPinList.data.filter((page) => page.highlightAction),
@@ -62523,9 +62523,15 @@ var mutations = {
   SET_SHOW_BUNDLE_SINGLE: function SET_SHOW_BUNDLE_SINGLE(state, payload) {
     state.module = payload.module;
     state.showTable = payload.showTable;
+
+    if (payload.module === false) {
+      state.moduleStock = Object.assign({}, state.moduleStockDef);
+    } // debugger
+
   },
   SET_EDIT_STORE: function SET_EDIT_STORE(state, payload) {
-    state.store_edit = payload;
+    state.moduleStock = payload;
+    console.log(state.moduleStock);
   }
 };
 /* harmony default export */ __webpack_exports__["default"] = (mutations);
@@ -62584,7 +62590,38 @@ var state = {
   showDelete: false,
   module: false,
   showTable: false,
-  store_edit: {}
+  moduleStock: {
+    brand: "",
+    partNum: "",
+    description: "",
+    descriptionFull: "",
+    minStock: "",
+    current: "",
+    listPrice: "",
+    maxPrice: "",
+    minPrice: "",
+    location: "",
+    categories: "",
+    chips: [],
+    chip: "",
+    stores: []
+  },
+  moduleStockDef: {
+    brand: "",
+    partNum: "",
+    description: "",
+    descriptionFull: "",
+    minStock: "",
+    current: "",
+    listPrice: "",
+    maxPrice: "",
+    minPrice: "",
+    location: "",
+    categories: "",
+    chips: [],
+    chip: "",
+    stores: []
+  }
 };
 /* harmony default export */ __webpack_exports__["default"] = (state);
 

@@ -102,10 +102,16 @@ const mutations = {
     SET_SHOW_BUNDLE_SINGLE(state, payload){
         state.module = payload.module;
         state.showTable = payload.showTable;
+        if(payload.module === false){
+            state.moduleStock = Object.assign({}, state.moduleStockDef)
+        }
+        // debugger
     },
     SET_EDIT_STORE(state, payload){
-        state.store_edit = payload
-    }
+        state.moduleStock = payload
+        console.log( state.moduleStock)
+    },
+
 }
 
 

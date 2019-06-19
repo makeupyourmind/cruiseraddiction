@@ -1,5 +1,26 @@
 (window["webpackJsonp"] = window["webpackJsonp"] || []).push([[3],{
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/src/components/SingleBundle/cellRenderer.vue?vue&type=script&lang=js&":
+/*!****************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/src/components/SingleBundle/cellRenderer.vue?vue&type=script&lang=js& ***!
+  \****************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: "cellRenderer"
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/src/components/SingleBundle/deleteConfirm.vue?vue&type=script&lang=js&":
 /*!*****************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/src/components/SingleBundle/deleteConfirm.vue?vue&type=script&lang=js& ***!
@@ -342,6 +363,17 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -358,18 +390,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
   data: function data() {
     return {
-      brand: "",
-      partNum: "",
-      description: "",
-      descriptionFull: "",
-      minStock: "",
-      current: "",
-      minPrice: "",
-      location: "",
-      categories: "",
-      chips: [],
-      chip: "",
-      checkBox1: [],
       fillTable: false,
       //scroll
       settings: {
@@ -377,12 +397,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         wheelSpeed: 0.30
       },
       test: false,
-      table_store: []
+      table_store: [],
+      moduleStock: null
     };
   },
+  created: function created() {
+    this.moduleStock = Object.assign({}, this.$store.getters.STORE_EDIT);
+  },
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_5__["mapGetters"])({
-    showTable: 'SHOWTABLE',
-    edit_store: 'STORE_EDIT'
+    showTable: 'SHOWTABLE'
   }), {
     showBundleSingle: {
       set: function set(val) {
@@ -399,28 +422,22 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     },
     saveChanges: function saveChanges(val) {
       this.table_store = val;
+      console.log(this.table_store);
       this.fillTable = false;
     },
     clearFields: function clearFields() {
-      this.table_store.splice(0, this.table_store.length);
-      this.checkBox1.splice(0, this.checkBox1.length);
       this.fillTable = false;
-      this.$store.dispatch("GET_SHOW_BUNDLE_SINGLE", false);
-      this.partNum = "";
-      this.description = "";
-      this.descriptionFull = "";
-      this.minStock = "";
-      this.current = "";
-      this.minPrice = "";
-      this.location = "";
-      this.categories = "";
+      this.$store.dispatch("GET_SHOW_BUNDLE_SINGLE", {
+        module: false,
+        showTable: false
+      });
     },
     addChip: function addChip() {
-      this.chips.push(this.chip);
+      this.moduleStock.chips.push(this.moduleStock.chip);
       this.chip = '';
     },
     removeChip: function removeChip(item) {
-      this.chips.splice(this.chips.indexOf(item), 1);
+      this.moduleStock.chips.splice(this.moduleStock.chips.indexOf(item), 1);
     },
     create: function create() {
       this.clearFields(); // return this.$validator.validateAll()
@@ -490,6 +507,11 @@ __webpack_require__.r(__webpack_exports__);
       showTable: false
     };
   },
+  computed: {
+    show: function show() {
+      return this.$store.getters.SHOWBUNDLESINGLE;
+    }
+  },
   methods: {
     createBundle: function createBundle() {
       this.$store.dispatch("GET_SHOW_BUNDLE_SINGLE", {
@@ -525,6 +547,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _data_json__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./data.json */ "./resources/js/src/views/data.json");
 var _data_json__WEBPACK_IMPORTED_MODULE_1___namespace = /*#__PURE__*/__webpack_require__.t(/*! ./data.json */ "./resources/js/src/views/data.json", 1);
 /* harmony import */ var _components_SingleBundle_singleBundle__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../components/SingleBundle/singleBundle */ "./resources/js/src/components/SingleBundle/singleBundle.vue");
+/* harmony import */ var _components_SingleBundle_cellRenderer__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/SingleBundle/cellRenderer */ "./resources/js/src/components/SingleBundle/cellRenderer.vue");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_4__);
+//
+//
 //
 //
 //
@@ -590,6 +617,11 @@ var _data_json__WEBPACK_IMPORTED_MODULE_1___namespace = /*#__PURE__*/__webpack_r
 
 
 
+
+
+var SquareComponent = vue__WEBPACK_IMPORTED_MODULE_4___default.a.extend({
+  template: '<vs-chip color="primary" >{{params.valueFormatted}}</vs-chip>'
+});
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
     AgGridVue: ag_grid_vue__WEBPACK_IMPORTED_MODULE_0__["AgGridVue"],
@@ -607,78 +639,89 @@ var _data_json__WEBPACK_IMPORTED_MODULE_1___namespace = /*#__PURE__*/__webpack_r
         resizable: true,
         suppressMenu: true
       },
-      columnDefs: [{
-        width: 75,
-        checkboxSelection: true,
-        headerCheckboxSelectionFilteredOnly: true,
-        headerCheckboxSelection: true
-      }, {
-        headerName: 'Brand',
-        field: 'brand',
-        filter: true,
-        width: 175
-      }, {
-        headerName: 'PartNumber',
-        field: 'part number',
-        filter: true,
-        width: 175
-      }, {
-        headerName: 'Description',
-        field: 'description',
-        filter: true,
-        width: 250
-      }, {
-        headerName: 'Stores',
-        field: 'stores',
-        filter: true,
-        width: 250
-      }, {
-        headerName: 'Qty',
-        field: 'qty',
-        filter: true,
-        width: 75
-      }, {
-        headerName: 'Min Stock',
-        field: 'min stock',
-        filter: true,
-        width: 150
-      }, {
-        headerName: 'List price',
-        field: 'list price',
-        filter: true,
-        width: 100
-      }, {
-        headerName: 'Min price',
-        field: 'min price',
-        filter: true,
-        width: 100
-      }, {
-        headerName: 'max price',
-        field: 'max price',
-        filter: true,
-        width: 125
-      }, {
-        headerName: 'Last Modified',
-        field: 'last modified',
-        filter: true,
-        width: 250
-      }, {
-        headerName: 'Location',
-        field: 'location',
-        filter: true,
-        width: 125
-      }, {
-        headerName: 'Categories',
-        field: 'categories',
-        filter: true,
-        width: 125
-      }, {
-        headerName: 'Tags',
-        field: 'tags',
-        filter: true,
-        width: 125
-      }],
-      contacts: _data_json__WEBPACK_IMPORTED_MODULE_1__
+      frameworkComponents: null,
+      columnDefs: null,
+      contacts: _data_json__WEBPACK_IMPORTED_MODULE_1__,
+      context: null
+    };
+  },
+  beforeMount: function beforeMount() {
+    this.columnDefs = [{
+      width: 75,
+      checkboxSelection: true,
+      headerCheckboxSelectionFilteredOnly: true,
+      headerCheckboxSelection: true
+    }, {
+      headerName: 'Brand',
+      field: 'brand',
+      filter: true,
+      width: 175
+    }, {
+      headerName: 'PartNumber',
+      field: 'partNum',
+      filter: true,
+      width: 175
+    }, {
+      headerName: 'Description',
+      field: 'description',
+      filter: true,
+      width: 250
+    }, {
+      headerName: 'Stores',
+      field: 'stores',
+      filter: true,
+      width: 250
+    }, {
+      headerName: 'Qty',
+      field: 'qty',
+      filter: true,
+      width: 75
+    }, {
+      headerName: 'Min Stock',
+      field: 'minStock',
+      filter: true,
+      width: 150
+    }, {
+      headerName: 'List price',
+      field: 'listPrice',
+      filter: true,
+      width: 100
+    }, {
+      headerName: 'Min price',
+      field: 'minPrice',
+      filter: true,
+      width: 100
+    }, {
+      headerName: 'Max price',
+      field: 'maxPrice',
+      filter: true,
+      width: 125
+    }, {
+      headerName: 'Last Modified',
+      field: 'last modified',
+      filter: true,
+      width: 250
+    }, {
+      headerName: 'Location',
+      field: 'location',
+      filter: true,
+      width: 125
+    }, {
+      headerName: 'Categories',
+      field: 'categories',
+      filter: true,
+      width: 125
+    }, {
+      headerName: 'Tags',
+      field: 'chips',
+      cellRenderer: "test",
+      width: 125
+    }];
+    this.context = {
+      componentParent: this
+    };
+    this.frameworkComponents = {
+      test: SquareComponent
     };
   },
   computed: {
@@ -702,18 +745,26 @@ var _data_json__WEBPACK_IMPORTED_MODULE_1___namespace = /*#__PURE__*/__webpack_r
       this.gridApi.setQuickFilter(val);
     },
     test: function test(e) {
+      // console.log(e)
       if (e.colDef.headerName === 'PartNumber') {
-        console.log(e.data);
-        this.$store.dispatch("GET_SHOW_BUNDLE_SINGLE", {
-          module: true,
-          showTable: false
-        });
+        if (e.data.showTable) {
+          this.$store.dispatch("GET_SHOW_BUNDLE_SINGLE", {
+            module: true,
+            showTable: true
+          });
+        } else {
+          this.$store.dispatch("GET_SHOW_BUNDLE_SINGLE", {
+            module: true,
+            showTable: false
+          });
+        }
+
         this.$store.dispatch("GET_EDIT_STORE", e.data);
       }
     },
     select: function select() {
-      var selectedNodes = this.gridApi.getSelectedNodes();
-      console.log(selectedNodes); // debugger;
+      var selectedNodes = this.gridApi.getSelectedNodes(); // console.log(selectedNodes)
+      // debugger;
       // console.log(this.columnDefs.filter(item => item.checkboxSelection).map(item => ))
     }
   },
@@ -755,7 +806,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, ".ag-header-cell-label{\n  justify-content: center!important;\n}\n.ag-header-cell{\n  padding: 0!important;\n}\n.ag-header-cell:first-child{\n  padding: 0 24px!important;\n}\n", ""]);
+exports.push([module.i, ".ag-header-cell-label{\n  justify-content: center!important;\n}\n.ag-header-cell{\n  padding: 0!important;\n}\n.ag-header-cell:first-child{\n  padding: 0 24px!important;\n}\n.ag-theme-material .ag-cell{\n  line-height: 0!important;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n", ""]);
 
 // exports
 
@@ -819,6 +870,37 @@ var update = __webpack_require__(/*! ../../../../node_modules/style-loader/lib/a
 if(content.locals) module.exports = content.locals;
 
 if(false) {}
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/src/components/SingleBundle/cellRenderer.vue?vue&type=template&id=dae8e18c&scoped=true&":
+/*!********************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/src/components/SingleBundle/cellRenderer.vue?vue&type=template&id=dae8e18c&scoped=true& ***!
+  \********************************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _vm._m(0)
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", [_c("button", [_vm._v("Invoke Parent")])])
+  }
+]
+render._withStripped = true
+
+
 
 /***/ }),
 
@@ -1203,11 +1285,11 @@ var render = function() {
                         "filter-by-query": true
                       },
                       model: {
-                        value: _vm.brand,
+                        value: _vm.moduleStock.brand,
                         callback: function($$v) {
-                          _vm.brand = $$v
+                          _vm.$set(_vm.moduleStock, "brand", $$v)
                         },
-                        expression: "brand"
+                        expression: "moduleStock.brand"
                       }
                     }),
                     _vm._v(" "),
@@ -1218,11 +1300,11 @@ var render = function() {
                         "label-placeholder": "Part Number"
                       },
                       model: {
-                        value: _vm.partNum,
+                        value: _vm.moduleStock.partNum,
                         callback: function($$v) {
-                          _vm.partNum = $$v
+                          _vm.$set(_vm.moduleStock, "partNum", $$v)
                         },
-                        expression: "partNum"
+                        expression: "moduleStock.partNum"
                       }
                     }),
                     _vm._v(" "),
@@ -1233,11 +1315,11 @@ var render = function() {
                         "label-placeholder": "Description"
                       },
                       model: {
-                        value: _vm.description,
+                        value: _vm.moduleStock.description,
                         callback: function($$v) {
-                          _vm.description = $$v
+                          _vm.$set(_vm.moduleStock, "description", $$v)
                         },
-                        expression: "description"
+                        expression: "moduleStock.description"
                       }
                     }),
                     _vm._v(" "),
@@ -1248,11 +1330,11 @@ var render = function() {
                         "label-placeholder": "Description Full"
                       },
                       model: {
-                        value: _vm.descriptionFull,
+                        value: _vm.moduleStock.descriptionFull,
                         callback: function($$v) {
-                          _vm.descriptionFull = $$v
+                          _vm.$set(_vm.moduleStock, "descriptionFull", $$v)
                         },
-                        expression: "descriptionFull"
+                        expression: "moduleStock.descriptionFull"
                       }
                     }),
                     _vm._v(" "),
@@ -1265,11 +1347,11 @@ var render = function() {
                             {
                               attrs: { "vs-value": "ebay" },
                               model: {
-                                value: _vm.checkBox1,
+                                value: _vm.moduleStock.stores,
                                 callback: function($$v) {
-                                  _vm.checkBox1 = $$v
+                                  _vm.$set(_vm.moduleStock, "stores", $$v)
                                 },
-                                expression: "checkBox1"
+                                expression: "moduleStock.stores"
                               }
                             },
                             [_vm._v("Ebay")]
@@ -1286,11 +1368,11 @@ var render = function() {
                             {
                               attrs: { "vs-value": "amazon" },
                               model: {
-                                value: _vm.checkBox1,
+                                value: _vm.moduleStock.stores,
                                 callback: function($$v) {
-                                  _vm.checkBox1 = $$v
+                                  _vm.$set(_vm.moduleStock, "stores", $$v)
                                 },
-                                expression: "checkBox1"
+                                expression: "moduleStock.stores"
                               }
                             },
                             [_vm._v("Amazon")]
@@ -1307,11 +1389,11 @@ var render = function() {
                             {
                               attrs: { "vs-value": "magento" },
                               model: {
-                                value: _vm.checkBox1,
+                                value: _vm.moduleStock.stores,
                                 callback: function($$v) {
-                                  _vm.checkBox1 = $$v
+                                  _vm.$set(_vm.moduleStock, "stores", $$v)
                                 },
-                                expression: "checkBox1"
+                                expression: "moduleStock.stores"
                               }
                             },
                             [_vm._v("Magento")]
@@ -1328,11 +1410,11 @@ var render = function() {
                             {
                               attrs: { "vs-value": "other" },
                               model: {
-                                value: _vm.checkBox1,
+                                value: _vm.moduleStock.stores,
                                 callback: function($$v) {
-                                  _vm.checkBox1 = $$v
+                                  _vm.$set(_vm.moduleStock, "stores", $$v)
                                 },
-                                expression: "checkBox1"
+                                expression: "moduleStock.stores"
                               }
                             },
                             [_vm._v("Other")]
@@ -1376,11 +1458,11 @@ var render = function() {
                         "label-placeholder": "Min Stock"
                       },
                       model: {
-                        value: _vm.minStock,
+                        value: _vm.moduleStock.minStock,
                         callback: function($$v) {
-                          _vm.minStock = $$v
+                          _vm.$set(_vm.moduleStock, "minStock", $$v)
                         },
-                        expression: "minStock"
+                        expression: "moduleStock.minStock"
                       }
                     }),
                     _vm._v(" "),
@@ -1393,11 +1475,11 @@ var render = function() {
                             disabled: "disabled"
                           },
                           model: {
-                            value: _vm.current,
+                            value: _vm.moduleStock.current,
                             callback: function($$v) {
-                              _vm.current = $$v
+                              _vm.$set(_vm.moduleStock, "current", $$v)
                             },
-                            expression: "current"
+                            expression: "moduleStock.current"
                           }
                         })
                       : _c("vs-input", {
@@ -1407,13 +1489,28 @@ var render = function() {
                             "label-placeholder": "Current"
                           },
                           model: {
-                            value: _vm.current,
+                            value: _vm.moduleStock.current,
                             callback: function($$v) {
-                              _vm.current = $$v
+                              _vm.$set(_vm.moduleStock, "current", $$v)
                             },
-                            expression: "current"
+                            expression: "moduleStock.current"
                           }
                         }),
+                    _vm._v(" "),
+                    _c("vs-input", {
+                      staticClass: "w-full mb-6",
+                      attrs: {
+                        name: "listPrice",
+                        "label-placeholder": "List Price"
+                      },
+                      model: {
+                        value: _vm.moduleStock.listPrice,
+                        callback: function($$v) {
+                          _vm.$set(_vm.moduleStock, "listPrice", $$v)
+                        },
+                        expression: "moduleStock.listPrice"
+                      }
+                    }),
                     _vm._v(" "),
                     _c("vs-input", {
                       staticClass: "w-full mb-6",
@@ -1422,11 +1519,26 @@ var render = function() {
                         "label-placeholder": "Min Price"
                       },
                       model: {
-                        value: _vm.minPrice,
+                        value: _vm.moduleStock.minPrice,
                         callback: function($$v) {
-                          _vm.minPrice = $$v
+                          _vm.$set(_vm.moduleStock, "minPrice", $$v)
                         },
-                        expression: "minPrice"
+                        expression: "moduleStock.minPrice"
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("vs-input", {
+                      staticClass: "w-full mb-6",
+                      attrs: {
+                        name: "maxPrice",
+                        "label-placeholder": "Max Price"
+                      },
+                      model: {
+                        value: _vm.moduleStock.maxPrice,
+                        callback: function($$v) {
+                          _vm.$set(_vm.moduleStock, "maxPrice", $$v)
+                        },
+                        expression: "moduleStock.maxPrice"
                       }
                     }),
                     _vm._v(" "),
@@ -1437,11 +1549,11 @@ var render = function() {
                         "label-placeholder": "Location"
                       },
                       model: {
-                        value: _vm.location,
+                        value: _vm.moduleStock.location,
                         callback: function($$v) {
-                          _vm.location = $$v
+                          _vm.$set(_vm.moduleStock, "location", $$v)
                         },
-                        expression: "location"
+                        expression: "moduleStock.location"
                       }
                     }),
                     _vm._v(" "),
@@ -1453,11 +1565,11 @@ var render = function() {
                         "label-placeholder": "Categories"
                       },
                       model: {
-                        value: _vm.categories,
+                        value: _vm.moduleStock.categories,
                         callback: function($$v) {
-                          _vm.categories = $$v
+                          _vm.$set(_vm.moduleStock, "categories", $$v)
                         },
-                        expression: "categories"
+                        expression: "moduleStock.categories"
                       }
                     }),
                     _vm._v(" "),
@@ -1482,11 +1594,11 @@ var render = function() {
                                 "label-placeholder": "Find & add tags"
                               },
                               model: {
-                                value: _vm.chip,
+                                value: _vm.moduleStock.chip,
                                 callback: function($$v) {
-                                  _vm.chip = $$v
+                                  _vm.$set(_vm.moduleStock, "chip", $$v)
                                 },
-                                expression: "chip"
+                                expression: "moduleStock.chip"
                               }
                             }),
                             _vm._v(" "),
@@ -1503,7 +1615,7 @@ var render = function() {
                           1
                         ),
                         _vm._v(" "),
-                        _vm._l(_vm.chips, function(chip) {
+                        _vm._l(_vm.moduleStock.chips, function(chip) {
                           return _c(
                             "vs-chip",
                             {
@@ -1558,7 +1670,8 @@ var render = function() {
                 1
               )
         ]
-      )
+      ),
+      _vm._v("\n    " + _vm._s(_vm.moduleStock) + "\n")
     ],
     1
   )
@@ -1645,7 +1758,7 @@ var render = function() {
       _vm._v(" "),
       _c("deleteConfirm"),
       _vm._v(" "),
-      _c("showModulSingleBungle")
+      _vm.show === true ? _c("div", [_c("showModulSingleBungle")], 1) : _vm._e()
     ],
     1
   )
@@ -1836,7 +1949,9 @@ var render = function() {
               animateRows: true,
               floatingFilter: true,
               pagination: true,
+              context: _vm.context,
               paginationPageSize: _vm.paginationPageSize,
+              frameworkComponents: _vm.frameworkComponents,
               suppressPaginationPanel: true
             },
             on: {
@@ -1877,6 +1992,75 @@ var render = function() {
 }
 var staticRenderFns = []
 render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./resources/js/src/components/SingleBundle/cellRenderer.vue":
+/*!*******************************************************************!*\
+  !*** ./resources/js/src/components/SingleBundle/cellRenderer.vue ***!
+  \*******************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _cellRenderer_vue_vue_type_template_id_dae8e18c_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./cellRenderer.vue?vue&type=template&id=dae8e18c&scoped=true& */ "./resources/js/src/components/SingleBundle/cellRenderer.vue?vue&type=template&id=dae8e18c&scoped=true&");
+/* harmony import */ var _cellRenderer_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./cellRenderer.vue?vue&type=script&lang=js& */ "./resources/js/src/components/SingleBundle/cellRenderer.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _cellRenderer_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _cellRenderer_vue_vue_type_template_id_dae8e18c_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _cellRenderer_vue_vue_type_template_id_dae8e18c_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  "dae8e18c",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/src/components/SingleBundle/cellRenderer.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/src/components/SingleBundle/cellRenderer.vue?vue&type=script&lang=js&":
+/*!********************************************************************************************!*\
+  !*** ./resources/js/src/components/SingleBundle/cellRenderer.vue?vue&type=script&lang=js& ***!
+  \********************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_cellRenderer_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib??ref--4-0!../../../../../node_modules/vue-loader/lib??vue-loader-options!./cellRenderer.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/src/components/SingleBundle/cellRenderer.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_cellRenderer_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/src/components/SingleBundle/cellRenderer.vue?vue&type=template&id=dae8e18c&scoped=true&":
+/*!**************************************************************************************************************!*\
+  !*** ./resources/js/src/components/SingleBundle/cellRenderer.vue?vue&type=template&id=dae8e18c&scoped=true& ***!
+  \**************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_cellRenderer_vue_vue_type_template_id_dae8e18c_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../node_modules/vue-loader/lib??vue-loader-options!./cellRenderer.vue?vue&type=template&id=dae8e18c&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/src/components/SingleBundle/cellRenderer.vue?vue&type=template&id=dae8e18c&scoped=true&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_cellRenderer_vue_vue_type_template_id_dae8e18c_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_cellRenderer_vue_vue_type_template_id_dae8e18c_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
@@ -2180,10 +2364,10 @@ __webpack_require__.r(__webpack_exports__);
 /*!******************************************!*\
   !*** ./resources/js/src/views/data.json ***!
   \******************************************/
-/*! exports provided: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, default */
+/*! exports provided: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, default */
 /***/ (function(module) {
 
-module.exports = [{"brand":"JIGUL","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"TOYOTA","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"BMV","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"AUDI","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"MAZDA","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"PORSH","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"JIGUL","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"TOYOTA","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"BMV","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"AUDI","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"MAZDA","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"PORSH","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"JIGUL","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"TOYOTA","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"BMV","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"AUDI","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"MAZDA","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"PORSH","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"JIGUL","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"TOYOTA","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"BMV","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"AUDI","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"MAZDA","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"PORSH","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"JIGUL","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"TOYOTA","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"BMV","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"AUDI","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"MAZDA","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"PORSH","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"JIGUL","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"TOYOTA","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"BMV","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"AUDI","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"MAZDA","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"PORSH","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"JIGUL","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"TOYOTA","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"BMV","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"AUDI","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"MAZDA","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"PORSH","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"JIGUL","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"TOYOTA","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"BMV","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"AUDI","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"MAZDA","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"PORSH","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"JIGUL","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"TOYOTA","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"BMV","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"AUDI","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"MAZDA","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"PORSH","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"JIGUL","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"TOYOTA","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"BMV","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"AUDI","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"MAZDA","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"PORSH","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"JIGUL","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"TOYOTA","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"BMV","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"AUDI","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"MAZDA","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"PORSH","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"JIGUL","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"TOYOTA","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"BMV","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"AUDI","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"MAZDA","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"PORSH","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"JIGUL","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"TOYOTA","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"BMV","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"AUDI","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"MAZDA","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"PORSH","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"JIGUL","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"TOYOTA","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"BMV","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"AUDI","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"MAZDA","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"PORSH","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"JIGUL","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"TOYOTA","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"BMV","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"AUDI","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"MAZDA","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"PORSH","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"JIGUL","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"TOYOTA","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"BMV","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"AUDI","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"MAZDA","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"PORSH","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"JIGUL","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"TOYOTA","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"BMV","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"AUDI","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"MAZDA","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"PORSH","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"JIGUL","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"TOYOTA","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"BMV","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"AUDI","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"MAZDA","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"PORSH","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"JIGUL","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"TOYOTA","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"BMV","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"AUDI","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"MAZDA","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"PORSH","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"JIGUL","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"TOYOTA","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"BMV","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"AUDI","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"MAZDA","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"PORSH","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"JIGUL","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"TOYOTA","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"BMV","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"AUDI","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"MAZDA","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"},{"brand":"PORSH","part number":"547857480","description":"Litronic Industries","stores":"ebey","qty":"0","min stock":"0","list price":"160.50","min price":"0","max price":"0","last modified":"May 27, 2019 Vennia L","location":"B2-017"}];
+module.exports = [{"brand":"JIGUL","partNum":"547857480","description":"Litronic Industries","minStock":"0","minPrice":"0","maxPrice":"0","location":"B2-017","listPrice":"160.50","stores":["ebay","amazon"],"categories":"category","chips":["tag","tagtwo"],"showTable":true},{"brand":"BEHA","partNum":"547857480","description":"Industries","minStock":"0","minPrice":"0","maxPrice":"0","location":"B2-017","listPrice":"160.50","stores":["ebay"],"categories":"category","chips":["tag"]},{"brand":"DEVYATKA","partNum":"547857480","description":"Litronic","minStock":"0","minPrice":"0","maxPrice":"0","location":"B2-017","listPrice":"160.50","stores":["amazon","magento"],"categories":"category","chips":["tag"]},{"brand":"JIGUL","partNum":"547857480","description":"Litronic Industries","minStock":"0","minPrice":"0","maxPrice":"0","location":"B2-017","listPrice":"160.50","stores":["ebay","amazon"],"categories":"category","chips":["tag"]},{"brand":"BEHA","partNum":"547857480","description":"Industries","minStock":"0","minPrice":"0","maxPrice":"0","location":"B2-017","listPrice":"160.50","stores":["ebay"],"categories":"category","chips":["tag"]},{"brand":"DEVYATKA","partNum":"547857480","description":"Litronic","minStock":"0","minPrice":"0","maxPrice":"0","location":"B2-017","listPrice":"160.50","stores":["amazon","magento"],"categories":"category","chips":["tag"]},{"brand":"JIGUL","partNum":"547857480","description":"Litronic Industries","minStock":"0","minPrice":"0","maxPrice":"0","location":"B2-017","listPrice":"160.50","stores":["ebay","amazon"],"categories":"category","chips":["tag"]},{"brand":"BEHA","partNum":"547857480","description":"Industries","minStock":"0","minPrice":"0","maxPrice":"0","location":"B2-017","listPrice":"160.50","stores":["ebay"],"categories":"category","chips":["tag"]},{"brand":"DEVYATKA","partNum":"547857480","description":"Litronic","minStock":"0","minPrice":"0","maxPrice":"0","location":"B2-017","listPrice":"160.50","stores":["amazon","magento"],"categories":"category","chips":["tag"]},{"brand":"JIGUL","partNum":"547857480","description":"Litronic Industries","minStock":"0","minPrice":"0","maxPrice":"0","location":"B2-017","listPrice":"160.50","stores":["ebay","amazon"],"categories":"category","chips":["tag"]},{"brand":"BEHA","partNum":"547857480","description":"Industries","minStock":"0","minPrice":"0","maxPrice":"0","location":"B2-017","listPrice":"160.50","stores":["ebay"],"categories":"category","chips":["tag"]},{"brand":"DEVYATKA","partNum":"547857480","description":"Litronic","minStock":"0","minPrice":"0","maxPrice":"0","location":"B2-017","listPrice":"160.50","stores":["amazon","magento"],"categories":"category","chips":["tag"]}];
 
 /***/ }),
 
