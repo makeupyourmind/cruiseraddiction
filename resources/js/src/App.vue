@@ -16,9 +16,23 @@
 
 <script>
 import themeConfig from '@/../themeConfig.js'
+import {Token} from "./store/tokenStorage";
 
 export default {
     watch: {
+        '$route'(to, from){
+            const block_route = to.path;
+            if(Token.getToken()){
+                switch(block_route){
+                    case '/pages/login': this.$router.replace('/')
+                }
+            }else{
+                switch(block_route){
+                    case '/': this.$router.replace('/pages/login')
+                }
+            }
+            // debugger
+        },
         '$store.state.theme'(val) {
             this.toggleClassInBody(val);
         }
@@ -42,3 +56,8 @@ export default {
     },
 }
 </script>
+<style lang="scss">
+    .material-icons{
+        font-size: 16px!important;
+    }
+</style>

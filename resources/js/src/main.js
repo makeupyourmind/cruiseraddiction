@@ -10,7 +10,10 @@
 
 import Vue from 'vue'
 import App from './App.vue'
+import VueResource from 'vue-resource';
+Vue.use(VueResource);
 
+Vue.http.options.root = 'http://192.168.88.166:8000/';
 // Vuesax Component Framework
 import Vuesax from 'vuesax'
 
@@ -35,6 +38,18 @@ import './filters/filters'
 // Vuejs - Vue wrapper for hammerjs
 import { VueHammer } from 'vue2-hammer'
 Vue.use(VueHammer)
+
+// form Validation
+import VeeValidate from 'vee-validate';
+Vue.use(VeeValidate);
+
+//Axios
+import axios from "axios";
+window.axios = axios;
+
+import {request, response} from './api/interceptors';
+Vue.http.interceptors.push(request);
+Vue.http.interceptors.push(response);
 
 // PrismJS
 import 'prismjs'
