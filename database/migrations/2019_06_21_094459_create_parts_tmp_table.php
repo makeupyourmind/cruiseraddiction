@@ -1,0 +1,47 @@
+<?php
+
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+
+class CreatePartsTmpTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('parts_tmp', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('brand_name')->nullable();
+            $table->string('part_number');
+            $table->string('description_english')->nullable();
+            $table->string('weight_physical')->nullable();
+            $table->string('weight_volumetric')->nullable();
+            $table->integer('qty')->default('0');
+            $table->string('warehouse')->nullable();
+            $table->string('price')->default('0');
+            $table->string('unique_hash')->unique();
+            $table->longText('stock_history')->nullable();
+            $table->string('description_full')->nullable();
+            $table->string('color')->nullable();
+            $table->string('image')->nullable();
+            $table->integer('is_bundle')->default('0');
+            $table->integer('subst_for')->default('0');
+            $table->string('modified_by')->nullable();
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('parts_tmp');
+    }
+}

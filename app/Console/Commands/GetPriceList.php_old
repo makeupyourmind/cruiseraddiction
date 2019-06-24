@@ -1,0 +1,194 @@
+<?php
+
+namespace App\Console\Commands;
+
+use Illuminate\Console\Command;
+use Storage;
+use Carbon\Carbon;
+use App\Model\Part;
+use App\Model\PartTmp;
+use DB;
+
+
+class GetPriceList extends Command
+{
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'get:pricelist';
+
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'Receiving pricelist from providers FTP';
+
+    /**
+     * Create a new command instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
+    /**
+     * Execute the console command.
+     *
+     * @return mixed
+     */
+    public function handle()
+    {
+        //$files = Storage::disk('ftp')->files('CANLON+CPT+Emirates+USD+Cashless payment+Delivery not included in prices+MULTIBRAND.txt', true);
+
+	    $file = 'CANLON+CPT+Emirates+USD+Cashless payment+Delivery not included in prices+MULTIBRAND.txt';
+	   //// $contents = Storage::disk('ftp')->get($file);
+	   //// Storage::put('pricelist.csv', $contents);
+	    $path = storage_path('app/pricelist.csv');
+	    $fileContent = Storage::get('pricelist.csv');
+
+	    $word[0] = 'Brand';
+        $word[1] = 'PartNumber';
+        $word[2] = 'DescriptionEnglish';
+        $word[3] = 'WeightPhysical';
+        $word[4] = 'WeightVolumetric';
+        $word[5] = 'StockQty';
+        $word[6] = 'Supplier';
+        $word[7] = 'Price';
+
+        $replacement[0] = 'brand_name';
+        $replacement[1] = 'part_number';
+        $replacement[2] = 'description_english';
+        $replacement[3] = 'weight_physical';
+        $replacement[4] = 'weight_volumetric';
+        $replacement[5] = 'qty';
+        $replacement[6] = 'warehouse';
+        $replacement[7] = 'price';
+
+        $fileContent = str_replace($word, $replacement, $fileContent);
+
+        Storage::put('pricelist.csv', $fileContent);
+        dd($fileContent);
+
+
+
+        $data   = array_map(function($datas) { return str_getcsv($datas,";"); }, file($path));
+        ////Storage::delete('pricelist.csv');
+        $r = 0;
+        $cm = 0;
+        $parsingLogText = '';
+        //$hashCheck = array();
+        DB::disableQueryLog();
+        foreach($data as $row) {
+            var_dump($r,$cm);
+
+            $r++;
+            $cm++;
+            /*
+            if($r == 1) {
+                continue;
+            }
+            */
+            $row[3] = (float) str_replace(',', '.', $row[3]);
+            $row[4] = (float) str_replace(',', '.', $row[4]);
+            $row[7] = (float) str_replace(',', '.', $row[7]);
+           /* $hash = md5($row[0].$row[1].$row[6]);
+            if(in_array($hash, $hashCheck)) {
+            }
+            $hashCheck[] = $hash;*/
+
+           /*
+            if(is_null($row[3]) || is_null($row[4]) || is_null($row[5]) || is_null($row[7])) {
+                $parsingLogText .= $r." ".Carbon::now()." NULL or empty value"."\n";
+                continue;
+            }
+	        if(!is_float($row[3])) {
+                $parsingLogText .= $r." ".Carbon::now()." WeightPhysical is not float"."\n";
+                continue;
+            }
+
+            if(!is_float($row[4])) {
+                $parsingLogText .= $r." ".Carbon::now()." WeightVolumetric is not float"."\n";
+                continue;
+            }
+
+            if(is_integer($row[5])) {
+                $parsingLogText .= $r." ".Carbon::now()." StockQty is not float"."\n";
+                continue;
+            }
+
+            if(is_integer($row[7])) {
+                $parsingLogText .= $r." ".Carbon::now()." Price is not float"."\n";
+                continue;
+            }
+            */
+          /*  $query = "SELECT * FROM parts WHERE brand_name='".$row[0]."' AND part_number='".$row[1]."' AND warehouse='".$row[6]."' LIMIT 1";
+            $stmt = DB::getPdo()->prepare($query);
+            $stmt->execute();
+            $part = $stmt->fetch(\PDO::FETCH_OBJ);
+            */
+            $part = Part::where('brand_name', $row[0])
+                        ->where('part_number', $row[1])
+                        ->where('warehouse', $row[6])
+                        ->first();
+
+            if($part && !is_null($part->stock_history)) {
+                $unsHistory = unserialize($part->stock_history);
+                /*
+                if(strlen($row[2]) < strlen($part->description_english)) {
+                    $row[2] = $part->description_english;
+                    $parsingLogText .= $r . " " . Carbon::now() . " Duplicate of PartNumber. Shorter description were replaced with longer one" . "\n";
+                }
+                if(date("Y-m-d") == date("Y-m-d", strtotime($part->updated_at))) {
+                    $row[5] +=  $part->qty;
+                    $parsingLogText .= $r . " " . Carbon::now() . " WARNING: Duplicate of PartNumber. Data were summarized but not excluded" . "\n";
+                }
+                if($part->weight_volumetric > $row[5]) {
+                    $parsingLogText .= $r . " " . Carbon::now() . " Duplicate of PartNumber. This row excluded due to less weight of part" . "\n";
+                    continue;
+                }
+                if($part->price > $row[7]) {
+                    $parsingLogText .= $r . " " . Carbon::now() . " Different price for one item at q wh. Survived the bigger qty or bigger price if qty the same" . "\n";
+                    continue;
+                }
+*/
+            } else {
+                $unsHistory = array();
+            }
+
+            $unsCount = count($unsHistory);
+            $unsHistory[$unsCount]['date'] = date("Y-m-d");
+            $unsHistory[$unsCount]['qty'] = $row[5];
+            $unsHistory[$unsCount]['price'] = $row[7];
+
+            $serHistory = serialize($unsHistory);
+
+
+
+           Part::UpdateorCreate(
+                ['part_number' => $row[1], 'brand_name' => $row[0], 'warehouse' => $row[6]],
+                ['brand_name' => $row[0], 'part_number' => $row[1], 'description_english' => $row[2], 'weight_physical' => $row[3], 'weight_volumetric' => $row[4],
+                    'qty' => $row[5], 'warehouse' => $row[6], 'price' => $row[7], 'stock_history' => $serHistory]
+            );
+
+         /*   Part::create(
+                ['part_number' => $row[1], 'brand_name' => $row[0], 'warehouse' => $row[6]],
+                ['brand_name' => $row[0], 'part_number' => $row[1], 'description_english' => $row[2], 'weight_physical' => $row[3], 'weight_volumetric' => $row[4],
+                    'qty' => $row[5], 'warehouse' => $row[6], 'price' => $row[7], 'stock_history' => $serHistory]
+            );*/
+            //var_dump($r);
+            //dd($row);
+            if($cm == 10000) {
+                $cm = 0;
+            }
+
+        }
+
+        Storage::put('parsing_log.txt', $parsingLogText);
+
+    }
+}
