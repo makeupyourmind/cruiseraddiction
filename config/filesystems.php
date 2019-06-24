@@ -64,6 +64,20 @@ return [
             'url' => env('AWS_URL'),
         ],
 
+	'ftp' => [
+	    'driver'   => 'ftp',
+	    'host'     => 'ftp.vivat-uae.com',
+	    'username' => 'CANLON',
+	    'password' => 'sl78TyIo1A',
+
+	    // Optional FTP Settings...
+	    // 'port'     => 21,
+	    // 'root'     => '',
+	    // 'passive'  => true,
+	    // 'ssl'      => true,
+	    // 'timeout'  => 30,
+	],
+
     ],
 
 ];
