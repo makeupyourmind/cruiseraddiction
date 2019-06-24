@@ -36,6 +36,44 @@ const state = {
     // Can be used to get current window with
     // Note: Above breakpoint state is for internal use of sidebar component
     windowWidth: null,
+    // ////////////////////////////////////////////
+    // MY STATES
+    // ////////////////////////////////////////////
+    showDelete:false,
+    module: false,
+    showTable: false,
+    moduleStock: {
+        brand:"",
+        partNum:"",
+        description:"",
+        descriptionFull:"",
+        minStock:"",
+        current:"",
+        listPrice: "",
+        maxPrice: "",
+        minPrice:"",
+        location:"",
+        categories:"",
+        chips: [],
+        chip: "",
+        stores: [],
+    },
+    moduleStockDef: {
+        brand:"",
+        partNum:"",
+        description:"",
+        descriptionFull:"",
+        minStock:"",
+        current:"",
+        listPrice: "",
+        maxPrice: "",
+        minPrice:"",
+        location:"",
+        categories:"",
+        chips: [],
+        chip: "",
+        stores: [],
+    }
 }
 
 export default state

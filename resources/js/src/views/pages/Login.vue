@@ -24,29 +24,30 @@
                                     <p>Welcome back, please login to your account.</p>
                                 </div>
                                 <vs-input
+                                    v-validate="'required|email'"
+                                    placeholder="Your Email"
                                     name="email"
-                                    icon="icon icon-user"
-                                    icon-pack="feather"
-                                    label-placeholder="Email"
                                     v-model="email"
-                                    class="w-full no-icon-border"/>
+                                    class="mt-5 w-full" />
+                                <span class="text-danger text-sm" v-show="errors.has('email')">{{ errors.first('email') }}</span>
 
                                 <vs-input
                                     type="password"
+                                    v-validate="'required|min:6|max:10'"
+                                    ref="password"
+                                    placeholder="Password"
+                                    laceholder="Your Password"
                                     name="password"
-                                    icon="icon icon-lock"
-                                    icon-pack="feather"
-                                    label-placeholder="Password"
                                     v-model="password"
-                                    class="w-full mt-6 no-icon-border" />
-
+                                    class="mt-5 w-full" />
+                                <span class="text-danger text-sm" v-show="errors.has('password')">{{ errors.first('password') }}</span>
                                 <div class="flex flex-wrap justify-between my-5">
                                     <vs-checkbox v-model="checkbox_remember_me" class="mb-3">Remember Me</vs-checkbox>
-                                    <router-link to="#">Forgot Password?</router-link>
+                                    <router-link to="/pages/forgot-password">Forgot Password?</router-link>
                                 </div>
-                                <vs-button  type="border">Register</vs-button>
-                                <vs-button class="float-right">Login</vs-button>
-
+                                <vs-button  type="border" @click="registerUser" >Register</vs-button>
+                                <vs-button class="float-right"  @click="login">Login</vs-button>
+<!--                                :disabled="!validateForm"-->
                                 <vs-divider>OR</vs-divider>
 
                                 <div class="social-login flex flex-wrap justify-between">
@@ -72,9 +73,7 @@
                                           <svg aria-hidden="true" focusable="false" data-prefix="fab" data-icon="github-alt" class="text-white h-4 w-4 svg-inline--fa fa-github-alt fa-w-15" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 512"><path fill="currentColor" d="M186.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1zM480 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2zm-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3zm-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1z"></path></svg>
                                         </div>
                                     </div>
-                                    <vs-button class="mt-4" color="#eb5424">Auth0</vs-button>
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -85,13 +84,43 @@
 </template>
 
 <script>
+import {baseURL} from "../../main"
 
 export default {
-    data() {
-        return {
-            email: '',
-            password: '',
-            checkbox_remember_me: false
+    data:() => ({
+        email: "qwert@a.com",
+        password: "lalalalala",
+        checkbox_remember_me: false
+
+    }),
+    computed: {
+        // validateForm() {
+        //     return this.email != '' && this.password != '';
+        // },
+        // profile(){
+        //     return
+        // }
+    },
+    methods:{
+        registerUser() {
+            this.$router.push('/pages/register');
+        },
+        login(){
+           return this.$validator.validateAll()
+               .then(result => {
+                if(result){
+                    var payload={
+                        email:this.email,
+                        password: this.password
+                    };
+                    return this.$store.dispatch("SIGN_IN", payload)
+                }
+                return false;
+
+            }).then(res => res ? this.$router.push('/') : this.$vs.notify({
+                   title:'Error',
+                   text:'Incorrect email or password.',
+                   color:'danger'}))
         }
     }
 }

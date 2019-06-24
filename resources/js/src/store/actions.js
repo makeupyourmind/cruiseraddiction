@@ -6,7 +6,7 @@
   Author: Pixinvent
   Author URL: http://www.themeforest.net/user/pixinvent
 ==========================================================================================*/
-
+import Vue from "vue";
 
 const actions = {
 
@@ -50,6 +50,39 @@ const actions = {
     arrangeStarredPagesMore({ commit }, list) {
       commit('ARRANGE_STARRED_PAGES_MORE', list)
     },
+
+    // ////////////////////////////////////////////
+    // FORM
+    // ////////////////////////////////////////////
+    SIGN_UP({commit}, payload) {
+        return Vue.http
+            .post(`api/register`, payload)
+            .then(() => true)
+            .catch(error =>{
+                if(error.status === 404){
+                    return error.status
+                }else{
+                    return false
+                }
+            })
+    },
+    SIGN_IN({commit}, payload){
+        return Vue.http.post(`api/login`, payload)
+            .then(response =>{
+                commit("SET_SIGN_IN", response);
+                return true;
+            })
+            .catch(() => false )
+    },
+    GET_DELETE_MODULE({commit}, payload){
+        commit("SET_DELETE_MODULE", payload)
+    },
+    GET_SHOW_BUNDLE_SINGLE({commit}, payload){
+        commit("SET_SHOW_BUNDLE_SINGLE", payload)
+    },
+    GET_EDIT_STORE({commit}, payload){
+        commit("SET_EDIT_STORE", payload)
+    }
 }
 
 export default actions

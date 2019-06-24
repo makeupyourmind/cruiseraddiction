@@ -7,6 +7,7 @@
   Author URL: http://www.themeforest.net/user/pixinvent
 ==========================================================================================*/
 
+import {Token} from "./tokenStorage";
 
 const mutations = {
 
@@ -87,6 +88,31 @@ const mutations = {
             state.starredPages.splice(10, 0, lastItemInStarredLimited);
         }
     },
+
+    // ////////////////////////////////////////////
+    // MY MUTATIONS
+    // ////////////////////////////////////////////
+
+    SET_SIGN_IN(state, payload){
+        Token.saveToken(payload.body.data.token)
+    },
+    SET_DELETE_MODULE(state, payload){
+        state.showDelete = payload
+    },
+    SET_SHOW_BUNDLE_SINGLE(state, payload){
+        state.module = payload.module;
+        state.showTable = payload.showTable;
+        if(payload.module === false){
+            state.moduleStock = Object.assign({}, state.moduleStockDef)
+        }
+        // debugger
+    },
+    SET_EDIT_STORE(state, payload){
+        state.moduleStock = payload
+        console.log( state.moduleStock)
+    },
+
 }
+
 
 export default mutations

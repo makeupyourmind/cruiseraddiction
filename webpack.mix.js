@@ -25,6 +25,7 @@ mix.js('resources/js/app.js', 'public/js')
     .sass('resources/sass/app.scss', 'public/css').options({
         postCss:[require('autoprefixer')]
     })
+    // .sass('resources/assets/scss/agGridStyleOverride.scss', 'public/css')
     .postCss('resources/assets/css/main.css', 'public/css', [
         tailwindcss('tailwind.js'),
     ])
