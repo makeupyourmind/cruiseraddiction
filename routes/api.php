@@ -17,6 +17,12 @@ Route::group([
 
     Route::post('register', 'RegisterController@register');
     Route::post('login', 'RegisterController@login');
+
+    Route::post('parts-search', 'PartsSearchController@index');
+
+    Route::post('part', 'PartsController@show');
+
+
 });
 
 
