@@ -125,9 +125,8 @@ class GetPriceList extends Command
                 }
 
                // $part = $oldParts->firstWhere('unique_hash', $row[8]);
-                $part = Part::where('unique_hash', $row[8])->first();
+                /*$part = Part::where('unique_hash', $row[8])->first();
 
-                //var_dump($part);
                 if($part) {
                     if($part->stock_history != '') {
                         $unsHistory = unserialize($part->stock_history);
@@ -139,16 +138,29 @@ class GetPriceList extends Command
                     $unsHistory[$unsCount]['qty'] = $row[5];
                     $unsHistory[$unsCount]['price'] = $row[7];
                     $serHistory = serialize($unsHistory);
-                    $row[9] = $serHistory;
+                    //$row[9] = $serHistory;
                 } else {
-                    $row[9] = '';
+                    //$row[9] = '';
                 }
+                */
 
+                ///////FILES ARCHIVING !!!!!!
 
+                /*
+                $archiveFilePath =  $row[0].'/'.$row[8].'.txt';
+                $archivedText = Carbon::createFromDate().'|'.$row[5].'|'.$row[7].'|'.$row[6];
+                if(Storage::exists($archiveFilePath)) {
+                    Storage::append($archiveFilePath, $archivedText);
+                } else {
+                    Storage::put($archiveFilePath, $archivedText);
+                }
+                */
+
+                /////////
 
             } else {
                 $row[8] = 'unique_hash';
-                $row[9] = 'stock_history';
+                //$row[9] = 'stock_history';
 
             }
 
@@ -173,6 +185,5 @@ class GetPriceList extends Command
                     LINES TERMINATED BY '\n'
                     IGNORE 1 ROWS;");
 
-        //$uniqueVal = shell_exec('sort -t=; -k9 -u '.storage_path('app/pricelistNew.csv'));
     }
 }
