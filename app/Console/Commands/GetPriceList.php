@@ -177,13 +177,22 @@ class GetPriceList extends Command
         }
         fclose($fp);
 
-        Part::truncate();
-        $stmt = DB::connection()->getpdo()->exec("LOAD DATA LOCAL INFILE '".storage_path('app/pricelistNew.csv')."' 
-                    INTO TABLE parts 
+        PartTmp::truncate();
+        $req1 = DB::connection()->getpdo()->exec("LOAD DATA LOCAL INFILE '".storage_path('app/pricelistNew.csv')."' 
+                    INTO TABLE parts_tmp 
                     FIELDS TERMINATED BY ';' 
                     ENCLOSED BY '\"'
                     LINES TERMINATED BY '\n'
                     IGNORE 1 ROWS;");
+
+        $req2 = DB::connection()->getpdo()->exec("INSERT INTO parts
+                    (brand_name, part_number, description_english, weight_physical, weight_volumetric, qty, warehouse, 
+                    price, unique_hash)
+                    SELECT brand_name, part_number, description_english, weight_physical, weight_volumetric, qty, warehouse, 
+                    price, unique_hash FROM parts_tmp
+                    ON DUPLICATE KEY UPDATE
+                    parts.qty = parts_tmp.qty,
+                    parts.price = parts_tmp.price");
 
     }
 }

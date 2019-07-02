@@ -31,6 +31,8 @@ Route::group([
     'middleware' => 'auth:api'], function () {
 
     Route::post('logout', 'RegisterController@logout');
+    Route::post('add-part', 'PartsController@store');
+
 
 });
 
