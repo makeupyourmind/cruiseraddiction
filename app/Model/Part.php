@@ -10,7 +10,7 @@ class Part extends Model
 
     protected $fillable = [
         'part_number', 'description_english', 'weight_physical', 'weight_volumetric', 'brand_name', 'description_full',
-        'color', 'is_bundle', 'subst_for', 'qty', 'price', 'stock_history', 'image', 'warehouse', 'modified_by'
+        'color', 'is_bundle', 'subst_for', 'qty', 'price', 'part_fits', 'image', 'warehouse', 'modified_by'
     ];
 
 

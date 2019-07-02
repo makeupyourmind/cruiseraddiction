@@ -44,4 +44,53 @@ class PartsController extends BaseController
 
         return response()->json($partsList, 200);
     }
+
+    public function store(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'brand_name' => 'required|string',
+            'part_number' => 'required|string',
+            'warehouse' => 'required|string'
+        ]);
+
+        if($validator->fails()){
+            return $this->sendError('Validation Error.', $validator->errors(), 202);
+        }
+
+        $uniqueHash = md5($request->brand_name.$request->part_number.$request->warehouse);
+        $request->merge(["unique_hash"=>$uniqueHash]);
+        $newPart = Part::create($request->all());
+
+        return $this->sendResponse($newPart, 'New product created successfully.');
+    }
+
+    public function update(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'brand_name' => 'required|string',
+            'part_number' => 'required|string',
+        ]);
+
+        if($validator->fails()){
+            return $this->sendError('Validation Error.', $validator->errors(), 202);
+        }
+
+        Part::where('brand_name', $request->brand_name)
+            ->where('part_number', $request->part_number)
+            ->update($request->all());
+        return $this->sendResponse('Success', 'Part modified successfully.');
+    }
+
+    public function destroy(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'brand_name' => 'required|string',
+            'part_number' => 'required|string',
+        ]);
+
+        if($validator->fails()){
+            return $this->sendError('Validation Error.', $validator->errors(), 202);
+        }
+        Part::where('brand_name', $request->brand_name)
+            ->where('part_number', $request->part_number)
+            ->delete();
+        return $this->sendResponse('Success', 'Part deleted successfully.');
+    }
 }

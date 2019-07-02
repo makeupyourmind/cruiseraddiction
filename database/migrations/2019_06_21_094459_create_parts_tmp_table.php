@@ -24,7 +24,7 @@ class CreatePartsTmpTable extends Migration
             $table->string('warehouse')->nullable();
             $table->string('price')->default('0');
             $table->string('unique_hash')->unique();
-            $table->longText('stock_history')->nullable();
+            $table->text('part_fits')->nullable();
             $table->string('description_full')->nullable();
             $table->string('color')->nullable();
             $table->string('image')->nullable();
