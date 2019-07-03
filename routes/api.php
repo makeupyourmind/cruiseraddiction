@@ -35,6 +35,8 @@ Route::group([
     Route::put('update-part', 'PartsController@update');
     Route::delete('delete-part', 'PartsController@destroy');
 
+    Route::get('user-info', 'UsersController@show');
+
 
 
 });
