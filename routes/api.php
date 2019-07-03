@@ -32,6 +32,9 @@ Route::group([
 
     Route::post('logout', 'RegisterController@logout');
     Route::post('add-part', 'PartsController@store');
+    Route::put('update-part', 'PartsController@update');
+    Route::delete('delete-part', 'PartsController@destroy');
+
 
 
 });
