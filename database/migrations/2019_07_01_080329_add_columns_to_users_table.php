@@ -27,6 +27,7 @@ class AddColumnsToUsersTable extends Migration
             $table->string('frame_number')->nullable();
             $table->string('date_of_production')->nullable();
             $table->string('original_country')->nullable();
+            $table->text('search_history')->nullable();
             $table->integer('subscribed_for_news')->default(0);
 
         });
