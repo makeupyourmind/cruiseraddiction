@@ -9,6 +9,17 @@ use App\Model\Part;
 
 class PartsController extends BaseController
 {
+
+    public function index() {
+        $parts = Part::orderBy('id', 'desc')->paginate(20);
+        $unique = $parts->unique(function ($item)
+        {
+            return $item['brand_name'] . $item['part_number'];
+        });
+
+        return response()->json($unique->all(), 200);
+    }
+
     public function show (Request $request) {
         $validator = Validator::make($request->all(), [
             'part_number' => 'required|string',
