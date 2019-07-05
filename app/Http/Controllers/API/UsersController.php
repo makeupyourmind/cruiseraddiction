@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\API\BaseController as BaseController;
 use App\Model\User;
 use Illuminate\Support\Facades\Auth;
 use Validator;
 
-class UsersController extends Controller
+class UsersController extends BaseController
 {
     public function show() {
         $user = Auth::user();
