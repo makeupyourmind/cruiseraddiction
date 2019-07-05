@@ -22,6 +22,11 @@ class PartsController extends BaseController
         return response()->json($parts, 200);
     }
 
+    public function randoms() {
+        $randomParts = Part::all()->random(12);
+        return response()->json($randomParts, 200);
+    }
+
     public function show (Request $request) {
         $validator = Validator::make($request->all(), [
             'part_number' => 'required|string',
