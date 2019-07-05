@@ -21,6 +21,7 @@ Route::group([
     Route::post('parts-search', 'PartsSearchController@index');
 
     Route::post('part', 'PartsController@show');
+    Route::get('part', 'PartsController@index');
 
 
 });
@@ -35,7 +36,9 @@ Route::group([
     Route::put('update-part', 'PartsController@update');
     Route::delete('delete-part', 'PartsController@destroy');
 
-    Route::get('user-info', 'UsersController@show');
+    Route::get('user', 'UsersController@show');
+    Route::put('user/{id}', 'UsersController@update');
+
 
 
 
