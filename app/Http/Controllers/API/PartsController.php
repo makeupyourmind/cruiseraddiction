@@ -11,13 +11,15 @@ class PartsController extends BaseController
 {
 
     public function index() {
-        $parts = Part::orderBy('id', 'desc')->paginate(20);
+        $parts = Part::orderBy('id', 'desc')->paginate(100);
+        /*
         $unique = $parts->unique(function ($item)
         {
             return $item['brand_name'] . $item['part_number'];
         });
+        */
 
-        return response()->json($unique->all(), 200);
+        return response()->json($parts, 200);
     }
 
     public function show (Request $request) {
