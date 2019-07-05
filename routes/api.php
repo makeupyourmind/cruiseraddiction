@@ -22,6 +22,8 @@ Route::group([
 
     Route::post('part', 'PartsController@show');
     Route::get('part', 'PartsController@index');
+    Route::get('rand-parts', 'PartsController@randoms');
+
 
 
 });
