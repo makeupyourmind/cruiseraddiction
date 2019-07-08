@@ -23,7 +23,9 @@ class PartsController extends BaseController
     }
 
     public function randoms() {
-        $randomParts = Part::all()->random(12);
+        $randomParts = Part::where('id', '>', '1')
+			->where('id', '<', '100000')
+			->get()->random(12);
         return response()->json($randomParts, 200);
     }
 
