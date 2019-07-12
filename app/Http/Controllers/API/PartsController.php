@@ -113,4 +113,13 @@ class PartsController extends BaseController
             ->delete();
         return $this->sendResponse('Success', 'Part deleted successfully.');
     }
+
+    public function refresh_shopping_cart(Request $request) {
+        $parts = array();
+        foreach($request->data as $partHash) {
+            $parts[] = Part::where('unique_hash', $partHash)->first(['brand_name', 'part_number', 'description_english',
+                'weight_physical', 'weight_volumetric', 'qty', 'warehouse', 'price', 'unique_hash']);
+        }
+        return response()->json($parts, 200);
+    }
 }

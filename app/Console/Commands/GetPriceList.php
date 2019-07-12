@@ -167,7 +167,6 @@ class GetPriceList extends Command
             array_splice($row, 0,0, '');
 
             $validCsv[] = $row;
-            //if($r > 1000) break;
 
         }
         var_dump(count($validCsv));
@@ -193,6 +192,8 @@ class GetPriceList extends Command
                     ON DUPLICATE KEY UPDATE
                     parts.qty = parts_tmp.qty,
                     parts.price = parts_tmp.price");
+
+       // $req3 =  DB::connection()->getpdo()->exec("DELETE FROM parts WHERE LOWER(brand_name) NOT IN ('koyo', 'toyo', 'taiho', 'nsk', 'hkt', 'mitsuboshi', 'ntn', 'aisin', 'valeo', 'shimahide', '555', 'toyota')");
 
     }
 }

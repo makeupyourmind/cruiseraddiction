@@ -13,7 +13,8 @@
         "laravel/framework": "5.8.*",
         "laravel/passport": "^7.3",
         "laravel/tinker": "^1.0",
-        "paypal/rest-api-sdk-php": "^1.14"
+        "paypal/rest-api-sdk-php": "^1.14",
+        "shippo/shippo-php": "^1.4"
     },
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.0",
