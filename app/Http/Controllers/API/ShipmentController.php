@@ -18,7 +18,7 @@ class ShipmentController extends Controller
     }
 
 
-    public function rates()
+    public function rates(Request $request)
     {
         $fromAddress = [
             'object_purpose' => 'PURCHASE',
@@ -46,8 +46,8 @@ class ShipmentController extends Controller
             'email' => 'mrhippo@goshippo.com'
         ];
         $parcel = [
-            'length'=> '5',
-            'width'=> '5',
+            'length'=> '1',
+            'width'=> '1',
             'height'=> '5',
             'distance_unit'=> 'in',
             'weight'=> '2',
