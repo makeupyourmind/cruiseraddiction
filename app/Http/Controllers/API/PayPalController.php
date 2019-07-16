@@ -44,7 +44,7 @@ class PayPalController extends Controller
         $paypal_conf = \Config::get('paypal');
         $this->_api_context = new ApiContext(new OAuthTokenCredential($paypal_conf['client_id'], $paypal_conf['secret']));
         $this->_api_context->setConfig($paypal_conf['settings']);
-        $this->price = Input::get('price');
+        $this->price = Input::get('amount');
 
     }
     /**
