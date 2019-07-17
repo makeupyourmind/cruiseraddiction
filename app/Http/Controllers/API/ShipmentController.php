@@ -64,6 +64,7 @@ class ShipmentController extends Controller
             ]
         ];
         $postRequest = $client->post($url,  ['body' => json_encode($ratesRequest)]);
+
         $postResponse = $postRequest->getBody();
         return $postResponse;
     }
