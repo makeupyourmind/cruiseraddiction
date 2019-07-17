@@ -4,65 +4,67 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Shippo;
-use Shippo_Shipment;
-
+use GuzzleHttp\Client;
 
 class ShipmentController extends Controller
 {
-    public function __construct()
-    {
-        // Grab this private key from
-        // .env and setup the Shippo api
-        Shippo::setApiKey(env('SHIPPO_PRIVATE'));
-    }
-
-
     public function rates(Request $request)
     {
-        $fromAddress = [
-            'object_purpose' => 'PURCHASE',
-            'name' => 'Shawn Ippotle',
-            'company' => 'Shippo',
-            'street1' => '215 Clayton St.',
-            'city' => 'San Francisco',
-            'state' => 'CA',
-            'zip' => '94117',
-            'country' => 'US',
-            'phone' => '+1 555 341 9393',
-            'email' => 'shippotle@goshippo.com'
+        $client = new \GuzzleHttp\Client(['headers' => ['API_USERNAME' => 'Dmitriy',  'API_PASSWORD' => 'cokzzoa4ky2f']]);
+        $url = "https://netparcel.com/shipping_service";
+        $ratesRequest = [
+            "rate" => [
+                "origin" => [
+                    "country" => "CA",
+                    "postal_code" => "V3N4R3",
+                    "province" => "ON",
+                    "city" => "Burnaby",
+                    "name" => null,
+                    "address1" => "90 Maverick",
+                    "address2" => null,
+                    "address3" => null,
+                    "phone" => null,
+                    "fax" => null,
+                    "address_type" => null,
+                    "company_name" => null
+                ],
+                "destination" => [
+                    "country" => $request->user->country,
+                    "postal_code" => $request->user->postal_code,
+                    "province" => "ON",
+                    "city" => $request->user->city,
+                    "name" => $request->user->first_name,
+                    "address1" => $request->user->street_address,
+                    "address2" => "",
+                    "address3" => null,
+                    "phone" => $request->user->phone,
+                    "fax" => null,
+                    "address_type" => null,
+                    "company_name" => ""
+                ],
+                "packaging_information" => [
+                    "packaging_type" => "My Packaging",
+                    "packages" => [
+                        [
+                            "length" => 1,
+                            "width" => 1,
+                            "height" => 1,
+                            "weight" => 5,
+                            "weightUnit" => "lbs"
+                        ],
+                        [
+                            "length" => 1,
+                            "width" => 1,
+                            "height" => 1,
+                            "weight" => 20,
+                            "weightUnit" => "lbs"
+                        ]
+                    ]
+                ]
+            ]
         ];
-        $toAddress = [
-            'object_purpose' => 'PURCHASE',
-            'name' => 'Mr Hippo"',
-            'company' => '',
-            'street1' => 'Broadway 1',
-            'street2' => '',
-            'city' => 'New York',
-            'state' => 'NY',
-            'zip' => '10007',
-            'country' => 'US',
-            'phone' => '+1 555 341 9393',
-            'email' => 'mrhippo@goshippo.com'
-        ];
-        $parcel = [
-            'length'=> '1',
-            'width'=> '1',
-            'height'=> '5',
-            'distance_unit'=> 'in',
-            'weight'=> '2',
-            'mass_unit'=> 'lb',
-        ];
-        // Get the shipment object
-        $shipment = json_decode(Shippo_Shipment::create([
-            'object_purpose'=> 'PURCHASE',
-            'address_from'=> $fromAddress,
-            'address_to'=> $toAddress,
-            'parcels'=> $parcel,
-            'insurance_amount'=> '0',
-            'insurance_currency'=> 'USD',
-            'async'=> false
-        ]), true);
-        return $shipment['rates'];
+        $postRequest = $client->post($url,  ['body' => json_encode($ratesRequest)]);
+        $postResponse = $postRequest->getBody();
+        return $postResponse;
     }
 }
