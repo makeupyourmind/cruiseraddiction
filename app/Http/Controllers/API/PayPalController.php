@@ -27,6 +27,8 @@ use PayPal\Api\PaymentExecution;
 use PayPal\Api\Transaction;
 use App\Model\Customer;
 use App\Model\Price;
+use App\Model\Part;
+
 
 class PayPalController extends Controller
 {
@@ -55,6 +57,10 @@ class PayPalController extends Controller
     public function payWithPaypal()
     {
         $amount = $this->price;
+        $result = Input::get('result');
+        Session::put('result', $result);
+        Session::put('amount', $amount);
+
         return view('paywithpaypal', compact('amount'));
     }
     /**
@@ -154,9 +160,38 @@ class PayPalController extends Controller
             /** it's all right **/
             /** Here Write your database logic like that insert record or value in database if you want **/
             \Session::put('success','Payment success');
+            $resultData = Session::get('result');
+            Session::forget('result');
+
+            $amount = Session::get('amount');
+            Session::forget('amount');
+
+            $orderData = json_decode(base64_decode($resultData), true);
+            //return dd($orderData);
+
+            $customersOrder = array();
+            $customersOrder['user'] = $orderData['user'];
+            $customersOrder['amount'] = $amount;
+            foreach($orderData['data'] as $partHash) {
+                $part = Part::where('unique_hash', $partHash['unique_hash'])->get(['brand_name', 'part_number', 'warehouse']);
+                Part::where('unique_hash', $partHash['unique_hash'])->decrement('qty', $partHash['count']);
+                $customersOrder['data'][]['count'] = $partHash['count'];
+                $customersOrder['data'][]['brand_name'] = $part->brand_name;
+                $customersOrder['data'][]['part_number'] = $part->part_number;
+                $customersOrder['data'][]['warehouse'] = $part->warehouse;
+
+                //$newOrder = Order::create($customersOrder);
+                //return response()->json($newOrder, 200);
+
+            }
+            $serializedOrder = serialize($customersOrder);
+
+            $newOrder = New Order;
+            $newOrder->order = $serializedOrder;
+            $newOrder->save();
+            //return response()->json($newOrder, 200);
             //return Redirect::route('addmoney.paywithpaypal');
             //return redirect('http://backcartestpro.qbex.io/final');
-
             //return redirect()->route('send-pdf', array('customer_id' => $customer->id, 'result_token' => $secretLink, 'customer_email' => $customerData['email']));
             return response()->json('Payment success', 200);
         }
