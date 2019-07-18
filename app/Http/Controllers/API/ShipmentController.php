@@ -46,7 +46,7 @@ class ShipmentController extends Controller
                 "packaging_information" => [
                     "packaging_type" => "My Packaging",
                     "packages" => $request->packages
-                    ]
+
                 ]
             ]
         ];
