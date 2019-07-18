@@ -49,7 +49,6 @@ class ShipmentController extends Controller
                 ]
             ]
         ];
-        //return dd(json_encode($ratesRequest));
 
         $postRequest = $client->post($url,  ['body' => json_encode($ratesRequest)]);
 
