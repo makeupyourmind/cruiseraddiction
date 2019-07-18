@@ -45,8 +45,9 @@ class ShipmentController extends Controller
                 ],
                 "packaging_information" => [
                     "packaging_type" => "My Packaging",
-                    "packages" => json_encode($request->packages)
-
+                    "packages" => [
+                        $request->packages
+                    ]
                 ]
             ]
         ];
