@@ -45,22 +45,7 @@ class ShipmentController extends Controller
                 ],
                 "packaging_information" => [
                     "packaging_type" => "My Packaging",
-                    "packages" => [
-                        [
-                            "length" => 1,
-                            "width" => 1,
-                            "height" => 1,
-                            "weight" => 5,
-                            "weightUnit" => "lbs"
-                        ],
-                        [
-                            "length" => 1,
-                            "width" => 1,
-                            "height" => 1,
-                            "weight" => 20,
-                            "weightUnit" => "lbs"
-                        ]
-                    ]
+                    "packages" => json_decode($request->packages, true)
                 ]
             ]
         ];
