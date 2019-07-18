@@ -173,13 +173,15 @@ class PayPalController extends Controller
             $customersOrder['user'] = $orderData['user'];
             $customersOrder['amount'] = $amount;
             foreach($orderData['data'] as $partHash) {
-                $partCollection = Part::where('unique_hash', $partHash['unique_hash'])->get(['brand_name', 'part_number', 'warehouse', 'unique_hash']);
+                $partCollection = Part::where('unique_hash', $partHash['unique_hash'])->get(['brand_name', 'part_number', 'warehouse', 'unique_hash', 'price', 'description_english']);
 		$part = $partCollection->firstWhere('unique_hash', $partHash['unique_hash']);
                 Part::where('unique_hash', $partHash['unique_hash'])->decrement('qty', $partHash['count']);
                 $customersOrder['data'][]['count'] = $partHash['count'];
                 $customersOrder['data'][]['brand_name'] = $part->brand_name;
                 $customersOrder['data'][]['part_number'] = $part->part_number;
                 $customersOrder['data'][]['warehouse'] = $part->warehouse;
+                $customersOrder['data'][]['price'] = $part->price;
+                $customersOrder['data'][]['description_english'] = $part->description_english;
                 $customersOrder['data'][]['unique_hash'] = $part->unique_hash;
 
             }
