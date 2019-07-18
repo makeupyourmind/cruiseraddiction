@@ -12,7 +12,7 @@ class ShipmentController extends Controller
     {
         $client = new \GuzzleHttp\Client(['headers' => ['API_USERNAME' => 'Dmitriy',  'API_PASSWORD' => 'cokzzoa4ky2f']]);
         $url = "https://netparcel.com/shipping_service";
-        //return $request;
+        return $request;
         $ratesRequest = [
             "rate" => [
                 "origin" => [
