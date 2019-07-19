@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
 use Validator;
 use App\Model\Part;
+use GuzzleHttp\Client;
+
 
 class PartsController extends BaseController
 {
@@ -20,6 +22,39 @@ class PartsController extends BaseController
         */
 
         return response()->json($parts, 200);
+    }
+
+    public function stock_ca() {
+	$client = new \GuzzleHttp\Client();
+
+	for($i = 1; $i <= 19; $i++) {
+    	    $request = $client->get('https://cruisera.ddns.net/api/stock_ca/list?page='.$i);
+    	    $responseJson = $request->getBody()->getContents();
+	    $response = json_decode($responseJson, true);
+	    foreach($response['data'] as $caPart) {
+		$caOrderData = array();
+		$caOrder['brand_name'] = $caPart['brand']['BrandName'];
+		$caOrder['part_number'] = $caPart['PartNumber'];
+		$caOrder['description_english'] = $caPart['DescriptionEnglish'];
+		$caOrder['weight_physical'] = $caPart['part']['WeightPhysical'];
+		$caOrder['weight_volumetric'] = $caPart['part']['WeightVolumetric'];
+		$caOrder['qty'] = $caPart['StockQty'];
+		$caOrder['warehouse'] = 'canada';
+		$caOrder['price'] = $caPart['Price'];
+		$caOrder['unique_hash'] = 'CA_'.md5($caOrder['brand_name'].$caOrder['part_number'].'canada');
+		//$caOrder['unique_hash'] = '1234567qwert';
+		$caOrder['is_bundle'] = $caPart['part']['IsBundle'];
+		$caOrder['modified_by'] = $caPart['stats']['modifier']['email'];
+		$caOrder['description_full'] = $caPart['description_full'];
+		$caOrder['notes'] = serialize($caPart);
+
+		Part::updateOrCreate(
+            	    ['unique_hash' => $caOrder['unique_hash']],
+			$caOrder)->toSql();
+	    }
+
+	}
+	return response()->json('Stock CA imported successfully', 200);
     }
 
     public function randoms() {
