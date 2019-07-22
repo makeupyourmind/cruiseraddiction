@@ -34,7 +34,7 @@ class PartsController extends BaseController
 	    foreach($response['data'] as $caPart) {
 
 		$caOrderData = array();
-//		dd($caPart);
+		dd($caPart);
 		$caOrder['brand_name'] = $caPart['brand']['BrandName'];
 		$caOrder['part_number'] = $caPart['PartNumber'];
 		$caOrder['description_english'] = $caPart['DescriptionEnglish'];
@@ -55,6 +55,7 @@ class PartsController extends BaseController
 		$caOrder['min_price'] =  $caPart['stats'] ? $caPart['stats']['min_price'] : null;
 		$caOrder['max_price'] =  $caPart['stats'] ? $caPart['stats']['max_price'] : null;
 		$caOrder['min_stock'] =  $caPart['stats'] ? $caPart['stats']['stock_min'] : null;
+		$caOrder['location'] =  $caPart['location']
 		$caOrder['is_stock_ca'] = true;
 
 		Part::updateOrCreate(
