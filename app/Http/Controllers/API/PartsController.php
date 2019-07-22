@@ -32,7 +32,9 @@ class PartsController extends BaseController
     	    $responseJson = $request->getBody()->getContents();
 	    $response = json_decode($responseJson, true);
 	    foreach($response['data'] as $caPart) {
+
 		$caOrderData = array();
+		dd($caPart);
 		$caOrder['brand_name'] = $caPart['brand']['BrandName'];
 		$caOrder['part_number'] = $caPart['PartNumber'];
 		$caOrder['description_english'] = $caPart['DescriptionEnglish'];
@@ -47,7 +49,7 @@ class PartsController extends BaseController
 		$caOrder['modified_by'] = $caPart['stats']['modifier']['email'];
 		$caOrder['description_full'] = $caPart['description_full'];
 		$caOrder['notes'] = serialize($caPart);
-
+		$caOrder['is_stock_ca'] = true;
 		Part::updateOrCreate(
             	    ['unique_hash' => $caOrder['unique_hash']],
 			$caOrder)->toSql();
@@ -98,6 +100,11 @@ class PartsController extends BaseController
         }
 
         return response()->json($partsList, 200);
+    }
+
+    public function getStockCa(Request $request){
+	$stockPart = Part::where('is_stock_ca', true)->paginate(100);
+	return response()->json($stockPart, 200);
     }
 
     public function store(Request $request) {

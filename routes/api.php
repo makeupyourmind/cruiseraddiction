@@ -22,6 +22,7 @@ Route::group([
 
     Route::post('parts', 'PartsController@show');
     Route::get('parts', 'PartsController@index');
+    Route::get('stock-ca-parts', 'PartsController@getStockCa');
     Route::get('rand-parts', 'PartsController@randoms');
     Route::post('refresh-shopping-cart', 'PartsController@refresh_shopping_cart');
     Route::post('shipping-rates', 'ShipmentController@rates');
