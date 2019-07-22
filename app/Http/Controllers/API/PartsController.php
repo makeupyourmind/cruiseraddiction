@@ -50,8 +50,8 @@ class PartsController extends BaseController
 		$caOrder['description_full'] = $caPart['description_full'];
 		$caOrder['notes'] = serialize($caPart);
 
-		$caOrder['categories'] = $caPart['stats'] ? serialize($caPart['stats']['categories']) : null;
-		$caOrder['tags'] =       $caPart['stats'] ? serialize($caPart['stats']['tags']) : null;
+		$caOrder['categories'] = $caPart['stats'] && $caPart['stats']['categories'] ? serialize($caPart['stats']['categories']) : null;
+		$caOrder['tags'] =       $caPart['stats'] && $caPart['stats']['tags'] ? serialize($caPart['stats']['tags']) : null;
 		$caOrder['min_price'] =  $caPart['stats'] ? $caPart['stats']['min_price'] : null;
 		$caOrder['max_price'] =  $caPart['stats'] ? $caPart['stats']['max_price'] : null;
 		$caOrder['min_stock'] =  $caPart['stats'] ? $caPart['stats']['stock_min'] : null;
