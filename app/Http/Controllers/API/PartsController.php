@@ -34,7 +34,7 @@ class PartsController extends BaseController
 	    foreach($response['data'] as $caPart) {
 
 		$caOrderData = array();
-		dd($caPart);
+//		dd($caPart);
 		$caOrder['brand_name'] = $caPart['brand']['BrandName'];
 		$caOrder['part_number'] = $caPart['PartNumber'];
 		$caOrder['description_english'] = $caPart['DescriptionEnglish'];
@@ -49,12 +49,18 @@ class PartsController extends BaseController
 		$caOrder['modified_by'] = $caPart['stats']['modifier']['email'];
 		$caOrder['description_full'] = $caPart['description_full'];
 		$caOrder['notes'] = serialize($caPart);
+
+		$caOrder['categories'] = $caPart['stats'] ? serialize($caPart['stats']['categories']) : null;
+		$caOrder['tags'] =       $caPart['stats'] ? serialize($caPart['stats']['tags']) : null;
+		$caOrder['min_price'] =  $caPart['stats'] ? $caPart['stats']['min_price'] : null;
+		$caOrder['max_price'] =  $caPart['stats'] ? $caPart['stats']['max_price'] : null;
+		$caOrder['min_stock'] =  $caPart['stats'] ? $caPart['stats']['stock_min'] : null;
 		$caOrder['is_stock_ca'] = true;
+
 		Part::updateOrCreate(
-            	    ['unique_hash' => $caOrder['unique_hash']],
+		    ['unique_hash' => $caOrder['unique_hash']],
 			$caOrder)->toSql();
 	    }
-
 	}
 	return response()->json('Stock CA imported successfully', 200);
     }
