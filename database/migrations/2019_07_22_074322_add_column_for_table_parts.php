@@ -15,6 +15,7 @@ class AddColumnForTableParts extends Migration
     {
         Schema::table('parts', function (Blueprint $table) {
             $table->boolean('is_stock_ca')->default(false);
+            $table->string('location')->nullable();;
         });
     }
 
