@@ -34,7 +34,7 @@ class PartsController extends BaseController
 	    foreach($response['data'] as $caPart) {
 
 		$caOrderData = array();
-		dd($caPart);
+		
 		$caOrder['brand_name'] = $caPart['brand']['BrandName'];
 		$caOrder['part_number'] = $caPart['PartNumber'];
 		$caOrder['description_english'] = $caPart['DescriptionEnglish'];
@@ -49,13 +49,13 @@ class PartsController extends BaseController
 		$caOrder['modified_by'] = $caPart['stats']['modifier']['email'];
 		$caOrder['description_full'] = $caPart['description_full'];
 		$caOrder['notes'] = serialize($caPart);
-
 		$caOrder['categories'] = $caPart['stats'] && $caPart['stats']['categories'] ? json_encode($caPart['stats']['categories']) : null;
 		$caOrder['tags'] =       $caPart['stats'] && $caPart['stats']['tags'] ? json_encode($caPart['stats']['tags']) : null;
 		$caOrder['min_price'] =  $caPart['stats'] ? $caPart['stats']['min_price'] : null;
 		$caOrder['max_price'] =  $caPart['stats'] ? $caPart['stats']['max_price'] : null;
 		$caOrder['min_stock'] =  $caPart['stats'] ? $caPart['stats']['stock_min'] : null;
-		$caOrder['location'] =  $caPart['location']
+		
+		$caOrder['location'] = $caPart['Location'];
 		$caOrder['is_stock_ca'] = true;
 
 		Part::updateOrCreate(

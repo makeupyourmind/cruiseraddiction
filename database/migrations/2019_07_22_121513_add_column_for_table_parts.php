@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddOldFieldsToPartsTable extends Migration
+class AddColumnForTableParts extends Migration
 {
     /**
      * Run the migrations.
@@ -19,6 +19,8 @@ class AddOldFieldsToPartsTable extends Migration
             $table->integer('min_price')->nullable();
             $table->integer('max_price')->nullable();
             $table->integer('min_stock')->nullable();
+            $table->boolean('is_stock_ca')->default(false);
+            $table->string('location')->nullable();
         });
     }
 
