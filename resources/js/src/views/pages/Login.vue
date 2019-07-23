@@ -101,6 +101,9 @@ export default {
         //     return
         // }
     },
+    created(){
+        debugger;
+    },
     methods:{
         registerUser() {
             this.$router.push('/pages/register');
@@ -109,7 +112,7 @@ export default {
            return this.$validator.validateAll()
                .then(result => {
                 if(result){
-                    var payload={
+                    let payload={
                         email:this.email,
                         password: this.password
                     };

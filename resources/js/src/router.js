@@ -27,96 +27,108 @@ const router = new Router({
     base: '/',
     routes: [
 
-      {
-    // =============================================================================
-    // MAIN LAYOUT ROUTES
-    // =============================================================================
-        path: '',
-        component: () => import('./layouts/main/Main.vue'),
-        children: [
-      // =============================================================================
-      // Theme Routes
-      // =============================================================================
-          {
-            path: '/',
-            name: 'Stock management',
-            component: () => import('./views/stockManagement.vue'),
-            meta:{
-                pageTitle: "Stock Management"
-            }
-          },
-
-
-          {
-            path: '/page2',
-            name: 'page2',
-            component: () => import('./views/Page2.vue'),
-            meta: {
-                breadcrumb: [
-                    { title: 'Stock Management', url: '/' },
-                    { title: 'page2', active: true },
-                ],
-                pageTitle: 'page2',
-              },
-          },
-        ],
-      },
-    // =============================================================================
-    // FULL PAGE LAYOUTS
-    // =============================================================================
-      {
-        path: '',
-        component: () => import('@/layouts/full-page/FullPage.vue'),
-        children: [
-      // =============================================================================
-      // PAGES
-      // =============================================================================
-          {
-            path: '/pages/login',
-            name: 'pageLogin',
-            component: () => import('@/views/pages/Login.vue')
-          },
-          {
-            path: '/pages/error-404',
-            name: 'pageError404',
-            component: () => import('@/views/pages/Error404.vue')
-          },
-            {
-                path: '/pages/register',
-                name: 'pageRegister',
-                component: () => import('@/views/pages/Register.vue'),
-                meta: {
-                    rule: 'editor'
+        {
+            // =============================================================================
+            // MAIN LAYOUT ROUTES
+            // =============================================================================
+            path: '',
+            component: () => import('./layouts/main/Main.vue'),
+            children: [
+                // =============================================================================
+                // Theme Routes
+                // =============================================================================
+                {
+                    path: '/',
+                    name: 'Stock management',
+                    component: () => import('./views/stockManagement.vue'),
+                    meta: {
+                        pageTitle: "Stock Management"
+                    }
                 },
-            },
-          {
-            path: '/pages/forgot-password',
-            name: 'pageForgotPassword',
-            component: () => import('@/views/pages/ForgotPassword.vue'),
-                meta: {
-                    rule: 'editor'
-                }
-            },
-            {
-                path: '/pages/reset-password',
-                name: 'pageResetPassword',
-                component: () => import('@/views/pages/ResetPassword.vue'),
-                meta: {
-                    rule: 'editor'
-                }
-            },
-            {
-                path: '/pages/no-authorized',
-                name: 'NotAuthorized',
-                component: () => import('@/views/pages/NotAuthorized.vue')
-            },
-        ]
-      },
-      // Redirect to 404 page, if no match found
-      {
-        path: '*',
-        redirect: '/pages/error-404'
-      }
+
+
+                // {
+                //     path: '/page2',
+                //     name: 'page2',
+                //     component: () => import('./views/Page2.vue'),
+                //     meta: {
+                //         breadcrumb: [
+                //             {title: 'Stock Management', url: '/'},
+                //             {title: 'page2', active: true},
+                //         ],
+                //         pageTitle: 'page2',
+                //     },
+                // },
+                {
+                    path: '/orders',
+                    name: 'orders',
+                    component: () => import('./views/orders.vue'),
+                    meta: {
+                        breadcrumb: [
+                            {title: 'Stock Management', url: '/'},
+                            {title: 'orders', active: true},
+                        ],
+                        pageTitle: 'orders',
+                    },
+                },
+            ],
+        },
+        // =============================================================================
+        // FULL PAGE LAYOUTS
+        // =============================================================================
+        {
+            path: '',
+            component: () => import('@/layouts/full-page/FullPage.vue'),
+            children: [
+                // =============================================================================
+                // PAGES
+                // =============================================================================
+                {
+                    path: '/pages/login',
+                    name: 'pageLogin',
+                    component: () => import('@/views/pages/Login.vue')
+                },
+                {
+                    path: '/pages/error-404',
+                    name: 'pageError404',
+                    component: () => import('@/views/pages/Error404.vue')
+                },
+                {
+                    path: '/pages/register',
+                    name: 'pageRegister',
+                    component: () => import('@/views/pages/Register.vue'),
+                    meta: {
+                        rule: 'editor'
+                    },
+                },
+                {
+                    path: '/pages/forgot-password',
+                    name: 'pageForgotPassword',
+                    component: () => import('@/views/pages/ForgotPassword.vue'),
+                    meta: {
+                        rule: 'editor'
+                    }
+                },
+                {
+                    path: '/pages/reset-password',
+                    name: 'pageResetPassword',
+                    component: () => import('@/views/pages/ResetPassword.vue'),
+                    meta: {
+                        rule: 'editor'
+                    }
+                },
+                {
+                    path: '/pages/no-authorized',
+                    name: 'NotAuthorized',
+                    component: () => import('@/views/pages/NotAuthorized.vue')
+                },
+            ]
+        },
+        // Redirect to 404 page, if no match found
+        {
+            path: '*',
+            redirect: '/pages/error-404'
+        }
     ],
 })
 

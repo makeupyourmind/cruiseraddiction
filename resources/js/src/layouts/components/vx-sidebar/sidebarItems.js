@@ -27,8 +27,8 @@ export default [
     icon: "HomeIcon",
   },
   {
-    url: "/page2",
-    name: "Page 2",
+    url: "/orders",
+    name: "Orders",
     slug: "page2",
     icon: "FileIcon",
   },

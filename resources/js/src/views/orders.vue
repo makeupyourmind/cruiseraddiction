@@ -8,58 +8,56 @@
                 <!-- ITEMS PER PAGE -->
                 <div class="mb-4 md:mb-0 mr-4 ag-grid-table-actions-left" style ="display: flex; align-items: center;">
                     <vs-dropdown vs-trigger-click class="cursor-pointer">
-                        <!--<div class="p-4 border border-solid d-theme-border-grey-light rounded-full d-theme-dark-bg cursor-pointer flex items-center justify-between font-medium">-->
-                            <!--<span class="mr-2">{{ currentPage * paginationPageSize - (paginationPageSize - 1) }} - {{ contacts.length - currentPage * paginationPageSize > 0 ? currentPage * paginationPageSize : contacts.length }} of {{ contacts.length }}</span>-->
-                            <!--<feather-icon icon="ChevronDownIcon" svgClasses="h-4 w-4" />-->
-                        <!--</div>-->
-                        <!--<vs-dropdown-menu>-->
-                            <!--<vs-dropdown-item @click="gridApi.paginationSetPageSize(20)">-->
-                                <!--<span>20</span>-->
-                            <!--</vs-dropdown-item>-->
-                            <!--<vs-dropdown-item @click="gridApi.paginationSetPageSize(50)">-->
-                                <!--<span>50</span>-->
-                            <!--</vs-dropdown-item>-->
-                            <!--<vs-dropdown-item @click="gridApi.paginationSetPageSize(100)">-->
-                                <!--<span>100</span>-->
-                            <!--</vs-dropdown-item>-->
-                            <!--<vs-dropdown-item @click="gridApi.paginationSetPageSize(150)">-->
-                                <!--<span>150</span>-->
-                            <!--</vs-dropdown-item>-->
-                        <!--</vs-dropdown-menu>-->
+                        <div class="p-4 border border-solid d-theme-border-grey-light rounded-full d-theme-dark-bg cursor-pointer flex items-center justify-between font-medium">
+                            <span class="mr-2">{{ currentPage * paginationPageSize - (paginationPageSize - 1) }} - {{ contacts.length - currentPage * paginationPageSize > 0 ? currentPage * paginationPageSize : contacts.length }} of {{ contacts.length }}</span>
+                            <feather-icon icon="ChevronDownIcon" svgClasses="h-4 w-4" />
+                        </div>
+                        <vs-dropdown-menu>
+                            <vs-dropdown-item @click="gridApi.paginationSetPageSize(20)">
+                                <span>20</span>
+                            </vs-dropdown-item>
+                            <vs-dropdown-item @click="gridApi.paginationSetPageSize(50)">
+                                <span>50</span>
+                            </vs-dropdown-item>
+                            <vs-dropdown-item @click="gridApi.paginationSetPageSize(100)">
+                                <span>100</span>
+                            </vs-dropdown-item>
+                            <vs-dropdown-item @click="gridApi.paginationSetPageSize(150)">
+                                <span>150</span>
+                            </vs-dropdown-item>
+                        </vs-dropdown-menu>
                     </vs-dropdown>
-                    <singlebundle :select="select"></singlebundle>
+                    <singlebundle></singlebundle>
                 </div>
-                    <!-- TABLE ACTION COL-2: SEARCH & EXPORT AS CSV -->
+                <!-- TABLE ACTION COL-2: SEARCH & EXPORT AS CSV -->
                 <div class="flex flex-wrap items-center justify-between ag-grid-table-actions-right">
                     <vs-input class="mb-4 md:mb-0 mr-4" v-model="searchQuery" @input="updateSearchQuery" placeholder="Search..." />
-<!--                    <vs-button class="mb-4 md:mb-0" @click="gridApi.exportDataAsCsv()">Export as CSV</vs-button>-->
+                    <!--                    <vs-button class="mb-4 md:mb-0" @click="gridApi.exportDataAsCsv()">Export as CSV</vs-button>-->
                 </div>
             </div>
             <ag-grid-vue
-                :gridOptions="gridOptions"
-                class="ag-theme-material w-100 my-4 ag-grid-table"
-                style="text-align: center!important; padding:0!important"
-                :columnDefs="columnDefs"
-                :defaultColDef="defaultColDef"
-                :rowData="getData"
-                rowSelection="multiple"
-                colResizeDefault="shift"
-                :animateRows="true"
-                :floatingFilter="true"
-                :pagination="true"
-                @cellClicked="test($event)"
-                :context="context"
-
-                :frameworkComponents="frameworkComponents"
-                :suppressPaginationPanel="true">
-                <!-- :paginationPageSize="paginationPageSize"-->
+                    :gridOptions="gridOptions"
+                    class="ag-theme-material w-100 my-4 ag-grid-table"
+                    style="text-align: center!important; padding:0!important"
+                    :columnDefs="columnDefs"
+                    :defaultColDef="defaultColDef"
+                    :rowData="contacts"
+                    colResizeDefault="shift"
+                    :animateRows="true"
+                    :floatingFilter="true"
+                    :pagination="true"
+                    @cellClicked="test($event)"
+                    :context="context"
+                    :paginationPageSize="paginationPageSize"
+                    :frameworkComponents="frameworkComponents"
+                    :suppressPaginationPanel="true">
             </ag-grid-vue>
-                <vs-pagination
+            <vs-pagination
                     :total="totalPages"
-                    :max="7"
-                    v-model="currentPage"
-                />
+                    :max="maxPageNumbers"
+                    v-model="currentPage" />
         </vx-card>
+        <button @click="select()">test</button>
     </div>
 </template>
 
@@ -69,7 +67,6 @@
     import singlebundle from '../components/SingleBundle/singleBundle'
     import test from '../components/SingleBundle/cellRenderer'
     import Vue from 'vue'
-    import {StockManagment} from "../api/stockManagment";
     let SquareComponent = Vue.extend({
         template: '<vs-chip color="primary" >{{params.valueFormatted}}</vs-chip>',
     });
@@ -96,9 +93,6 @@
                 context: null
             }
         },
-        created(){
-            // this.$store.dispatch('stockCaModule/GET_DATA_STOCK_FROM_SERVER', 1)
-        },
         beforeMount(){
             this.columnDefs = [
                 {
@@ -109,63 +103,63 @@
                 },
                 {
                     headerName: 'Brand',
-                    field: 'brand_name',
+                    field: 'brand',
                     filter: true,
-                    // width: 175,
+                    width: 175,
                 },
                 {
                     headerName: 'PartNumber',
-                    field: 'part_number',
+                    field: 'partNum',
                     filter: true,
-                    // width: 175,
+                    width: 175,
                 },
                 {
                     headerName: 'Description',
-                    field: 'description_english',
+                    field: 'description',
                     filter: true,
-                    // width: 250,
+                    width: 250,
                 },
-                // {
-                //     headerName: 'Stores',
-                //     field: 'stores',
-                //     filter: true,
-                //     width: 250,
-                // },
+                {
+                    headerName: 'Stores',
+                    field: 'stores',
+                    filter: true,
+                    width: 250,
+                },
                 {
                     headerName: 'Qty',
                     field: 'qty',
                     filter: true,
-                    // width: 75,
+                    width: 75,
                 },
                 {
                     headerName: 'Min Stock',
-                    field: 'min_stock',
+                    field: 'minStock',
                     filter: true,
-                    // width: 150,
+                    width: 150,
                 },
                 {
                     headerName: 'List price',
-                    field: 'price',
+                    field: 'listPrice',
                     filter: true,
-                    // width: 100,
+                    width: 100,
                 },
                 {
                     headerName: 'Min price',
-                    field: 'min_price',
+                    field: 'minPrice',
                     filter: true,
-                    // width: 100,
+                    width: 100,
                 },
                 {
                     headerName: 'Max price',
-                    field: 'max_price',
+                    field: 'maxPrice',
                     filter: true,
-                    // width: 125,
+                    width: 125,
                 },
                 {
                     headerName: 'Last Modified',
-                    field: 'updated_at',
+                    field: 'last modified',
                     filter: true,
-                    // width: 250,
+                    width: 250,
                 },
                 {
                     headerName: 'Location',
@@ -181,7 +175,7 @@
                 },
                 {
                     headerName: 'Tags',
-                    field: 'tags',
+                    field: 'chips',
                     cellRenderer: "test",
                     width: 125,
                 },
@@ -192,58 +186,46 @@
             }
         },
         computed: {
-            getDataStock(){
-                return this.$store.getters['stockCaModule/GET_STOCK_DATA'];
-            },
-            getData(){
-                const store = this.getDataStock;
-                return store ? store.data : []
+            paginationPageSize() {
+                if(this.gridApi) return this.gridApi.paginationGetPageSize()
+                else return 50
             },
             totalPages() {
-                // if(this.gridApi) return this.gridApi.paginationGetTotalPages();
-                const store = this.getDataStock;
-                return store ? store.last_page : 1
+                if(this.gridApi) return this.gridApi.paginationGetTotalPages()
+                else return 0
             },
             currentPage: {
                 get() {
-                    const store = this.getDataStock;
-                    return store ? store.current_page : 1
+                    if(this.gridApi) return this.gridApi.paginationGetCurrentPage() + 1
+                    else return 1
                 },
                 set(val) {
-                    // debugger
-                    this.$store.dispatch('stockCaModule/GET_DATA_STOCK_FROM_SERVER', val)
+                    this.gridApi.paginationGoToPage(val - 1);
                 }
-            },
+            }
         },
         methods: {
             updateSearchQuery(val) {
                 this.gridApi.setQuickFilter(val);
             },
             test(e){
-                // console.log(e);
-                // debugger;
+                console.log(e)
+                debugger;
                 if(e.colDef.headerName === 'PartNumber'){
                     if(e.data.showTable){
                         this.$store.dispatch("GET_SHOW_BUNDLE_SINGLE", {module: true, showTable:true});
                     }else{
                         this.$store.dispatch("GET_SHOW_BUNDLE_SINGLE", {module: true, showTable:false});
                     }
-                    e.data.action = 'update';
                     this.$store.dispatch("GET_EDIT_STORE", e.data)
+
                 }
             },
             select(){
-
-                let selectedNodes = this.gridApi ? this.gridApi.getSelectedNodes() : [];
-
-                selectedNodes = selectedNodes.map(item => {
-                    return {
-                        brand_name: item.data.brand_name,
-                        part_number:item.data.part_number
-                    }
-                });
-                console.log(selectedNodes)
-                return [...selectedNodes];
+                const selectedNodes = this.gridApi.getSelectedNodes();
+                console.log('ssss',selectedNodes)
+                // debugger;
+                // console.log(this.columnDefs.filter(item => item.checkboxSelection).map(item => ))
             }
         },
         mounted() {
