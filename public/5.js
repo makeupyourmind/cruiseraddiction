@@ -111,6 +111,9 @@ __webpack_require__.r(__webpack_exports__);
     //     return
     // }
   },
+  created: function created() {
+    debugger;
+  },
   methods: {
     registerUser: function registerUser() {
       this.$router.push('/pages/register');
