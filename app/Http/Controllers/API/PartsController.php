@@ -149,18 +149,20 @@ class PartsController extends BaseController
     }
 
     public function destroy(Request $request) {
-        $validator = Validator::make($request->all(), [
-            'brand_name' => 'required|string',
-            'part_number' => 'required|string',
-        ]);
+        foreach($request->array as $part_destroyed) {
+            $validator = Validator::make($part_destroyed, [
+                'brand_name' => 'required|string',
+                'part_number' => 'required|string',
+            ]);
 
-        if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors(), 202);
+            if($validator->fails()){
+                return $this->sendError('Validation Error.', $validator->errors(), 202);
+            }
+            Part::where('brand_name', $request->brand_name)
+                ->where('part_number', $request->part_number)
+                ->delete();
         }
-        Part::where('brand_name', $request->brand_name)
-            ->where('part_number', $request->part_number)
-            ->delete();
-        return $this->sendResponse('Success', 'Part deleted successfully.');
+        return $this->sendResponse('Success', 'Parts deleted successfully.');
     }
 
     public function refresh_shopping_cart(Request $request) {
