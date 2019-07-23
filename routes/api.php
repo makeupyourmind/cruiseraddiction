@@ -20,13 +20,15 @@ Route::group([
 
     Route::post('parts-search', 'PartsSearchController@index');
 
-    Route::post('part', 'PartsController@show');
-    Route::get('part', 'PartsController@index');
+    Route::post('parts', 'PartsController@show');
+    Route::get('parts', 'PartsController@index');
+    Route::get('stock-ca-parts', 'PartsController@getStockCa');
     Route::get('rand-parts', 'PartsController@randoms');
     Route::post('refresh-shopping-cart', 'PartsController@refresh_shopping_cart');
     Route::post('shipping-rates', 'ShipmentController@rates');
 
-
+    Route::get('orders', 'OrdersController@index');
+    Route::get('stock-ca', 'PartsController@stock_ca');
 
 });
 
@@ -36,9 +38,9 @@ Route::group([
     'middleware' => 'auth:api'], function () {
 
     Route::post('logout', 'RegisterController@logout');
-    Route::post('add-part', 'PartsController@store');
-    Route::put('update-part', 'PartsController@update');
-    Route::delete('delete-part', 'PartsController@destroy');
+    Route::post('add-parts', 'PartsController@store');
+    Route::put('update-parts', 'PartsController@update');
+    Route::delete('delete-parts', 'PartsController@destroy');
 
     Route::get('user', 'UsersController@show');
     Route::put('user/{id}', 'UsersController@update');

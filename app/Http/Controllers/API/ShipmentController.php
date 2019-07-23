@@ -12,7 +12,7 @@ class ShipmentController extends Controller
     {
         $client = new \GuzzleHttp\Client(['headers' => ['API_USERNAME' => 'Dmitriy',  'API_PASSWORD' => 'cokzzoa4ky2f']]);
         $url = "https://netparcel.com/shipping_service";
-        //return $request;
+
         $ratesRequest = [
             "rate" => [
                 "origin" => [
@@ -45,25 +45,11 @@ class ShipmentController extends Controller
                 ],
                 "packaging_information" => [
                     "packaging_type" => "My Packaging",
-                    "packages" => [
-                        [
-                            "length" => 1,
-                            "width" => 1,
-                            "height" => 1,
-                            "weight" => 5,
-                            "weightUnit" => "lbs"
-                        ],
-                        [
-                            "length" => 1,
-                            "width" => 1,
-                            "height" => 1,
-                            "weight" => 20,
-                            "weightUnit" => "lbs"
-                        ]
-                    ]
+                    "packages" => $request->packages
                 ]
             ]
         ];
+
         $postRequest = $client->post($url,  ['body' => json_encode($ratesRequest)]);
 
         $postResponse = $postRequest->getBody();

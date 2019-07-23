@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\API\BaseController as BaseController;
 use Validator;
 use App\Model\Part;
+use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Hash;
 
 class PartsController extends BaseController
 {
@@ -20,6 +23,48 @@ class PartsController extends BaseController
         */
 
         return response()->json($parts, 200);
+    }
+
+    public function stock_ca() {
+	$client = new \GuzzleHttp\Client();
+
+	for($i = 1; $i <= 19; $i++) {
+    	    $request = $client->get('https://cruisera.ddns.net/api/stock_ca/list?page='.$i);
+    	    $responseJson = $request->getBody()->getContents();
+	    $response = json_decode($responseJson, true);
+	    foreach($response['data'] as $caPart) {
+
+		$caOrderData = array();
+		
+		$caOrder['brand_name'] = $caPart['brand']['BrandName'];
+		$caOrder['part_number'] = $caPart['PartNumber'];
+		$caOrder['description_english'] = $caPart['DescriptionEnglish'];
+		$caOrder['weight_physical'] = $caPart['part']['WeightPhysical'];
+		$caOrder['weight_volumetric'] = $caPart['part']['WeightVolumetric'];
+		$caOrder['qty'] = $caPart['StockQty'];
+		$caOrder['warehouse'] = 'canada';
+		$caOrder['price'] = $caPart['Price'];
+		$caOrder['unique_hash'] = 'CA_'.md5($caOrder['brand_name'].$caOrder['part_number'].'canada');
+		//$caOrder['unique_hash'] = '1234567qwert';
+		$caOrder['is_bundle'] = $caPart['part']['IsBundle'];
+		$caOrder['modified_by'] = $caPart['stats']['modifier']['email'];
+		$caOrder['description_full'] = $caPart['description_full'];
+		$caOrder['notes'] = serialize($caPart);
+		$caOrder['categories'] = $caPart['stats'] && $caPart['stats']['categories'] ? json_encode($caPart['stats']['categories']) : null;
+		$caOrder['tags'] =       $caPart['stats'] && $caPart['stats']['tags'] ? json_encode($caPart['stats']['tags']) : null;
+		$caOrder['min_price'] =  $caPart['stats'] ? $caPart['stats']['min_price'] : null;
+		$caOrder['max_price'] =  $caPart['stats'] ? $caPart['stats']['max_price'] : null;
+		$caOrder['min_stock'] =  $caPart['stats'] ? $caPart['stats']['stock_min'] : null;
+		
+		$caOrder['location'] = $caPart['Location'];
+		$caOrder['is_stock_ca'] = true;
+
+		Part::updateOrCreate(
+		    ['unique_hash' => $caOrder['unique_hash']],
+			$caOrder)->toSql();
+	    }
+	}
+	return response()->json('Stock CA imported successfully', 200);
     }
 
     public function randoms() {
@@ -65,6 +110,11 @@ class PartsController extends BaseController
         return response()->json($partsList, 200);
     }
 
+    public function getStockCa(Request $request){
+	$stockPart = Part::where('is_stock_ca', true)->paginate(100);
+	return response()->json($stockPart, 200);
+    }
+
     public function store(Request $request) {
         $validator = Validator::make($request->all(), [
             'brand_name' => 'required|string',
@@ -100,18 +150,38 @@ class PartsController extends BaseController
     }
 
     public function destroy(Request $request) {
-        $validator = Validator::make($request->all(), [
-            'brand_name' => 'required|string',
-            'part_number' => 'required|string',
-        ]);
 
-        if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors(), 202);
+	$user = Auth::user();
+
+	$check = Hash::check(base64_decode($request->password), Auth::user()->password);
+
+	if(!$check) {
+	    return response()->json(['error' => 'Wrong password!'], 403);
+	};
+
+	$array = json_decode(base64_decode($request->array));
+
+	if(count($array) == 0) {
+	    return response()->json(['error' => 'nothing selected'], 406);
+	};
+    	
+	foreach($array as $part_destroyed) {
+	    
+            $validator = Validator::make((array) $part_destroyed, [
+                'brand_name' => 'required|string',
+                'part_number' => 'required|string',
+            ]);
+
+            if($validator->fails()){
+                return $this->sendError('Validation Error.', $validator->errors(), 202);
+            }
+
+            Part::where('brand_name', $part_destroyed->brand_name)
+                ->where('part_number', $part_destroyed->part_number)
+                ->delete();
         }
-        Part::where('brand_name', $request->brand_name)
-            ->where('part_number', $request->part_number)
-            ->delete();
-        return $this->sendResponse('Success', 'Part deleted successfully.');
+
+        return $this->sendResponse('Success', 'Parts deleted successfully.');
     }
 
     public function refresh_shopping_cart(Request $request) {
