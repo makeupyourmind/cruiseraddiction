@@ -10,40 +10,40 @@
             <div v-if="fillTable === false">
                 <form @submit.prevent class="display: flex; flex-direction: column">
                     <vue-simple-suggest
-                        v-model="moduleStock.brand"
-                        placeholder="Part Number"
+                        v-model="moduleStock.brand_name"
+                        placeholder="Brand name"
                         :list="simpleSuggestionList"
                         :filter-by-query="true">
                     </vue-simple-suggest>
                     <vs-input
                         name="partNum"
                         label-placeholder="Part Number"
-                        v-model="moduleStock.partNum"
+                        v-model="moduleStock.part_number"
                         class="w-full mb-6" />
                     <vs-input
                         name="description"
                         label-placeholder="Description"
-                        v-model="moduleStock.description"
+                        v-model="moduleStock.description_full"
                         class="w-full mb-6" />
                     <vs-input
                         name="descriptionFull"
                         label-placeholder="Description Full"
-                        v-model="moduleStock.descriptionFull"
+                        v-model="moduleStock.description_english"
                         class="w-full mb-6" />
-                    <ul class="demo-alignment">
-                        <li>
-                            <vs-checkbox v-model="moduleStock.stores" vs-value="ebay">Ebay</vs-checkbox>
-                        </li>
-                        <li>
-                            <vs-checkbox v-model="moduleStock.stores" vs-value="amazon">Amazon</vs-checkbox>
-                        </li>
-                        <li>
-                            <vs-checkbox v-model="moduleStock.stores" vs-value="magento">Magento</vs-checkbox>
-                        </li>
-                        <li>
-                            <vs-checkbox v-model="moduleStock.stores" vs-value="other">Other</vs-checkbox>
-                        </li>
-                    </ul>
+                    <!--<ul class="demo-alignment">-->
+                        <!--<li>-->
+                            <!--<vs-checkbox v-model="moduleStock.stores" vs-value="ebay">Ebay</vs-checkbox>-->
+                        <!--</li>-->
+                        <!--<li>-->
+                            <!--<vs-checkbox v-model="moduleStock.stores" vs-value="amazon">Amazon</vs-checkbox>-->
+                        <!--</li>-->
+                        <!--<li>-->
+                            <!--<vs-checkbox v-model="moduleStock.stores" vs-value="magento">Magento</vs-checkbox>-->
+                        <!--</li>-->
+                        <!--<li>-->
+                            <!--<vs-checkbox v-model="moduleStock.stores" vs-value="other">Other</vs-checkbox>-->
+                        <!--</li>-->
+                    <!--</ul>-->
 
                     <div class="w-full mb-6 mt-6" v-if="showTable === true">
                         <vs-button
@@ -56,35 +56,35 @@
                     <vs-input
                         name="minStock"
                         label-placeholder="Min Stock"
-                        v-model="moduleStock.minStock"
+                        v-model="moduleStock.min_stock"
                         class="w-full mb-6" />
-                    <vs-input
-                        name="current"
-                        v-if="showTable === true"
-                        label-placeholder="Current"
-                        disabled="disabled"
-                        v-model="moduleStock.current"
-                        class="w-full mb-6" />
-                    <vs-input
-                        v-else
-                        name="current"
-                        label-placeholder="Current"
-                        v-model="moduleStock.current"
-                        class="w-full mb-6" />
+                    <!--<vs-input-->
+                        <!--name="current"-->
+                        <!--v-if="showTable === true"-->
+                        <!--label-placeholder="Current"-->
+                        <!--disabled="disabled"-->
+                        <!--v-model="moduleStock.current"-->
+                        <!--class="w-full mb-6" />-->
+                    <!--<vs-input-->
+                        <!--v-else-->
+                        <!--name="current"-->
+                        <!--label-placeholder="Current"-->
+                        <!--v-model="moduleStock.current"-->
+                        <!--class="w-full mb-6" />-->
                     <vs-input
                         name="listPrice"
                         label-placeholder="List Price"
-                        v-model="moduleStock.listPrice"
+                        v-model="moduleStock.price"
                         class="w-full mb-6" />
                     <vs-input
                         name="minPrice"
                         label-placeholder="Min Price"
-                        v-model="moduleStock.minPrice"
+                        v-model="moduleStock.min_price"
                         class="w-full mb-6" />
                     <vs-input
                         name="maxPrice"
                         label-placeholder="Max Price"
-                        v-model="moduleStock.maxPrice"
+                        v-model="moduleStock.max_price"
                         class="w-full mb-6" />
                     <vs-input
                         name="location"
@@ -103,7 +103,7 @@
                             <vs-input
                                 name="chips"
                                 label-placeholder="Find & add tags"
-                                v-model="moduleStock.chip"
+                                v-model="tag"
                                 class="mt-0"
                             />
                             <vs-button style="box-sizing: content-box" color="primary" @click="addChip" type="filled">Add</vs-button>
@@ -111,7 +111,7 @@
                         <vs-chip
                             :key="chip"
                             @click="removeChip(chip)"
-                            v-for="chip in moduleStock.chips"
+                            v-for="chip in moduleStock.tags"
                             color="primary"
                             closable
                             style="margin: 15px 5px">
@@ -129,7 +129,6 @@
                 <form-else :table_store="table_store" @saveChanges="saveChanges"></form-else>
             </div>
         </VuePerfectScrollbar>
-        {{moduleStock}}
     </vs-prompt>
 </template>
 
@@ -155,12 +154,14 @@
                 maxScrollbarLength: 60,
                 wheelSpeed: 0.30,
             },
+            tag: '',
             test: false,
             table_store:[],
             moduleStock: null,
         }),
         created(){
-            this.moduleStock = Object.assign({}, this.$store.getters.STORE_EDIT)
+            this.moduleStock = Object.assign({}, this.$store.getters.STORE_EDIT);
+            this.moduleStock.tags = JSON.parse(this.moduleStock.tags)
         },
         computed:{
             ...mapGetters({
@@ -185,30 +186,52 @@
             },
             saveChanges(val){
                 this.table_store = val;
-                console.log(this.table_store)
-                this.fillTable = false
+                this.fillTable = false;
             },
             clearFields() {
                 this.fillTable = false;
                 this.$store.dispatch("GET_SHOW_BUNDLE_SINGLE", {module:false, showTable:false});
             },
             addChip(){
-                this.moduleStock.chips.push(this.moduleStock.chip);
-                this.chip = ''
+                !this.moduleStock.tags && (this.moduleStock.tags = []);
+                this.moduleStock.tags.push(this.tag);
+                this.tag = '';
+
             },
             removeChip(item) {
-                this.moduleStock.chips.splice(this.moduleStock.chips.indexOf(item), 1)
+                this.moduleStock.tags.splice(this.moduleStock.tags.indexOf(item), 1)
             },
-            create() {
-                this.clearFields();
+            create(){
+                const module =  JSON.parse(JSON.stringify(this.moduleStock))
+                if(this.moduleStock.action == 'update'){
 
-                // return this.$validator.validateAll()
-                //     .then(result => {
-                //         if(result){
-                //             console.log("send")
-                //         }
-                //     })
-            },
+                    module && delete module.brand;
+                    module && delete module.action;
+                    module && delete module.id;
+                    module && delete module.unique_hash;
+
+                    this.$store.dispatch("stockCaModule/UPDATE_DATA_STOCK", module)
+                        .then(() => {
+                            const current = this.$store.getters['stockCaModule/GET_STOCK_DATA'];
+                            return this.$store.dispatch(
+                                'stockCaModule/GET_DATA_STOCK_FROM_SERVER',
+                                current ? current.current_page : 1
+                            )
+                        })
+                        .then(() => this.$store.dispatch("GET_SHOW_BUNDLE_SINGLE", {module:false, showTable:false}));
+                } else {
+                    module && (module.tags = JSON.stringify(module.tags));
+                    this.$store.dispatch("stockCaModule/CREATE_DATA_STOCK", module)
+                        .then(() => {
+                            const current = this.$store.getters['stockCaModule/GET_STOCK_DATA'];
+                            return this.$store.dispatch(
+                                'stockCaModule/GET_DATA_STOCK_FROM_SERVER',
+                                current ? current.current_page : 1
+                            )
+                        })
+                        .then(() => this.$store.dispatch("GET_SHOW_BUNDLE_SINGLE", {module:false, showTable:false}));
+                }
+            }
         }
     }
 </script>

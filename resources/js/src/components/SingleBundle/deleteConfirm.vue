@@ -46,20 +46,23 @@
                 },
                 get() {
                     return this.$store.getters.SHOWDELETE
-
                 }
             }
         },
         methods:{
-            deleteThis(){
-                this.$store.dispatch("GET_DELETE_MODULE", false)
+            async deleteThis(){
 
-                // this.$validator.validateAll().then(result => {
-                //     console.log(result)
-                // })
+                await this.$store.dispatch("stockCaModule/DELETE_DATA_STOCK", {
+                    array: this.$store.getters["stockCaModule/GET_STOCK_DATA_DELETE"],
+                    password: this.password
+                });
+
+                await this.$store.dispatch("stockCaModule/GET_DATA_STOCK_FROM_SERVER");
+
+                this.$store.dispatch("GET_DELETE_MODULE", false)
             },
             clearDelete(){
-                this.$store.dispatch("GET_DELETE_MODULE", false)
+                this.$store.dispatch("GET_DELETE_MODULE", false);
                 this.password = "";
                 this.confirm_password = ""
             },

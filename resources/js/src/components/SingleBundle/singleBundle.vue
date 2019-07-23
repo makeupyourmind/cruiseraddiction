@@ -48,15 +48,37 @@
               return this.$store.getters.SHOWBUNDLESINGLE
           }
         },
+        props: [
+            'select'
+        ],
         methods:{
             createBundle(){
                 this.$store.dispatch("GET_SHOW_BUNDLE_SINGLE", {module: true, showTable: true});
             },
             createSingle(){
+                const data = {
+                    is_stock_ca: 1,
+                    warehouse: "canada",
+                    action: 'create'
+                };
+                [
+                    'brand_name',
+                    'categories',
+                    'description_english',
+                    'description_full',
+                    'tags',
+                    'price',
+                    'weight_physical',
+                    'weight_volumetric'
+                ].forEach(item => data[item] = '');
+                ['color', 'image', 'part_fits' ].forEach(item => data[item] = null);
+                ['is_bundle','qty','subst_for' ].forEach(item => data[item] = 0);
+                this.$store.dispatch("GET_EDIT_STORE", data);
                 this.$store.dispatch("GET_SHOW_BUNDLE_SINGLE",  {module: true, showTable: false});
             },
             deleteItem(){
                 this.$store.dispatch("GET_DELETE_MODULE", true);
+                this.$store.commit("stockCaModule/SET_VARIABLE", {name:'deletedData', value: this.select()});
             }
         }
     }

@@ -12,40 +12,38 @@ import Vue from 'vue'
 import App from './App.vue'
 import VueResource from 'vue-resource';
 Vue.use(VueResource);
-
-Vue.http.options.root = 'http://192.168.88.166:8000/';
+window.http = Vue.http;
+Vue.http.options.root = 'http://cruiser-webstore-back.qbex.io/';
 // Vuesax Component Framework
 import Vuesax from 'vuesax'
 
-Vue.use(Vuesax)
-
+Vue.use(Vuesax);
+import 'ag-grid-enterprise';
 // Theme Configurations
 import '../themeConfig.js'
 
 // Globally Registered Components
-import './globalComponents.js'
+import './globalComponents.js';
 
 // Vue Router
-import router from './router'
+import router from './router';
 
 // Vuex Store
-import store from './store/store'
+import store from './store/store';
 
 // Vuesax Admin Filters
-import './filters/filters'
+import './filters/filters';
 
 
 // Vuejs - Vue wrapper for hammerjs
-import { VueHammer } from 'vue2-hammer'
-Vue.use(VueHammer)
+import { VueHammer } from 'vue2-hammer';
+Vue.use(VueHammer);
 
 // form Validation
 import VeeValidate from 'vee-validate';
 Vue.use(VeeValidate);
 
 //Axios
-import axios from "axios";
-window.axios = axios;
 
 import {request, response} from './api/interceptors';
 Vue.http.interceptors.push(request);
@@ -55,10 +53,10 @@ Vue.http.interceptors.push(response);
 import 'prismjs'
 // import 'prismjs/themes/prism-tomorrow.css'
 
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
 
 new Vue({
     router,
     store,
     render: h => h(App)
-}).$mount('#app')
+}).$mount('#app');
