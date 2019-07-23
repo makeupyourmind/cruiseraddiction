@@ -111,7 +111,13 @@ class PartsController extends BaseController
     }
 
     public function getStockCa(Request $request){
-	$stockPart = Part::where('is_stock_ca', true)->paginate(100);
+	!$request->order_name ?? $request->order_name = 'brand_name';
+	!$request->oder_by ?? $request->order_by = 'asc';
+	$stockPart = Part::where('is_stock_ca', true)
+		    ->where('part_number', 'LIKE', '%' . $request->part_number . '%')
+		    ->where('brand_name', 'LIKE', '%' . $request->brand_name . '%')
+		    ->orderBy($request->order_name, $request->order_by)
+		    ->paginate(100);
 	return response()->json($stockPart, 200);
     }
 
