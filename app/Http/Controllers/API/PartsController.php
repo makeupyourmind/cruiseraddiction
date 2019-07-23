@@ -3,11 +3,12 @@
 namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\API\BaseController as BaseController;
 use Validator;
 use App\Model\Part;
 use GuzzleHttp\Client;
-
+use Illuminate\Support\Facades\Hash;
 
 class PartsController extends BaseController
 {
@@ -149,8 +150,24 @@ class PartsController extends BaseController
     }
 
     public function destroy(Request $request) {
-        foreach($request->array as $part_destroyed) {
-            $validator = Validator::make($part_destroyed, [
+
+	$user = Auth::user();
+
+	$check = Hash::check(base64_decode($request->password), Auth::user()->password);
+
+	if(!$check) {
+	    return response()->json(['error' => 'Wrong password!'], 403);
+	};
+
+	$array = json_decode(base64_decode($request->array));
+
+	if(count($array) == 0) {
+	    return response()->json(['error' => 'nothing selected'], 406);
+	};
+    	
+	foreach($array as $part_destroyed) {
+	    
+            $validator = Validator::make((array) $part_destroyed, [
                 'brand_name' => 'required|string',
                 'part_number' => 'required|string',
             ]);
@@ -158,10 +175,12 @@ class PartsController extends BaseController
             if($validator->fails()){
                 return $this->sendError('Validation Error.', $validator->errors(), 202);
             }
-            Part::where('brand_name', $request->brand_name)
-                ->where('part_number', $request->part_number)
+
+            Part::where('brand_name', $part_destroyed->brand_name)
+                ->where('part_number', $part_destroyed->part_number)
                 ->delete();
         }
+
         return $this->sendResponse('Success', 'Parts deleted successfully.');
     }
 
