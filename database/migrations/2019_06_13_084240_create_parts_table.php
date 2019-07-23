@@ -31,6 +31,7 @@ class CreatePartsTable extends Migration
             $table->integer('is_bundle')->default('0');
             $table->integer('subst_for')->default('0');
             $table->string('modified_by')->nullable();
+	    $table->text('notes')->nullable();
             $table->timestamps();
         });
     }

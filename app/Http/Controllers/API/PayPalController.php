@@ -27,6 +27,9 @@ use PayPal\Api\PaymentExecution;
 use PayPal\Api\Transaction;
 use App\Model\Customer;
 use App\Model\Price;
+use App\Model\Part;
+use App\Model\Order;
+
 
 class PayPalController extends Controller
 {
@@ -65,6 +68,11 @@ class PayPalController extends Controller
      */
     public function postPaymentWithpaypal(Request $request)
     {
+        $amount = $this->price;
+        $result = Input::get('result');
+	//dd($result);
+	Session::put('result', $result);
+        Session::put('amount', $amount);
         $payer = new Payer();
         $payer->setPaymentMethod('paypal');
         $item_1 = new Item();
@@ -87,7 +95,7 @@ class PayPalController extends Controller
             ->setDescription('Your transaction description');
         $redirect_urls = new RedirectUrls();
 //        $redirect_urls->setReturnUrl(URL::route('payment.status')) /** Specify return URL **/
-          $redirect_urls->setReturnUrl('http://localhost:8000/paypal/success') /** Specify return URL **/
+          $redirect_urls->setReturnUrl('http://cruiser-webstore-back.qbex.io/paypal/success') /** Specify return URL **/
 
                 ->setCancelUrl(URL::route('payment.status'));
         $payment = new Payment();
@@ -147,17 +155,43 @@ class PayPalController extends Controller
         $execution->setPayerId(Input::get('PayerID'));
         /**Execute the payment **/
         $result = $payment->execute($execution, $this->_api_context);
-
         /** dd($result);exit; /** DEBUG RESULT, remove it later **/
         if ($result->getState() == 'approved') {
 
             /** it's all right **/
             /** Here Write your database logic like that insert record or value in database if you want **/
             \Session::put('success','Payment success');
-            //return Redirect::route('addmoney.paywithpaypal');
-            //return redirect('http://backcartestpro.qbex.io/final');
+            $resultData = Session::get('result');
+            Session::forget('result');
 
-            //return redirect()->route('send-pdf', array('customer_id' => $customer->id, 'result_token' => $secretLink, 'customer_email' => $customerData['email']));
+            $amount = Session::get('amount');
+            Session::forget('amount');
+
+            $orderData = json_decode(base64_decode($resultData), true);
+
+            $customersOrder = array();
+            $customersOrder['user'] = $orderData['user'];
+            $customersOrder['amount'] = $amount;
+	    $dataElem = 0;
+            foreach($orderData['data'] as $partHash) {
+                $partCollection = Part::where('unique_hash', $partHash['unique_hash'])->get(['brand_name', 'part_number', 'warehouse', 'unique_hash', 'price', 'description_english']);
+		$part = $partCollection->firstWhere('unique_hash', $partHash['unique_hash']);
+                Part::where('unique_hash', $partHash['unique_hash'])->decrement('qty', $partHash['count']);
+                $customersOrder['data'][$dataElem]['count'] = $partHash['count'];
+                $customersOrder['data'][$dataElem]['brand_name'] = $part->brand_name;
+                $customersOrder['data'][$dataElem]['part_number'] = $part->part_number;
+                $customersOrder['data'][$dataElem]['warehouse'] = $part->warehouse;
+                $customersOrder['data'][$dataElem]['price'] = $part->price;
+                $customersOrder['data'][$dataElem]['description_english'] = $part->description_english;
+                $customersOrder['data'][$dataElem]['unique_hash'] = $part->unique_hash;
+		$dataElem++;
+
+            }
+            $serializedOrder = serialize($customersOrder);
+
+            $newOrder = New Order;
+            $newOrder->order = $serializedOrder;
+            $newOrder->save();
             return response()->json('Payment success', 200);
         }
         \Session::put('error','Payment failed');
