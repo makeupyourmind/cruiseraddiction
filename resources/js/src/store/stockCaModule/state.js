@@ -2,7 +2,11 @@ const state = {
     data: {
 
     },
-    deletedData:[]
+    deletedData:[],
+    order: {
+        name:'brand_name',
+        by: 'desc',
+    }
 };
 
 export default state
