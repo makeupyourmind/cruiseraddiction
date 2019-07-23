@@ -49,6 +49,9 @@
                     @cellClicked="test($event)"
                     :context="context"
                     :paginationPageSize="paginationPageSize"
+                    :masterDetail="true"
+                    :master="true"
+                    :detailCellRendererParams="detailCellRendererParams"
                     :frameworkComponents="frameworkComponents"
                     :suppressPaginationPanel="true">
             </ag-grid-vue>
@@ -63,10 +66,10 @@
 
 <script>
     import { AgGridVue } from "ag-grid-vue"
-    import contacts from './data.json'
     import singlebundle from '../components/SingleBundle/singleBundle'
-    import test from '../components/SingleBundle/cellRenderer'
     import Vue from 'vue'
+    import {Orders} from "../api/orders";
+    // import "ag-grid-enterprise";
     let SquareComponent = Vue.extend({
         template: '<vs-chip color="primary" >{{params.valueFormatted}}</vs-chip>',
     });
@@ -79,6 +82,7 @@
             return {
                 searchQuery: '',
                 gridOptions: {},
+                detailCellRendererParams: {},
                 maxPageNumbers: 7,
                 gridApi: null,
                 defaultColDef: {
@@ -89,97 +93,105 @@
                 },
                 frameworkComponents:null,
                 columnDefs: null,
-                contacts: contacts,
+                contacts: [],
                 context: null
             }
         },
         beforeMount(){
             this.columnDefs = [
                 {
-                    width: 75,
-                    checkboxSelection: true,
-                    headerCheckboxSelectionFilteredOnly: true,
-                    headerCheckboxSelection: true,
+                    headerName: 'amount',
+                    cellRenderer: "agGroupCellRenderer"
                 },
                 {
-                    headerName: 'Brand',
-                    field: 'brand',
+                    headerName: 'amount',
+                    field: 'amount',
                     filter: true,
                     width: 175,
                 },
                 {
-                    headerName: 'PartNumber',
-                    field: 'partNum',
+                    headerName: 'city',
+                    field: 'user.city',
                     filter: true,
                     width: 175,
                 },
                 {
-                    headerName: 'Description',
-                    field: 'description',
+                    headerName: 'country',
+                    field: 'user.country',
                     filter: true,
                     width: 250,
                 },
                 {
-                    headerName: 'Stores',
-                    field: 'stores',
+                    headerName: 'email',
+                    field: 'user.email',
                     filter: true,
                     width: 250,
                 },
                 {
-                    headerName: 'Qty',
-                    field: 'qty',
+                    headerName: 'first_name',
+                    field: 'user.first_name',
                     filter: true,
                     width: 75,
                 },
                 {
-                    headerName: 'Min Stock',
-                    field: 'minStock',
+                    headerName: 'last_name',
+                    field: 'user.last_name',
                     filter: true,
                     width: 150,
                 },
                 {
-                    headerName: 'List price',
-                    field: 'listPrice',
+                    headerName: 'phone',
+                    field: 'user.phone',
                     filter: true,
                     width: 100,
                 },
                 {
-                    headerName: 'Min price',
-                    field: 'minPrice',
-                    filter: true,
-                    width: 100,
-                },
-                {
-                    headerName: 'Max price',
-                    field: 'maxPrice',
+                    headerName: 'postal_code',
+                    field: 'user.postal_code',
                     filter: true,
                     width: 125,
                 },
                 {
-                    headerName: 'Last Modified',
-                    field: 'last modified',
+                    headerName: 'state',
+                    field: 'user.state',
                     filter: true,
                     width: 250,
                 },
                 {
-                    headerName: 'Location',
-                    field: 'location',
+                    headerName: 'same_address',
+                    field: 'user.same_address',
                     filter: true,
                     width: 125,
                 },
                 {
-                    headerName: 'Categories',
-                    field: 'categories',
+                    headerName: 'street_address',
+                    field: 'user.street_address',
                     filter: true,
                     width: 125,
                 },
                 {
-                    headerName: 'Tags',
-                    field: 'chips',
-                    cellRenderer: "test",
+                    headerName: 'street_address_two',
+                    field: 'user.street_address_two',
                     width: 125,
                 },
             ];
+            this.detailCellRendererParams = {
+                detailGridOptions: {
+                    columnDefs: [
+                        {field: "brand_name"},
+                        {field: "count"},
+                        {field: "part_number"},
+                        {field: "warehouse"}
+                    ],
+                    onFirstDataRendered(params) {
+                        params.api.sizeColumnsToFit();
+                    }
+                },
+                getDetailRowData: params => {
+                    params.successCallback(params.data.data);
+                }
+            };
+
             this.context = { componentParent: this };
             this.frameworkComponents= {
                 test: SquareComponent
@@ -229,7 +241,13 @@
             }
         },
         mounted() {
+            Orders.getOrders()
+                .then(res => {
+                    this.contacts = res.body.map(item => item.order)
+                    console.log(this.contacts)
+                });
             this.gridApi = this.gridOptions.api;
+            this.gridColumnApi = this.gridOptions.columnApi;
         }
     }
 

@@ -6,81 +6,145 @@
             <div class="flex flex-wrap justify-between items-center">
 
                 <!-- ITEMS PER PAGE -->
-                <div class="mb-4 md:mb-0 mr-4 ag-grid-table-actions-left" style ="display: flex; align-items: center;">
+                <div class="mb-4 md:mb-0 mr-4 ag-grid-table-actions-left" style="display: flex; align-items: center;">
                     <vs-dropdown vs-trigger-click class="cursor-pointer">
                         <!--<div class="p-4 border border-solid d-theme-border-grey-light rounded-full d-theme-dark-bg cursor-pointer flex items-center justify-between font-medium">-->
-                            <!--<span class="mr-2">{{ currentPage * paginationPageSize - (paginationPageSize - 1) }} - {{ contacts.length - currentPage * paginationPageSize > 0 ? currentPage * paginationPageSize : contacts.length }} of {{ contacts.length }}</span>-->
-                            <!--<feather-icon icon="ChevronDownIcon" svgClasses="h-4 w-4" />-->
+                        <!--<span class="mr-2">{{ currentPage * paginationPageSize - (paginationPageSize - 1) }} - {{ contacts.length - currentPage * paginationPageSize > 0 ? currentPage * paginationPageSize : contacts.length }} of {{ contacts.length }}</span>-->
+                        <!--<feather-icon icon="ChevronDownIcon" svgClasses="h-4 w-4" />-->
                         <!--</div>-->
                         <!--<vs-dropdown-menu>-->
-                            <!--<vs-dropdown-item @click="gridApi.paginationSetPageSize(20)">-->
-                                <!--<span>20</span>-->
-                            <!--</vs-dropdown-item>-->
-                            <!--<vs-dropdown-item @click="gridApi.paginationSetPageSize(50)">-->
-                                <!--<span>50</span>-->
-                            <!--</vs-dropdown-item>-->
-                            <!--<vs-dropdown-item @click="gridApi.paginationSetPageSize(100)">-->
-                                <!--<span>100</span>-->
-                            <!--</vs-dropdown-item>-->
-                            <!--<vs-dropdown-item @click="gridApi.paginationSetPageSize(150)">-->
-                                <!--<span>150</span>-->
-                            <!--</vs-dropdown-item>-->
+                        <!--<vs-dropdown-item @click="gridApi.paginationSetPageSize(20)">-->
+                        <!--<span>20</span>-->
+                        <!--</vs-dropdown-item>-->
+                        <!--<vs-dropdown-item @click="gridApi.paginationSetPageSize(50)">-->
+                        <!--<span>50</span>-->
+                        <!--</vs-dropdown-item>-->
+                        <!--<vs-dropdown-item @click="gridApi.paginationSetPageSize(100)">-->
+                        <!--<span>100</span>-->
+                        <!--</vs-dropdown-item>-->
+                        <!--<vs-dropdown-item @click="gridApi.paginationSetPageSize(150)">-->
+                        <!--<span>150</span>-->
+                        <!--</vs-dropdown-item>-->
                         <!--</vs-dropdown-menu>-->
                     </vs-dropdown>
                     <singlebundle :select="select"></singlebundle>
                 </div>
-                    <!-- TABLE ACTION COL-2: SEARCH & EXPORT AS CSV -->
+                <!-- TABLE ACTION COL-2: SEARCH & EXPORT AS CSV -->
                 <div class="flex flex-wrap items-center justify-between ag-grid-table-actions-right">
-                    <vs-input class="mb-4 md:mb-0 mr-4" v-model="searchQuery" @input="updateSearchQuery" placeholder="Search..." />
-<!--                    <vs-button class="mb-4 md:mb-0" @click="gridApi.exportDataAsCsv()">Export as CSV</vs-button>-->
+                    <vs-input class="mb-4 md:mb-0 mr-4" v-model="searchBrand" @change="updateSearchQuery"
+                              placeholder="Search brand"/>
+                    <vs-input class="mb-4 md:mb-0 mr-4" v-model="searchNumber" @change="updateSearchQuery"
+                              placeholder="Search part number"/>
+                    <!--                    <vs-button class="mb-4 md:mb-0" @click="gridApi.exportDataAsCsv()">Export as CSV</vs-button>-->
                 </div>
             </div>
             <ag-grid-vue
-                :gridOptions="gridOptions"
-                class="ag-theme-material w-100 my-4 ag-grid-table"
-                style="text-align: center!important; padding:0!important"
-                :columnDefs="columnDefs"
-                :defaultColDef="defaultColDef"
-                :rowData="getData"
-                rowSelection="multiple"
-                colResizeDefault="shift"
-                :animateRows="true"
-                :floatingFilter="true"
-                :pagination="true"
-                @cellClicked="test($event)"
-                :context="context"
-
-                :frameworkComponents="frameworkComponents"
-                :suppressPaginationPanel="true">
+                    ref="test"
+                    :gridOptions="gridOptions"
+                    class="ag-theme-material w-100 my-4 ag-grid-table"
+                    style="text-align: center!important; padding:0!important"
+                    :columnDefs="columnDefs"
+                    :defaultColDef="defaultColDef"
+                    :rowData="getData"
+                    rowSelection="multiple"
+                    colResizeDefault="shift"
+                    :animateRows="true"
+                    :floatingFilter="true"
+                    :pagination="true"
+                    @cellClicked="test($event)"
+                    :context="context"
+                    :suppressMenuHide="true"
+                    :frameworkComponents="frameworkComponents"
+                    :suppressPaginationPanel="true">
                 <!-- :paginationPageSize="paginationPageSize"-->
             </ag-grid-vue>
-                <vs-pagination
+            <vs-pagination
                     :total="totalPages"
                     :max="7"
                     v-model="currentPage"
-                />
+            />
         </vx-card>
     </div>
 </template>
 
 <script>
-    import { AgGridVue } from "ag-grid-vue"
+    import {AgGridVue} from "ag-grid-vue"
     import contacts from './data.json'
     import singlebundle from '../components/SingleBundle/singleBundle'
     import test from '../components/SingleBundle/cellRenderer'
     import Vue from 'vue'
     import {StockManagment} from "../api/stockManagment";
+
     let SquareComponent = Vue.extend({
         template: '<vs-chip color="primary" >{{params.valueFormatted}}</vs-chip>',
     });
+    let CustomHeader = Vue.extend({
+        template: `
+        <div @click="onSortChanged(1, $event)">
+            <div class="customHeaderLabel" >{{params.displayName}}</div>
+            {{params.column.colId == order.name}}
+            <div v-if="params.column.colId == order.name && order.by === 'asc'"  :class="ascSort" class="customSortDownLabel"><span ref="eSortAsc" class="ag-header-icon ag-sort-ascending-icon" aria-hidden="true"><span class="ag-icon ag-icon-asc" unselectable="on"></span></span></i></div>
+            <div v-if="params.column.colId == order.name && order.by === 'desc'" :class="descSort" class="customSortUpLabel"><span ref="eSortDesc" class="ag-header-icon ag-sort-descending-icon" aria-hidden="true"><span class="ag-icon ag-icon-desc" unselectable="on"></span></span></div>
+        </div>
+    `,
+        data: function () {
+            return {
+                ascSort: null,
+                descSort: null,
+                noSort: null
+            };
+        },
+        computed:{
+            order(){
+                return this.$store.getters['stockCaModule/GET_DATA_STOCK_ORDER']
+            },
+        },
+        mounted() {
+
+        },
+        methods: {
+            onSortChanged() {
+                let newOrder;
+                if(this.params.column.colId == this.order.name){
+                    switch (this.order.by) {
+                        case 'asc': newOrder = 'desc';
+                            break;
+                        case 'desc':  newOrder = '';
+                            break;
+                        case '': newOrder = 'asc';
+                    }
+                } else{
+                    newOrder = 'desc'
+                }
+
+                this.$store.commit('stockCaModule/SET_VARIABLE', {
+                    name:'order',
+                    value: {
+                        by:newOrder,
+                        name: this.params.column.colId
+                    }
+                });
+                this.$parent.$parent.$parent.getDataStockCa()
+                // this.$emit('sortChanged')
+            },
+
+            onSortRequested(order, event) {
+                // debugger
+                // this.params.setSort(order, event.shiftKey);
+            }
+        }
+    });
     export default {
+
         components: {
             AgGridVue,
             singlebundle,
         },
+
         data() {
             return {
-                searchQuery: '',
+                searchBrand: '',
+                searchNumber: '',
                 gridOptions: {},
                 maxPageNumbers: 7,
                 gridApi: null,
@@ -90,160 +154,194 @@
                     resizable: true,
                     suppressMenu: true
                 },
-                frameworkComponents:null,
+                frameworkComponents: null,
                 columnDefs: null,
                 contacts: contacts,
-                context: null
+                context: null,
+                timeout:null
             }
         },
-        created(){
-            // this.$store.dispatch('stockCaModule/GET_DATA_STOCK_FROM_SERVER', 1)
-        },
-        beforeMount(){
+
+        beforeMount() {
+
             this.columnDefs = [
                 {
                     width: 75,
                     checkboxSelection: true,
                     headerCheckboxSelectionFilteredOnly: true,
                     headerCheckboxSelection: true,
+                    suppressMenu: true
                 },
                 {
                     headerName: 'Brand',
                     field: 'brand_name',
                     filter: true,
+                    suppressMenu: true
                     // width: 175,
                 },
                 {
                     headerName: 'PartNumber',
                     field: 'part_number',
                     filter: true,
+                    suppressMenu: true
                     // width: 175,
                 },
                 {
                     headerName: 'Description',
                     field: 'description_english',
                     filter: true,
+                    suppressMenu: true
                     // width: 250,
                 },
-                // {
-                //     headerName: 'Stores',
-                //     field: 'stores',
-                //     filter: true,
-                //     width: 250,
-                // },
                 {
                     headerName: 'Qty',
                     field: 'qty',
                     filter: true,
+                    suppressMenu: true
                     // width: 75,
                 },
                 {
                     headerName: 'Min Stock',
                     field: 'min_stock',
                     filter: true,
+                    suppressMenu: true
                     // width: 150,
                 },
                 {
                     headerName: 'List price',
                     field: 'price',
                     filter: true,
+                    suppressMenu: true
                     // width: 100,
                 },
                 {
                     headerName: 'Min price',
                     field: 'min_price',
                     filter: true,
+                    suppressMenu: true
                     // width: 100,
                 },
                 {
                     headerName: 'Max price',
                     field: 'max_price',
                     filter: true,
+                    suppressMenu: true
                     // width: 125,
                 },
                 {
                     headerName: 'Last Modified',
                     field: 'updated_at',
                     filter: true,
+                    suppressMenu: true
                     // width: 250,
                 },
                 {
                     headerName: 'Location',
                     field: 'location',
                     filter: true,
+                    suppressMenu: true,
                     width: 125,
                 },
                 {
                     headerName: 'Categories',
                     field: 'categories',
                     filter: true,
+                    suppressMenu: true,
                     width: 125,
                 },
                 {
                     headerName: 'Tags',
                     field: 'tags',
                     cellRenderer: "test",
+                    suppressMenu: true,
                     width: 125,
                 },
             ];
-            this.context = { componentParent: this };
-            this.frameworkComponents= {
-                test: SquareComponent
+
+            this.context = {componentParent: this};
+
+            this.frameworkComponents = {
+                test: SquareComponent,
+                agColumnHeader: CustomHeader
             }
+
         },
         computed: {
-            getDataStock(){
+
+            getDataStock() {
                 return this.$store.getters['stockCaModule/GET_STOCK_DATA'];
             },
-            getData(){
+
+            getData() {
                 const store = this.getDataStock;
                 return store ? store.data : []
             },
+
             totalPages() {
-                // if(this.gridApi) return this.gridApi.paginationGetTotalPages();
                 const store = this.getDataStock;
                 return store ? store.last_page : 1
             },
+
+            order(){
+                return this.$store.getters['stockCaModule/GET_DATA_STOCK_ORDER']
+            },
+
             currentPage: {
                 get() {
                     const store = this.getDataStock;
                     return store ? store.current_page : 1
                 },
                 set(val) {
-                    // debugger
-                    this.$store.dispatch('stockCaModule/GET_DATA_STOCK_FROM_SERVER', val)
+                    this.getDataStockCa(val)
                 }
             },
         },
         methods: {
-            updateSearchQuery(val) {
-                this.gridApi.setQuickFilter(val);
+
+            updateSearchQuery() {
+                clearTimeout(this.timeout);
+                this.timeout = setTimeout( () => {
+                    this.getDataStockCa();
+                    clearTimeout(this.timeout)
+                }, 300 )
             },
-            test(e){
-                // console.log(e);
-                // debugger;
-                if(e.colDef.headerName === 'PartNumber'){
-                    if(e.data.showTable){
-                        this.$store.dispatch("GET_SHOW_BUNDLE_SINGLE", {module: true, showTable:true});
-                    }else{
-                        this.$store.dispatch("GET_SHOW_BUNDLE_SINGLE", {module: true, showTable:false});
+
+            getDataStockCa(val = null){
+                this.$store.dispatch('stockCaModule/GET_DATA_STOCK_FROM_SERVER', {
+                    page: !val ? this.currentPage : val,
+                    searchBrand: this.searchBrand,
+                    searchNumber: this.searchNumber,
+                    orderName: this.order.name,
+                    orderBy: this.order.by
+                })
+            },
+
+
+            test(e) {
+                if (e.colDef.headerName === 'PartNumber') {
+                    if (e.data.showTable) {
+                        this.$store.dispatch("GET_SHOW_BUNDLE_SINGLE", {module: true, showTable: true});
+                    } else {
+                        this.$store.dispatch("GET_SHOW_BUNDLE_SINGLE", {module: true, showTable: false});
                     }
                     e.data.action = 'update';
                     this.$store.dispatch("GET_EDIT_STORE", e.data)
                 }
             },
-            select(){
+
+            select() {
 
                 let selectedNodes = this.gridApi ? this.gridApi.getSelectedNodes() : [];
 
                 selectedNodes = selectedNodes.map(item => {
                     return {
                         brand_name: item.data.brand_name,
-                        part_number:item.data.part_number
+                        part_number: item.data.part_number
                     }
                 });
-                console.log(selectedNodes)
+
                 return [...selectedNodes];
+
             }
         },
         mounted() {
@@ -253,19 +351,51 @@
 
 </script>
 <style>
-    .ag-header-cell-label{
-        justify-content: center!important;
+    .ag-header-cell-label {
+        justify-content: center !important;
     }
-    .ag-header-cell{
-        padding: 0!important;
+
+    .ag-header-cell {
+        padding: 0 !important;
     }
-    .ag-header-cell:first-child{
-        padding: 0 24px!important;
+
+    .ag-header-cell:first-child {
+        padding: 0 24px !important;
     }
-    .ag-theme-material .ag-cell{
-        line-height: 0!important;
+
+    .ag-theme-material .ag-cell {
+        line-height: 0 !important;
         display: flex;
         align-items: center;
         justify-content: center;
+    }.customHeaderMenuButton {
+         float: left;
+         margin: 0 0 0 3px;
+     }
+
+    .customHeaderLabel {
+        float: left;
+        margin: 0 0 0 3px;
     }
+
+    .customSortDownLabel {
+        float: left;
+        margin: 0 0 0 3px;
+    }
+
+    .customSortUpLabel {
+        float: left;
+        margin: 0;
+    }
+
+    .customSortRemoveLabel {
+        float: left;
+        margin: 0 0 0 3px;
+        font-size: 11px;
+    }
+
+    .active {
+        color: cornflowerblue;
+    }
+
 </style>

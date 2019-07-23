@@ -11,12 +11,13 @@
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var ag_grid_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ag-grid-vue */ "./node_modules/ag-grid-vue/main.js");
 /* harmony import */ var ag_grid_vue__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(ag_grid_vue__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _data_json__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./data.json */ "./resources/js/src/views/data.json");
-var _data_json__WEBPACK_IMPORTED_MODULE_1___namespace = /*#__PURE__*/__webpack_require__.t(/*! ./data.json */ "./resources/js/src/views/data.json", 1);
-/* harmony import */ var _components_SingleBundle_singleBundle__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../components/SingleBundle/singleBundle */ "./resources/js/src/components/SingleBundle/singleBundle.vue");
-/* harmony import */ var _components_SingleBundle_cellRenderer__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/SingleBundle/cellRenderer */ "./resources/js/src/components/SingleBundle/cellRenderer.vue");
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _components_SingleBundle_singleBundle__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../components/SingleBundle/singleBundle */ "./resources/js/src/components/SingleBundle/singleBundle.vue");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _api_orders__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../api/orders */ "./resources/js/src/api/orders.js");
+//
+//
+//
 //
 //
 //
@@ -83,20 +84,21 @@ var _data_json__WEBPACK_IMPORTED_MODULE_1___namespace = /*#__PURE__*/__webpack_r
 
 
 
+ // import "ag-grid-enterprise";
 
-
-var SquareComponent = vue__WEBPACK_IMPORTED_MODULE_4___default.a.extend({
+var SquareComponent = vue__WEBPACK_IMPORTED_MODULE_2___default.a.extend({
   template: '<vs-chip color="primary" >{{params.valueFormatted}}</vs-chip>'
 });
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
     AgGridVue: ag_grid_vue__WEBPACK_IMPORTED_MODULE_0__["AgGridVue"],
-    singlebundle: _components_SingleBundle_singleBundle__WEBPACK_IMPORTED_MODULE_2__["default"]
+    singlebundle: _components_SingleBundle_singleBundle__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
   data: function data() {
     return {
       searchQuery: '',
       gridOptions: {},
+      detailCellRendererParams: {},
       maxPageNumbers: 7,
       gridApi: null,
       defaultColDef: {
@@ -107,82 +109,93 @@ var SquareComponent = vue__WEBPACK_IMPORTED_MODULE_4___default.a.extend({
       },
       frameworkComponents: null,
       columnDefs: null,
-      contacts: _data_json__WEBPACK_IMPORTED_MODULE_1__,
+      contacts: [],
       context: null
     };
   },
   beforeMount: function beforeMount() {
     this.columnDefs = [{
-      width: 75,
-      checkboxSelection: true,
-      headerCheckboxSelectionFilteredOnly: true,
-      headerCheckboxSelection: true
+      headerName: 'amount',
+      cellRenderer: "agGroupCellRenderer"
     }, {
-      headerName: 'Brand',
-      field: 'brand',
+      headerName: 'amount',
+      field: 'amount',
       filter: true,
       width: 175
     }, {
-      headerName: 'PartNumber',
-      field: 'partNum',
+      headerName: 'city',
+      field: 'user.city',
       filter: true,
       width: 175
     }, {
-      headerName: 'Description',
-      field: 'description',
+      headerName: 'country',
+      field: 'user.country',
       filter: true,
       width: 250
     }, {
-      headerName: 'Stores',
-      field: 'stores',
+      headerName: 'email',
+      field: 'user.email',
       filter: true,
       width: 250
     }, {
-      headerName: 'Qty',
-      field: 'qty',
+      headerName: 'first_name',
+      field: 'user.first_name',
       filter: true,
       width: 75
     }, {
-      headerName: 'Min Stock',
-      field: 'minStock',
+      headerName: 'last_name',
+      field: 'user.last_name',
       filter: true,
       width: 150
     }, {
-      headerName: 'List price',
-      field: 'listPrice',
+      headerName: 'phone',
+      field: 'user.phone',
       filter: true,
       width: 100
     }, {
-      headerName: 'Min price',
-      field: 'minPrice',
-      filter: true,
-      width: 100
-    }, {
-      headerName: 'Max price',
-      field: 'maxPrice',
+      headerName: 'postal_code',
+      field: 'user.postal_code',
       filter: true,
       width: 125
     }, {
-      headerName: 'Last Modified',
-      field: 'last modified',
+      headerName: 'state',
+      field: 'user.state',
       filter: true,
       width: 250
     }, {
-      headerName: 'Location',
-      field: 'location',
+      headerName: 'same_address',
+      field: 'user.same_address',
       filter: true,
       width: 125
     }, {
-      headerName: 'Categories',
-      field: 'categories',
+      headerName: 'street_address',
+      field: 'user.street_address',
       filter: true,
       width: 125
     }, {
-      headerName: 'Tags',
-      field: 'chips',
-      cellRenderer: "test",
+      headerName: 'street_address_two',
+      field: 'user.street_address_two',
       width: 125
     }];
+    this.detailCellRendererParams = {
+      detailGridOptions: {
+        columnDefs: [{
+          field: "brand_name"
+        }, {
+          field: "count"
+        }, {
+          field: "part_number"
+        }, {
+          field: "warehouse"
+        }],
+        onFirstDataRendered: function onFirstDataRendered(params) {
+          params.api.sizeColumnsToFit();
+        }
+      },
+      getDetailRowData: function getDetailRowData(params) {
+        params.successCallback(params.data.data);
+      }
+    };
     this.context = {
       componentParent: this
     };
@@ -237,7 +250,16 @@ var SquareComponent = vue__WEBPACK_IMPORTED_MODULE_4___default.a.extend({
     }
   },
   mounted: function mounted() {
+    var _this = this;
+
+    _api_orders__WEBPACK_IMPORTED_MODULE_3__["Orders"].getOrders().then(function (res) {
+      _this.contacts = res.body.map(function (item) {
+        return item.order;
+      });
+      console.log(_this.contacts);
+    });
     this.gridApi = this.gridOptions.api;
+    this.gridColumnApi = this.gridOptions.columnApi;
   }
 });
 
@@ -472,6 +494,9 @@ var render = function() {
               pagination: true,
               context: _vm.context,
               paginationPageSize: _vm.paginationPageSize,
+              masterDetail: true,
+              master: true,
+              detailCellRendererParams: _vm.detailCellRendererParams,
               frameworkComponents: _vm.frameworkComponents,
               suppressPaginationPanel: true
             },
@@ -515,6 +540,41 @@ var staticRenderFns = []
 render._withStripped = true
 
 
+
+/***/ }),
+
+/***/ "./resources/js/src/api/orders.js":
+/*!****************************************!*\
+  !*** ./resources/js/src/api/orders.js ***!
+  \****************************************/
+/*! exports provided: Orders */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Orders", function() { return Orders; });
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var Orders =
+/*#__PURE__*/
+function () {
+  function Orders() {
+    _classCallCheck(this, Orders);
+  }
+
+  _createClass(Orders, null, [{
+    key: "getOrders",
+    value: function getOrders(data) {
+      return window.http.get("api/orders");
+    }
+  }]);
+
+  return Orders;
+}();
 
 /***/ }),
 

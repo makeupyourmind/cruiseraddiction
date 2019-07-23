@@ -18,7 +18,7 @@ Vue.http.options.root = 'http://cruiser-webstore-back.qbex.io/';
 import Vuesax from 'vuesax'
 
 Vue.use(Vuesax);
-
+import 'ag-grid-enterprise';
 // Theme Configurations
 import '../themeConfig.js'
 
