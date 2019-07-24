@@ -18,7 +18,8 @@ mix.js('resources/js/app.js', 'public/js')
             alias: {
                 '@': path.resolve(__dirname, 'resources/js/src'),
                 '@assets': path.resolve(__dirname, 'resources/assets'),
-                '@sass': path.resolve(__dirname, 'resources/sass')
+                '@sass': path.resolve(__dirname, 'resources/sass'),
+                'vue$':  'vue/dist/vue.esm.js'
             }
         },
     })
@@ -34,4 +35,7 @@ mix.js('resources/js/app.js', 'public/js')
     .copyDirectory('resources/assets/fonts', 'public/fonts') // Feather Icon fonts
     .copyDirectory('node_modules/material-icons/iconfont', 'public/css/material-icons') // Material Icon fonts
     .copyDirectory('node_modules/material-icons/iconfont/material-icons.css', 'public/css/material-icons/material-icons.css') // Material Icon fonts css
-    .copy('node_modules/prismjs/themes/prism-tomorrow.css', 'public/css/prism-tomorrow.css'); // Prism Tomorrow theme css
+    .copy('node_modules/prismjs/themes/prism-tomorrow.css', 'public/css/prism-tomorrow.css')
+    .copy('node_modules/devextreme/dist/css/dx.common.css', 'public/css/devextreme.css')
+    .copy('node_modules/devextreme/dist/css/dx.light.compact.css', 'public/css/devextreme.light.css');
+
