@@ -20,4 +20,9 @@ export class StockManagment{
         result.password = btoa(result.password);
         return window.http.delete(`api/delete-parts?array=${result.array}&password=${result.password}`)
     }
+
+
+    static reload () {
+        return window.http.get(`api/stock-ca`)
+    }
 }

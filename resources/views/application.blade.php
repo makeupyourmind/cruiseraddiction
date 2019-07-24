@@ -14,6 +14,8 @@
     <link rel="stylesheet" href="{{ asset(mix('css/material-icons/material-icons.css')) }}">
     <link rel="stylesheet" href="{{ asset(mix('css/prism-tomorrow.css')) }}">
     <link rel="stylesheet" href="{{ asset(mix('css/app.css')) }}">
+    <link rel="stylesheet" href="{{ asset(mix('css/devextreme.css')) }}">
+    <link rel="stylesheet" href="{{ asset(mix('css/devextreme.light.css')) }}">
   </head>
   <body>
     <noscript>

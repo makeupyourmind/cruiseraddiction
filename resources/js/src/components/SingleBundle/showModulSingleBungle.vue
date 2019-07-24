@@ -58,13 +58,11 @@
                         label-placeholder="Min Stock"
                         v-model="moduleStock.min_stock"
                         class="w-full mb-6" />
-                    <!--<vs-input-->
-                        <!--name="current"-->
-                        <!--v-if="showTable === true"-->
-                        <!--label-placeholder="Current"-->
-                        <!--disabled="disabled"-->
-                        <!--v-model="moduleStock.current"-->
-                        <!--class="w-full mb-6" />-->
+                    <vs-input
+                        name="current Stock"
+                        label-placeholder="Current"
+                        v-model="moduleStock.qty"
+                        class="w-full mb-6" />
                     <!--<vs-input-->
                         <!--v-else-->
                         <!--name="current"-->
@@ -160,8 +158,9 @@
             moduleStock: null,
         }),
         created(){
+            debugger;
             this.moduleStock = Object.assign({}, this.$store.getters.STORE_EDIT);
-            this.moduleStock.tags = JSON.parse(this.moduleStock.tags)
+            this.moduleStock.tags = []
         },
         computed:{
             ...mapGetters({

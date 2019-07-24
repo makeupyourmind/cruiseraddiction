@@ -28,6 +28,14 @@
                         <!--</vs-dropdown-menu>-->
                     </vs-dropdown>
                     <singlebundle :select="select"></singlebundle>
+                    <vs-button
+                            @click="RELOAD()"
+                            color="success"
+                            type="relief"
+                            icon="icon-plus"
+                            icon-pack="feather">
+                        RELOAD
+                    </vs-button>
                 </div>
                 <!-- TABLE ACTION COL-2: SEARCH & EXPORT AS CSV -->
                 <div class="flex flex-wrap items-center justify-between ag-grid-table-actions-right">
@@ -76,13 +84,17 @@
     import {StockManagment} from "../api/stockManagment";
 
     let SquareComponent = Vue.extend({
-        template: '<vs-chip color="primary" >{{params.valueFormatted}}</vs-chip>',
+        template: '<vs-chip color="primary" @click="test(params)">{{params.valueFormatted}}</vs-chip>',
+        methods:{
+            test(dd){
+                console.log(dd)
+            }
+        }
     });
     let CustomHeader = Vue.extend({
         template: `
         <div @click="onSortChanged(1, $event)">
             <div class="customHeaderLabel" >{{params.displayName}}</div>
-            {{params.column.colId == order.name}}
             <div v-if="params.column.colId == order.name && order.by === 'asc'"  :class="ascSort" class="customSortDownLabel"><span ref="eSortAsc" class="ag-header-icon ag-sort-ascending-icon" aria-hidden="true"><span class="ag-icon ag-icon-asc" unselectable="on"></span></span></i></div>
             <div v-if="params.column.colId == order.name && order.by === 'desc'" :class="descSort" class="customSortUpLabel"><span ref="eSortDesc" class="ag-header-icon ag-sort-descending-icon" aria-hidden="true"><span class="ag-icon ag-icon-desc" unselectable="on"></span></span></div>
         </div>
@@ -158,12 +170,13 @@
                 columnDefs: null,
                 contacts: contacts,
                 context: null,
-                timeout:null
+                timeout:null,
+                isNoActive: false
             }
         },
 
         beforeMount() {
-
+            this.RELOAD();
             this.columnDefs = [
                 {
                     width: 75,
@@ -318,6 +331,7 @@
 
 
             test(e) {
+                console.log(e)
                 if (e.colDef.headerName === 'PartNumber') {
                     if (e.data.showTable) {
                         this.$store.dispatch("GET_SHOW_BUNDLE_SINGLE", {module: true, showTable: true});
@@ -342,6 +356,12 @@
 
                 return [...selectedNodes];
 
+            },
+
+            RELOAD() {
+                this.$store.commit('isNoActive', true);
+                StockManagment.reload()
+                    .then(res => this.$store.commit('isNoActive', false))
             }
         },
         mounted() {

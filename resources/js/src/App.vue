@@ -10,6 +10,9 @@
 
 <template>
 	<div id="app">
+		<div v-if="isNoActive" class="loading">
+			LOADING... {{time}}
+		</div>
 		<router-view></router-view>
 	</div>
 </template>
@@ -33,10 +36,28 @@ export default {
             }
             // debugger
         },
+		isNoActive(val){
+        	console.log(val)
+			val ? this.interval = setInterval(() => this.time = this.time + 1, 1000) : (clearInterval(this.interval), this.time = 0)
+		},
         '$store.state.theme'(val) {
             this.toggleClassInBody(val);
         }
     },
+
+	computed:{
+		isNoActive(){
+			return this.$store.getters['isNoActive']
+		}
+	},
+
+	data(){
+    	return {
+    		time: 0,
+			interval: null
+		}
+	},
+
     methods: {
         toggleClassInBody(className) {
             if (className == 'dark') {
@@ -60,6 +81,16 @@ export default {
     .material-icons{
         font-size: 16px!important;
     }
-	@import "./../../../node_modules/ag-grid-community/dist/styles/ag-grid.css";
-	@import "./../../../node_modules/ag-grid-community/dist/styles/ag-theme-balham.css";
+	.loading{
+		width: 100%;
+		height: 100%;
+		position: fixed;
+		background: #3f51b5;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: white;
+		font-size: 40px;
+		z-index: 100000;
+	}
 </style>
