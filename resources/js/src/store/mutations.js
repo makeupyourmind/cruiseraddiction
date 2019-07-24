@@ -108,8 +108,10 @@ const mutations = {
         // debugger
     },
     SET_EDIT_STORE(state, payload){
-        state.moduleStock = payload
-        console.log( state.moduleStock)
+        state.moduleStock = payload;
+    },
+    isNoActive(state, payload){
+        state.isNoActive = payload;
     },
 
 }

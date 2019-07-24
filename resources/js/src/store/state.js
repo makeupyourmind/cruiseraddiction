@@ -73,7 +73,8 @@ const state = {
         chips: [],
         chip: "",
         stores: [],
-    }
+    },
+    isNoActive: false
 }
 
 export default state

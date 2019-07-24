@@ -13,8 +13,8 @@
         "@babel/plugin-syntax-dynamic-import": "^7.2.0",
         "@chenfengyuan/vue-countdown": "^1.1.2",
         "@fullhuman/postcss-purgecss": "^1.2.0",
-        "ag-grid-community": "^21.1.0",
-        "ag-grid-vue": "^21.1.0",
+        "ag-grid-community": "^21.0.1",
+        "ag-grid-vue": "^21.0.1",
         "algoliasearch": "^3.33.0",
         "apexcharts": "^3.6.12",
         "auth0-js": "^9.10.4",
@@ -55,7 +55,7 @@
         "vue-instantsearch": "^2.2.1",
         "vue-perfect-scrollbar": "^0.1.0",
         "vue-prism-component": "^1.1.1",
-        "vue-property-decorator": "^8.2.1",
+        "vue-property-decorator": "^8.1.1",
         "vue-quill-editor": "^3.0.6",
         "vue-router": "^3.0.6",
         "vue-simple-calendar": "^4.2.2",
@@ -74,7 +74,8 @@
         "vuex": "^3.1.1"
     },
     "dependencies": {
-        "ag-grid-enterprise": "^21.1.0",
+        "devextreme": "^19.1.4",
+        "devextreme-vue": "^19.1.4",
         "vue-resource": "^1.5.1",
         "vue-select": "^3.1.0"
     }
