@@ -35,7 +35,9 @@ class PartsController extends BaseController
 	    foreach($response['data'] as $caPart) {
 
 		$caOrderData = array();
-		
+	//	if($caPart['PartNumber'] == '6814160010'){
+	//	    dd($caPart);
+		//}
 		$caOrder['brand_name'] = $caPart['brand']['BrandName'];
 		$caOrder['part_number'] = $caPart['PartNumber'];
 		$caOrder['description_english'] = $caPart['DescriptionEnglish'];
