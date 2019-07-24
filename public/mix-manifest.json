@@ -5,5 +5,7 @@
     "/css/vuesax.css": "/css/vuesax.css",
     "/css/iconfont.css": "/css/iconfont.css",
     "/css/material-icons/material-icons.css": "/css/material-icons/material-icons.css",
-    "/css/prism-tomorrow.css": "/css/prism-tomorrow.css"
+    "/css/prism-tomorrow.css": "/css/prism-tomorrow.css",
+    "/css/devextreme.css": "/css/devextreme.css",
+    "/css/devextreme.light.css": "/css/devextreme.light.css"
 }
