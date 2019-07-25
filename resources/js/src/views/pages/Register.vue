@@ -103,7 +103,6 @@
                             first_name: '123123',
                             last_name: '2r4e234234'
                         };
-                        debugger
                         return this.$store.dispatch("SIGN_UP", payload)
                     }
                     return false

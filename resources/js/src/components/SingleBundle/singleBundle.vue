@@ -3,12 +3,12 @@
         <vs-dropdown class="ml-auto md:block hidden cursor-pointer" style="margin-left:15px!important "vs-trigger-click>
             <vs-button radius icon="icon-edit" icon-pack="feather"></vs-button>
             <vs-dropdown-menu class="w-32">
-                <vs-dropdown-item>
-                    <div @click="createBundle" class="flex items-center">
-                        <span>Creatge bundle</span>
-                    </div>
-<!--                <singleBungleForm :activePrompt="activePrompt"></singleBungleForm>-->
-                </vs-dropdown-item>
+                <!--<vs-dropdown-item>-->
+                    <!--<div @click="createBundle" class="flex items-center">-->
+                        <!--<span>Creatge bundle</span>-->
+                    <!--</div>-->
+<!--&lt;!&ndash;                <singleBungleForm :activePrompt="activePrompt"></singleBungleForm>&ndash;&gt;-->
+                <!--</vs-dropdown-item>-->
 
                 <vs-dropdown-item>
                     <div @click="createSingle" class="flex items-center">

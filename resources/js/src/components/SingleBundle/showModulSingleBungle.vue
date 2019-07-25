@@ -158,9 +158,8 @@
             moduleStock: null,
         }),
         created(){
-            debugger;
             this.moduleStock = Object.assign({}, this.$store.getters.STORE_EDIT);
-            this.moduleStock.tags = []
+            this.moduleStock.tags = !this.moduleStock.tags ? [] : JSON.parse(this.moduleStock.tags)
         },
         computed:{
             ...mapGetters({
@@ -202,6 +201,8 @@
             },
             create(){
                 const module =  JSON.parse(JSON.stringify(this.moduleStock))
+                const current = this.$store.getters['stockCaModule/GET_STOCK_DATA'];
+                const order = this.$store.getters['stockCaModule/GET_DATA_STOCK_ORDER'];
                 if(this.moduleStock.action == 'update'){
 
                     module && delete module.brand;
@@ -211,22 +212,29 @@
 
                     this.$store.dispatch("stockCaModule/UPDATE_DATA_STOCK", module)
                         .then(() => {
-                            const current = this.$store.getters['stockCaModule/GET_STOCK_DATA'];
-                            return this.$store.dispatch(
-                                'stockCaModule/GET_DATA_STOCK_FROM_SERVER',
-                                current ? current.current_page : 1
-                            )
+                            return this.$store.dispatch('stockCaModule/GET_DATA_STOCK_FROM_SERVER', {
+                                page: current ? current.current_page : 1,
+                                searchBrand:'',
+                                searchNumber:'',
+                                orderName: order.name,
+                                orderBy: order.by
+                            })
                         })
                         .then(() => this.$store.dispatch("GET_SHOW_BUNDLE_SINGLE", {module:false, showTable:false}));
+
                 } else {
+
                     module && (module.tags = JSON.stringify(module.tags));
+
                     this.$store.dispatch("stockCaModule/CREATE_DATA_STOCK", module)
                         .then(() => {
-                            const current = this.$store.getters['stockCaModule/GET_STOCK_DATA'];
-                            return this.$store.dispatch(
-                                'stockCaModule/GET_DATA_STOCK_FROM_SERVER',
-                                current ? current.current_page : 1
-                            )
+                            return this.$store.dispatch('stockCaModule/GET_DATA_STOCK_FROM_SERVER', {
+                                page: current ? current.current_page : 1,
+                                searchBrand:'',
+                                searchNumber:'',
+                                orderName: order.name,
+                                orderBy: order.by
+                            })
                         })
                         .then(() => this.$store.dispatch("GET_SHOW_BUNDLE_SINGLE", {module:false, showTable:false}));
                 }

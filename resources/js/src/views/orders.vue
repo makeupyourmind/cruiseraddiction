@@ -157,7 +157,6 @@
                 this.gridApi.setQuickFilter(val);
             },
             test(e){
-                debugger;
                 if(e.colDef.headerName === 'PartNumber'){
                     if(e.data.showTable){
                         this.$store.dispatch("GET_SHOW_BUNDLE_SINGLE", {module: true, showTable:true});

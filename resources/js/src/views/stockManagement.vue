@@ -314,7 +314,7 @@
             updateSearchQuery() {
                 clearTimeout(this.timeout);
                 this.timeout = setTimeout( () => {
-                    this.getDataStockCa();
+                    this.getDataStockCa(1);
                     clearTimeout(this.timeout)
                 }, 300 )
             },
