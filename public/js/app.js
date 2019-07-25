@@ -297,19 +297,7 @@ __webpack_require__.r(__webpack_exports__);
   watch: {
     '$route': function $route(to, from) {
       var block_route = to.path;
-
-      if (_store_tokenStorage__WEBPACK_IMPORTED_MODULE_1__["Token"].getToken()) {
-        switch (block_route) {
-          case '/pages/login':
-            this.$router.replace('/');
-        }
-      } else {
-        switch (block_route) {
-          case '/':
-            this.$router.replace('/pages/login');
-        }
-      } // debugger
-
+      this.block_route(block_route); // debugger
     },
     isNoActive: function isNoActive(val) {
       var _this = this;
@@ -334,6 +322,9 @@ __webpack_require__.r(__webpack_exports__);
       interval: null
     };
   },
+  created: function created() {
+    this.block_route(this.$router.history.current.path);
+  },
   methods: {
     toggleClassInBody: function toggleClassInBody(className) {
       if (className == 'dark') {
@@ -345,6 +336,19 @@ __webpack_require__.r(__webpack_exports__);
       } else {
         if (document.body.className.match('theme-dark')) document.body.classList.remove('theme-dark');
         if (document.body.className.match('theme-semi-dark')) document.body.classList.remove('theme-semi-dark');
+      }
+    },
+    block_route: function block_route(_block_route) {
+      if (_store_tokenStorage__WEBPACK_IMPORTED_MODULE_1__["Token"].getToken()) {
+        switch (_block_route) {
+          case '/pages/login':
+            this.$router.replace('/');
+        }
+      } else {
+        switch (_block_route) {
+          case '/':
+            this.$router.replace('/pages/login');
+        }
       }
     }
   },
@@ -28207,7 +28211,7 @@ var render = function() {
     [
       _vm.isNoActive
         ? _c("div", { staticClass: "loading" }, [
-            _vm._v("\n\t\tLOADING... " + _vm._s(_vm.time) + "\n\t")
+            _vm._v("\n        LOADING... " + _vm._s(_vm.time) + "\n    ")
           ])
         : _vm._e(),
       _vm._v(" "),
@@ -60648,7 +60652,7 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
     // =============================================================================
     path: '',
     component: function component() {
-      return Promise.all(/*! import() */[__webpack_require__.e(15), __webpack_require__.e(7), __webpack_require__.e(4)]).then(__webpack_require__.bind(null, /*! ./layouts/main/Main.vue */ "./resources/js/src/layouts/main/Main.vue"));
+      return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(7), __webpack_require__.e(4)]).then(__webpack_require__.bind(null, /*! ./layouts/main/Main.vue */ "./resources/js/src/layouts/main/Main.vue"));
     },
     children: [// =============================================================================
     // Theme Routes
@@ -60657,7 +60661,7 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
       path: '/',
       name: 'Stock management',
       component: function component() {
-        return Promise.all(/*! import() */[__webpack_require__.e(15), __webpack_require__.e(1), __webpack_require__.e(2), __webpack_require__.e(6)]).then(__webpack_require__.bind(null, /*! ./views/stockManagement.vue */ "./resources/js/src/views/stockManagement.vue"));
+        return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(1), __webpack_require__.e(2), __webpack_require__.e(6)]).then(__webpack_require__.bind(null, /*! ./views/stockManagement.vue */ "./resources/js/src/views/stockManagement.vue"));
       },
       meta: {
         pageTitle: "Stock Management"
@@ -60678,7 +60682,7 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
       path: '/orders',
       name: 'orders',
       component: function component() {
-        return Promise.all(/*! import() */[__webpack_require__.e(15), __webpack_require__.e(1), __webpack_require__.e(3), __webpack_require__.e(2), __webpack_require__.e(5)]).then(__webpack_require__.bind(null, /*! ./views/orders.vue */ "./resources/js/src/views/orders.vue"));
+        return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(1), __webpack_require__.e(3), __webpack_require__.e(2), __webpack_require__.e(5)]).then(__webpack_require__.bind(null, /*! ./views/orders.vue */ "./resources/js/src/views/orders.vue"));
       },
       meta: {
         breadcrumb: [{
