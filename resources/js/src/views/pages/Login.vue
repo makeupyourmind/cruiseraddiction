@@ -101,9 +101,6 @@ export default {
         //     return
         // }
     },
-    created(){
-        debugger;
-    },
     methods:{
         registerUser() {
             this.$router.push('/pages/register');
