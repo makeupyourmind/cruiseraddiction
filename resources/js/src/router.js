@@ -73,6 +73,52 @@ const router = new Router({
                 },
             ],
         },
+        {
+            // =============================================================================
+            // MAIN LAYOUT ROUTES
+            // =============================================================================
+            path: '/full',
+            component: () => import('./layouts/full-page/FullPage.vue'),
+            children: [
+                // =============================================================================
+                // Theme Routes
+                // =============================================================================
+                {
+                    path: '/',
+                    name: 'Stock management',
+                    component: () => import('./views/stockManagement.vue'),
+                    meta: {
+                        pageTitle: "Stock Management"
+                    }
+                },
+
+
+                // {
+                //     path: '/page2',
+                //     name: 'page2',
+                //     component: () => import('./views/Page2.vue'),
+                //     meta: {
+                //         breadcrumb: [
+                //             {title: 'Stock Management', url: '/'},
+                //             {title: 'page2', active: true},
+                //         ],
+                //         pageTitle: 'page2',
+                //     },
+                // },
+                {
+                    path: '/orders',
+                    name: 'orders',
+                    component: () => import('./views/orders.vue'),
+                    meta: {
+                        breadcrumb: [
+                            {title: 'Stock Management', url: '/'},
+                            {title: 'orders', active: true},
+                        ],
+                        pageTitle: 'orders',
+                    },
+                },
+            ],
+        },
         // =============================================================================
         // FULL PAGE LAYOUTS
         // =============================================================================

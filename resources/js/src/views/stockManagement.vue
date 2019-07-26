@@ -39,9 +39,20 @@
                 </div>
                 <!-- TABLE ACTION COL-2: SEARCH & EXPORT AS CSV -->
                 <div class="flex flex-wrap items-center justify-between ag-grid-table-actions-right">
-                    <vs-input class="mb-4 md:mb-0 mr-4" v-model="searchBrand" @change="updateSearchQuery"
+                    <vs-pagination
+                            style="margin-right: 20px"
+                            :total="totalPages"
+                            :max="7"
+                            v-model="currentPage"
+                    />
+                    <vs-input class="mb-4 md:mb-0 mr-4" :value="order.searchBrand"
+                              @input="setOrder($event, 'searchBrand')"
+                              @change="updateSearchQuery"
                               placeholder="Search brand"/>
-                    <vs-input class="mb-4 md:mb-0 mr-4" v-model="searchNumber" @change="updateSearchQuery"
+                    <vs-input class="mb-4 md:mb-0 mr-4"
+                              @input="setOrder($event, 'searchNumber')"
+                              :value="order.searchNumber"
+                              @change="updateSearchQuery"
                               placeholder="Search part number"/>
                     <!--                    <vs-button class="mb-4 md:mb-0" @click="gridApi.exportDataAsCsv()">Export as CSV</vs-button>-->
                 </div>
@@ -50,7 +61,7 @@
                     ref="test"
                     :gridOptions="gridOptions"
                     class="ag-theme-material w-100 my-4 ag-grid-table"
-                    style="text-align: center!important; padding:0!important"
+                    style=""
                     :columnDefs="columnDefs"
                     :defaultColDef="defaultColDef"
                     :rowData="getData"
@@ -66,11 +77,6 @@
                     :suppressPaginationPanel="true">
                 <!-- :paginationPageSize="paginationPageSize"-->
             </ag-grid-vue>
-            <vs-pagination
-                    :total="totalPages"
-                    :max="7"
-                    v-model="currentPage"
-            />
         </vx-card>
     </div>
 </template>
@@ -93,10 +99,13 @@
     });
     let CustomHeader = Vue.extend({
         template: `
-        <div @click="onSortChanged(1, $event)">
-            <div class="customHeaderLabel" >{{params.displayName}}</div>
-            <div v-if="params.column.colId == order.name && order.by === 'asc'"  :class="ascSort" class="customSortDownLabel"><span ref="eSortAsc" class="ag-header-icon ag-sort-ascending-icon" aria-hidden="true"><span class="ag-icon ag-icon-asc" unselectable="on"></span></span></i></div>
-            <div v-if="params.column.colId == order.name && order.by === 'desc'" :class="descSort" class="customSortUpLabel"><span ref="eSortDesc" class="ag-header-icon ag-sort-descending-icon" aria-hidden="true"><span class="ag-icon ag-icon-desc" unselectable="on"></span></span></div>
+        <div style="width: 100%; display: flex; justify-content: center" @click="onSortChanged(1, $event)">
+            <div>
+                <div class="customHeaderLabel" >{{params.displayName}}</div>
+                <div v-if="params.column.colId == order.name && order.by === 'asc'"  :class="ascSort" class="customSortDownLabel"><span ref="eSortAsc" class="ag-header-icon ag-sort-ascending-icon" aria-hidden="true"><span class="ag-icon ag-icon-asc" unselectable="on"></span></span></i></div>
+                <div v-if="params.column.colId == order.name && order.by === 'desc'" :class="descSort" class="customSortUpLabel"><span ref="eSortDesc" class="ag-header-icon ag-sort-descending-icon" aria-hidden="true"><span class="ag-icon ag-icon-desc" unselectable="on"></span></span></div>
+
+            </div>
         </div>
     `,
         data: function () {
@@ -133,7 +142,9 @@
                     name:'order',
                     value: {
                         by:newOrder,
-                        name: this.params.column.colId
+                        name: this.params.column.colId,
+                        searchBrand: this.order.searchBrand,
+                        searchNumber: this.order.searchNumber,
                     }
                 });
                 this.$parent.$parent.$parent.getDataStockCa()
@@ -183,82 +194,86 @@
                     checkboxSelection: true,
                     headerCheckboxSelectionFilteredOnly: true,
                     headerCheckboxSelection: true,
-                    suppressMenu: true
+                    suppressMenu: true,
+                    pinned: "left",
                 },
                 {
                     headerName: 'Brand',
                     field: 'brand_name',
-                    filter: true,
+                    // filter: true,
+                    pinned: "left",
                     suppressMenu: true
                     // width: 175,
                 },
                 {
                     headerName: 'PartNumber',
                     field: 'part_number',
-                    filter: true,
+                    // filter: true,
+                    pinned: "left",
                     suppressMenu: true
                     // width: 175,
                 },
                 {
                     headerName: 'Description',
                     field: 'description_english',
-                    filter: true,
+                    // filter: true,
+                    pinned: "left",
                     suppressMenu: true
                     // width: 250,
                 },
                 {
                     headerName: 'Qty',
                     field: 'qty',
-                    filter: true,
+                    // filter: true,
                     suppressMenu: true
                     // width: 75,
                 },
                 {
                     headerName: 'Min Stock',
                     field: 'min_stock',
-                    filter: true,
+                    // filter: true,
                     suppressMenu: true
                     // width: 150,
                 },
                 {
                     headerName: 'List price',
                     field: 'price',
-                    filter: true,
+                    // filter: true,
                     suppressMenu: true
                     // width: 100,
                 },
                 {
                     headerName: 'Min price',
                     field: 'min_price',
-                    filter: true,
+                    // filter: true,
                     suppressMenu: true
                     // width: 100,
                 },
                 {
                     headerName: 'Max price',
                     field: 'max_price',
-                    filter: true,
+                    // filter: true,
                     suppressMenu: true
                     // width: 125,
                 },
                 {
                     headerName: 'Last Modified',
                     field: 'updated_at',
-                    filter: true,
+                    // filter: true,
                     suppressMenu: true
                     // width: 250,
                 },
                 {
                     headerName: 'Location',
                     field: 'location',
-                    filter: true,
+                    // filter: true,
                     suppressMenu: true,
                     width: 125,
                 },
                 {
                     headerName: 'Categories',
                     field: 'categories',
-                    filter: true,
+                    // filter: true,
                     suppressMenu: true,
                     width: 125,
                 },
@@ -322,16 +337,26 @@
             getDataStockCa(val = null){
                 this.$store.dispatch('stockCaModule/GET_DATA_STOCK_FROM_SERVER', {
                     page: !val ? this.currentPage : val,
-                    searchBrand: this.searchBrand,
-                    searchNumber: this.searchNumber,
+                    searchBrand: this.order.searchBrand,
+                    searchNumber: this.order.searchNumber,
                     orderName: this.order.name,
                     orderBy: this.order.by
                 })
             },
 
+            setOrder(e, type){
+                this.$store.commit('stockCaModule/SET_VARIABLE', {
+                    name:'order',
+                    value: {
+                        by:this.order.by,
+                        name: this.order.name,
+                        searchBrand:type == 'searchBrand' ? e : this.order.searchBrand,
+                        searchNumber: type == 'searchNumber' ? e : this.order.searchNumber,
+                    }
+                });
+            },
 
             test(e) {
-                console.log(e)
                 if (e.colDef.headerName === 'PartNumber') {
                     if (e.data.showTable) {
                         this.$store.dispatch("GET_SHOW_BUNDLE_SINGLE", {module: true, showTable: true});
@@ -365,7 +390,11 @@
             }
         },
         mounted() {
+            window.document.body.style.zoom = 0.7;
             this.gridApi = this.gridOptions.api;
+        },
+        destroyed(){
+            window.document.body.style.zoom = 1;
         }
     }
 
@@ -418,4 +447,39 @@
         color: cornflowerblue;
     }
 
+    .ag-header-row:last-child{
+        display: none;
+    }
+    .ag-header{
+        min-height: 50px!important;
+        height: 50px!important;
+    }
+    .ag-theme-material .ag-icon-checkbox-checked{
+        color: white;
+    }
+    #content-area.content-area-reduced{
+        margin-left: 40px;
+    }
+    .ag-theme-material .ag-ltr .ag-cell[col-id="description_english"]{
+        /* width: 200px; */
+        justify-content: flex-start;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow-x: hidden;
+    }
+    #app{
+        height: calc(100% - 3.5rem);
+     }
+    .content-wrapper{
+        height: calc(100% - 3.5rem);
+    }
+    .router-view,.router-content, .vx-card__body,.content-area__content{
+        height: 100%!important;
+    }
+     #ag-grid-demo, .vx-card, .vx-card__collapsible-content, .ag-grid-table{
+        height: 96%!important;
+    }
+    .router-content{
+        margin-top: 3em!important;
+    }
 </style>

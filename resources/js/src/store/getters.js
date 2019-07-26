@@ -13,7 +13,8 @@ const getters = {
     SHOWBUNDLESINGLE: state => state.module,
     SHOWTABLE: state => state.showTable,
     STORE_EDIT: state => state.moduleStock,
-    isNoActive: state => state.isNoActive
+    isNoActive: state => state.isNoActive,
+    IS_SIDEBAR_ACTIVE: state => state.isSidebarActive,
 
     // COMPONENT
 		// vx-autosuggest

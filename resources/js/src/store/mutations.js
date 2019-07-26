@@ -28,6 +28,7 @@ const mutations = {
         state.bodyOverlay = val;
     },
     TOGGLE_IS_SIDEBAR_ACTIVE(state, value) {
+        console.log(3222222222222222222)
         state.isSidebarActive = value;
     },
     UPDATE_THEME(state, val) {

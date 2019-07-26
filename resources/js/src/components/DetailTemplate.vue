@@ -6,16 +6,28 @@
                 :show-borders="true"
                 :column-auto-width="true"
         >
-            <dx-column data-field="brand_name"/>
             <dx-column
+                    caption="Brand Name"
+                    data-field="brand_name"/>
+            <dx-column
+                caption="Part Number"
+                data-field="part_number"
+                data-type="date"
+        />
+            <dx-column
+                    caption="Description"
+                    data-field="description_english"/>
+            <dx-column
+                    caption="QTY"
                     data-field="count"
-                    data-type="date"
             />
+
             <dx-column
-                    data-field="part_number"
-                    data-type="date"
-            />
-            <dx-column data-field="warehouse"/>
+                    caption="Warehouse"
+                    data-field="warehouse"/>
+            <dx-column
+                    caption="Price"
+                    data-field="price"/>
         </dx-data-grid>
     </div>
 </template>

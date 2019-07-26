@@ -1,11 +1,12 @@
 <template>
     <vs-prompt
-        :vs-title="showTable === true ? 'Create Bundle' : 'Create Single'"
-        vs-accept-text= "Create"
+        vs-title="Create Single"
+        :vs-accept-text="moduleStock.action != 'update'? 'Create' : 'Save'"
         @vs-cancel="clearFields"
         @vs-accept="create"
         @vs-close="clearFields"
         :vs-active.sync="showBundleSingle">
+        <!--showTable === true ? 'Create Bundle' : 'Create Single'-->
         <VuePerfectScrollbar class="scroll-area p-4" style="max-height: 75vh;"  :settings="settings">
             <div v-if="fillTable === false">
                 <form @submit.prevent class="display: flex; flex-direction: column">
@@ -200,7 +201,7 @@
                 this.moduleStock.tags.splice(this.moduleStock.tags.indexOf(item), 1)
             },
             create(){
-                const module =  JSON.parse(JSON.stringify(this.moduleStock))
+                const module =  JSON.parse(JSON.stringify(this.moduleStock));
                 const current = this.$store.getters['stockCaModule/GET_STOCK_DATA'];
                 const order = this.$store.getters['stockCaModule/GET_DATA_STOCK_ORDER'];
                 if(this.moduleStock.action == 'update'){
@@ -209,16 +210,16 @@
                     module && delete module.action;
                     module && delete module.id;
                     module && delete module.unique_hash;
-
+                    module && (module.tags = JSON.stringify(module.tags));
                     this.$store.dispatch("stockCaModule/UPDATE_DATA_STOCK", module)
                         .then(() => {
                             return this.$store.dispatch('stockCaModule/GET_DATA_STOCK_FROM_SERVER', {
                                 page: current ? current.current_page : 1,
-                                searchBrand:'',
-                                searchNumber:'',
+                                searchBrand:order.searchBrand,
+                                searchNumber:order.searchNumber,
                                 orderName: order.name,
-                                orderBy: order.by
-                            })
+                                orderBy: order.by,
+                            });
                         })
                         .then(() => this.$store.dispatch("GET_SHOW_BUNDLE_SINGLE", {module:false, showTable:false}));
 
@@ -230,11 +231,11 @@
                         .then(() => {
                             return this.$store.dispatch('stockCaModule/GET_DATA_STOCK_FROM_SERVER', {
                                 page: current ? current.current_page : 1,
-                                searchBrand:'',
-                                searchNumber:'',
+                                searchBrand:order.searchBrand,
+                                searchNumber:order.searchNumber,
                                 orderName: order.name,
-                                orderBy: order.by
-                            })
+                                orderBy: order.by,
+                            });
                         })
                         .then(() => this.$store.dispatch("GET_SHOW_BUNDLE_SINGLE", {module:false, showTable:false}));
                 }

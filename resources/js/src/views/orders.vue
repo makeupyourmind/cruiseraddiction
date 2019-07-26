@@ -37,40 +37,29 @@
                     key-expr="ID"
             >
                 <dx-column
-                        :width="70"
-                        data-field="amount"
-                        caption="Title"
+                        data-field="date"
+                        caption="Date"
                 />
-                <dx-column data-field="user.city"/>
-                <dx-column data-field="user.country"/>
                 <dx-column
-                        :width="170"
-                        data-field="user.email"
-                />
+                        caption="Order"
+                        data-field="ID"/>
+                <dx-column
+                        caption="Country"
+                        data-field="user.country"/>
                 <dx-column
                         :width="125"
+                        caption="First Name"
                         data-field="user.first_name"
                 />
                 <dx-column
+                        caption="Last Name"
                         data-field="user.last_name"
                 />
+
                 <dx-column
-                        data-field="user.phone"
-                />
-                <dx-column
-                        data-field="user.postal_code"
-                />
-                <dx-column
-                        data-field="user.state"
-                />
-                <dx-column
-                        data-field="user.same_address"
-                />
-                <dx-column
-                        data-field="user.street_address"
-                />
-                <dx-column
-                        data-field="user.street_address_two"
+                        :width="70"
+                        data-field="amount"
+                        caption="Total"
                 />
                 <detail
                         :enabled="true"
@@ -179,6 +168,7 @@
                 .then(res => {
                     this.contacts = res.body.map(item => {
                         item.order.ID = item.id;
+                        item.order.date = item.created_at;
                         return item.order;
                     })
                     console.log(this.contacts)

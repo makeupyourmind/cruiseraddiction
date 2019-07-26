@@ -11,7 +11,7 @@
 <template>
     <div class="layout--main" :class="[navbarClasses, footerClasses, {'app-page': isAppPage}]">
 
-        <vx-sidebar :sidebarItems="sidebarItems" :logo="require('@assets/images/logo/logo.png')" title="Cruiser" parent=".layout--main" />
+        <vx-sidebar :sidebarItems="sidebarItems"  :logo="require('@assets/images/logo/logo.png')" title="Cruiser" parent=".layout--main" />
 
         <div id="content-area" :class="[contentAreaClass, {'show-overlay': bodyOverlay}]">
 
@@ -127,8 +127,8 @@ export default {
             return this.$store.state.bodyOverlay;
         },
         contentAreaClass() {
-            if(this.sidebarWidth == "default") return "content-area-default"
-            else if(this.sidebarWidth == "reduced") return "content-area-reduced"
+            if(this.sidebarWidth == "default") return "content-area-default";
+            else if(this.sidebarWidth == "reduced") return "content-area-reduced";
             else if(this.sidebarWidth) return "content-area-full"
         },
         navbarClasses() {
