@@ -195,4 +195,7 @@
         align-items: center;
         justify-content: center;
     }
+    .dx-datagrid-rowsview .dx-row:nth-child(odd){
+        background: lightgrey;
+    }
 </style>
