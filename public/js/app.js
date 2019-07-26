@@ -60661,7 +60661,7 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
       path: '/',
       name: 'Stock management',
       component: function component() {
-        return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(1), __webpack_require__.e(2), __webpack_require__.e(6)]).then(__webpack_require__.bind(null, /*! ./views/stockManagement.vue */ "./resources/js/src/views/stockManagement.vue"));
+        return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(1), __webpack_require__.e(15), __webpack_require__.e(6)]).then(__webpack_require__.bind(null, /*! ./views/stockManagement.vue */ "./resources/js/src/views/stockManagement.vue"));
       },
       meta: {
         pageTitle: "Stock Management"
@@ -60682,7 +60682,56 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
       path: '/orders',
       name: 'orders',
       component: function component() {
-        return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(1), __webpack_require__.e(3), __webpack_require__.e(2), __webpack_require__.e(5)]).then(__webpack_require__.bind(null, /*! ./views/orders.vue */ "./resources/js/src/views/orders.vue"));
+        return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(1), __webpack_require__.e(3), __webpack_require__.e(15), __webpack_require__.e(5)]).then(__webpack_require__.bind(null, /*! ./views/orders.vue */ "./resources/js/src/views/orders.vue"));
+      },
+      meta: {
+        breadcrumb: [{
+          title: 'Stock Management',
+          url: '/'
+        }, {
+          title: 'orders',
+          active: true
+        }],
+        pageTitle: 'orders'
+      }
+    }]
+  }, {
+    // =============================================================================
+    // MAIN LAYOUT ROUTES
+    // =============================================================================
+    path: '/full',
+    component: function component() {
+      return __webpack_require__.e(/*! import() */ 14).then(__webpack_require__.bind(null, /*! ./layouts/full-page/FullPage.vue */ "./resources/js/src/layouts/full-page/FullPage.vue"));
+    },
+    children: [// =============================================================================
+    // Theme Routes
+    // =============================================================================
+    {
+      path: '/',
+      name: 'Stock management',
+      component: function component() {
+        return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(1), __webpack_require__.e(15), __webpack_require__.e(6)]).then(__webpack_require__.bind(null, /*! ./views/stockManagement.vue */ "./resources/js/src/views/stockManagement.vue"));
+      },
+      meta: {
+        pageTitle: "Stock Management"
+      }
+    }, // {
+    //     path: '/page2',
+    //     name: 'page2',
+    //     component: () => import('./views/Page2.vue'),
+    //     meta: {
+    //         breadcrumb: [
+    //             {title: 'Stock Management', url: '/'},
+    //             {title: 'page2', active: true},
+    //         ],
+    //         pageTitle: 'page2',
+    //     },
+    // },
+    {
+      path: '/orders',
+      name: 'orders',
+      component: function component() {
+        return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(1), __webpack_require__.e(3), __webpack_require__.e(15), __webpack_require__.e(5)]).then(__webpack_require__.bind(null, /*! ./views/orders.vue */ "./resources/js/src/views/orders.vue"));
       },
       meta: {
         breadcrumb: [{
@@ -60899,6 +60948,9 @@ var getters = {
   },
   isNoActive: function isNoActive(state) {
     return state.isNoActive;
+  },
+  IS_SIDEBAR_ACTIVE: function IS_SIDEBAR_ACTIVE(state) {
+    return state.isSidebarActive;
   } // COMPONENT
   // vx-autosuggest
   // starredPages: state => state.navbarSearchAndPinList.data.filter((page) => page.highlightAction),
@@ -60944,6 +60996,7 @@ var mutations = {
     state.bodyOverlay = val;
   },
   TOGGLE_IS_SIDEBAR_ACTIVE: function TOGGLE_IS_SIDEBAR_ACTIVE(state, value) {
+    console.log(3222222222222222222);
     state.isSidebarActive = value;
   },
   UPDATE_THEME: function UPDATE_THEME(state, val) {
@@ -61257,7 +61310,9 @@ var state = {
   deletedData: [],
   order: {
     name: 'brand_name',
-    by: 'desc'
+    by: 'desc',
+    searchBrand: '',
+    searchNumber: ''
   }
 };
 /* harmony default export */ __webpack_exports__["default"] = (state);

@@ -6,6 +6,8 @@ const state = {
     order: {
         name:'brand_name',
         by: 'desc',
+        searchBrand: '',
+        searchNumber: '',
     }
 };
 

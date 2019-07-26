@@ -690,6 +690,30 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -724,6 +748,8 @@ __webpack_require__.r(__webpack_exports__);
       // disable close sidebar on outside click
       reduce: false,
       // determines if sidebar is reduce - component property
+      active: true,
+      // determines if sidebar is reduce - component property
       showCloseButton: false,
       // show close button in smaller devices
       isMouseEnter: false,
@@ -739,13 +765,8 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   computed: {
-    isSidebarActive: {
-      get: function get() {
-        return this.$store.state.isSidebarActive;
-      },
-      set: function set(val) {
-        this.$store.commit('TOGGLE_IS_SIDEBAR_ACTIVE', val);
-      }
+    isSidebarActive: function isSidebarActive() {
+      return this.$store.getters['IS_SIDEBAR_ACTIVE'];
     },
     reduceSidebar: function reduceSidebar() {
       return Boolean(this.reduce && this.reduceButton);
@@ -786,63 +807,70 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   watch: {
-    reduce: function reduce(val) {
-      if (val == true) {
-        this.$store.dispatch('updateSidebarWidth', 'reduced');
-      } else {
-        this.$store.dispatch('updateSidebarWidth', 'default');
-      }
-
-      setTimeout(function () {
-        window.dispatchEvent(new Event('resize'));
-      }, 100);
-    },
+    // reduce(val) {
+    //
+    //     if (val == true) {
+    //         this.$store.dispatch('updateSidebarWidth', 'reduced');
+    //     } else {
+    //         this.$store.dispatch('updateSidebarWidth', 'default');
+    //     }
+    //
+    //     setTimeout(function () {
+    //         window.dispatchEvent(new Event('resize'));
+    //     }, 100);
+    // },
     reduceButton: function reduceButton() {
       this.setSidebarWidth();
     },
-    '$route': function $route() {
-      if (this.isSidebarActive && this.showCloseButton) this.$store.commit('TOGGLE_IS_SIDEBAR_ACTIVE', false);
+    '$route': function $route() {// if (this.isSidebarActive && this.showCloseButton) this.$store.commit('TOGGLE_IS_SIDEBAR_ACTIVE', false);
     }
   },
   methods: {
-    sidebarMouseEntered: function sidebarMouseEntered() {
-      if (this.reduce) this.$store.commit('UPDATE_SIDEBAR_ITEMS_MIN', false);
-      this.isMouseEnter = true;
-    },
-    sidebarMouseLeave: function sidebarMouseLeave() {
-      if (this.reduce) {
-        this.$store.commit('UPDATE_SIDEBAR_ITEMS_MIN', true);
-      }
-
-      this.isMouseEnter = false;
-    },
+    // sidebarMouseEntered() {
+    //     if (this.reduce) this.$store.commit('UPDATE_SIDEBAR_ITEMS_MIN', false)
+    //     this.isMouseEnter = true;
+    // },
+    // sidebarMouseLeave() {
+    //     if (this.reduce) {
+    //         this.$store.commit('UPDATE_SIDEBAR_ITEMS_MIN', true);
+    //     }
+    //     this.isMouseEnter = false;
+    // },
     toggleReduce: function toggleReduce(val) {
       this.reduceButton = val;
       this.setSidebarWidth();
     },
-    handleWindowResize: function handleWindowResize(event) {
-      this.windowWidth = event.currentTarget.innerWidth;
-      this.setSidebarWidth();
-    },
-    setSidebarWidth: function setSidebarWidth() {
-      if (this.windowWidth < 1200) {
-        if (this.windowWidth < 992) this.$store.commit('UPDATE_WINDOW_BREAKPOINT', 'md');else this.$store.commit('UPDATE_WINDOW_BREAKPOINT', 'lg');
-        this.$store.commit('TOGGLE_IS_SIDEBAR_ACTIVE', false);
-        if (this.reduceButton) this.reduce = false; // this.reduceButton = false;
-
-        this.showCloseButton = true;
-        this.clickNotClose = false;
-        this.$store.dispatch('updateSidebarWidth', 'no-sidebar');
-        this.$store.commit('UPDATE_SIDEBAR_ITEMS_MIN', false);
-      } else {
-        this.$store.commit('UPDATE_WINDOW_BREAKPOINT', 'xl');
-        if (this.reduceButton) this.reduce = true;else this.reduce = false;
-        this.$store.commit('TOGGLE_IS_SIDEBAR_ACTIVE', true);
-        if (this.reduceButton && !this.isMouseEnter) this.$store.commit('UPDATE_SIDEBAR_ITEMS_MIN', true);else this.$store.commit('UPDATE_SIDEBAR_ITEMS_MIN', false);
-        this.clickNotClose = true;
-        this.showCloseButton = false;
-        if (this.reduceSidebar) this.$store.dispatch('updateSidebarWidth', 'reduced');else this.$store.dispatch('updateSidebarWidth', 'default');
-      }
+    // handleWindowResize(event) {
+    //     this.windowWidth = event.currentTarget.innerWidth;
+    //     this.setSidebarWidth();
+    // },
+    setSidebarWidth: function setSidebarWidth() {// if (this.windowWidth < 1200) {
+      //     if (this.windowWidth < 992) this.$store.commit('UPDATE_WINDOW_BREAKPOINT', 'md')
+      //     else this.$store.commit('UPDATE_WINDOW_BREAKPOINT', 'lg')
+      //
+      //     this.$store.commit('TOGGLE_IS_SIDEBAR_ACTIVE', false)
+      //     if (this.reduceButton) this.reduce = false;
+      //     // this.reduceButton = false;
+      //     this.showCloseButton = true;
+      //     this.clickNotClose = false;
+      //     this.$store.dispatch('updateSidebarWidth', 'no-sidebar')
+      //     this.$store.commit('UPDATE_SIDEBAR_ITEMS_MIN', false)
+      // } else {
+      //     this.$store.commit('UPDATE_WINDOW_BREAKPOINT', 'xl')
+      //     if (this.reduceButton) this.reduce = true;
+      //     else this.reduce = false;
+      //
+      //     this.$store.commit('TOGGLE_IS_SIDEBAR_ACTIVE', true)
+      //     if (this.reduceButton && !this.isMouseEnter) this.$store.commit('UPDATE_SIDEBAR_ITEMS_MIN', true)
+      //     else this.$store.commit('UPDATE_SIDEBAR_ITEMS_MIN', false)
+      //
+      //     this.clickNotClose = true;
+      //     this.showCloseButton = false;
+      //     if (this.reduceSidebar)
+      //         this.$store.dispatch('updateSidebarWidth', 'reduced')
+      //     else
+      //         this.$store.dispatch('updateSidebarWidth', 'default')
+      // }
     },
     psSectionScroll: function psSectionScroll() {
       if (this.$refs.mainSidebarPs.$el.scrollTop > 0) this.showShadowBottom = true;else this.showShadowBottom = false;
@@ -852,6 +880,21 @@ __webpack_require__.r(__webpack_exports__);
     },
     onSwipeRightSidebarSwipeArea: function onSwipeRightSidebarSwipeArea() {
       if (!this.isSidebarActive && this.showCloseButton) this.isSidebarActive = true;
+    },
+    close: function close() {
+      // debugger
+      this.$store.commit('TOGGLE_IS_SIDEBAR_ACTIVE', false);
+      this.$store.commit('UPDATE_SIDEBAR_WIDTH', 100);
+      this.$store.dispatch('updateSidebarWidth', 'reduced');
+      this.isMouseEnter = false;
+      this.active = false;
+    },
+    OPEN: function OPEN() {
+      this.$store.commit('TOGGLE_IS_SIDEBAR_ACTIVE', true);
+      this.$store.commit('UPDATE_SIDEBAR_WIDTH', 100);
+      this.$store.dispatch('updateSidebarWidth', 'default');
+      this.isMouseEnter = true;
+      this.active = true;
     }
   },
   components: {
@@ -860,15 +903,12 @@ __webpack_require__.r(__webpack_exports__);
     VuePerfectScrollbar: vue_perfect_scrollbar__WEBPACK_IMPORTED_MODULE_0___default.a
   },
   mounted: function mounted() {
-    var _this2 = this;
-
-    this.$nextTick(function () {
-      window.addEventListener('resize', _this2.handleWindowResize);
-    });
+    // this.$nextTick(() => {
+    //     window.addEventListener('resize', this.handleWindowResize);
+    // });
     this.setSidebarWidth();
   },
-  beforeDestroy: function beforeDestroy() {
-    window.removeEventListener('resize', this.handleWindowResize);
+  beforeDestroy: function beforeDestroy() {// window.removeEventListener('resize', this.handleWindowResize);
   }
 });
 
@@ -2450,8 +2490,39 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "div",
-    { staticClass: "parentx" },
+    { staticClass: "parentx", staticStyle: { "z-index": "4000" } },
     [
+      _c(
+        "div",
+        {
+          staticStyle: {
+            width: "40px",
+            height: "40px",
+            display: "flex",
+            "align-items": "center",
+            "justify-content": "center"
+          }
+        },
+        [
+          !_vm.isSidebarActive
+            ? _c("feather-icon", {
+                staticClass: "mr-0 cursor-pointer",
+                attrs: {
+                  icon: "DiscIcon",
+                  "svg-classes": "stroke-current",
+                  id: "btnSidebarToggler"
+                },
+                on: {
+                  click: function($event) {
+                    return _vm.OPEN()
+                  }
+                }
+              })
+            : _vm._e()
+        ],
+        1
+      ),
+      _vm._v(" "),
       _c(
         "vs-sidebar",
         {
@@ -2467,31 +2538,19 @@ var render = function() {
           ],
           ref: "mainSidebar",
           staticClass: "sidebarx main-menu-sidebar items-no-padding",
+          style: !_vm.isSidebarActive && "z-index: -1",
           attrs: {
             parent: _vm.parent,
-            hiddenBackground: _vm.clickNotClose,
-            reduce: _vm.reduce,
+            hiddenBackground: true,
             "default-index": "-1",
-            "click-not-close": _vm.clickNotClose,
-            "reduce-not-rebound": _vm.reduceNotRebound
-          },
-          model: {
-            value: _vm.isSidebarActive,
-            callback: function($$v) {
-              _vm.isSidebarActive = $$v
-            },
-            expression: "isSidebarActive"
+            reduce: _vm.reduce,
+            "click-not-close": false,
+            value: _vm.isSidebarActive
           }
         },
         [
           _c(
             "div",
-            {
-              on: {
-                mouseenter: _vm.sidebarMouseEntered,
-                mouseleave: _vm.sidebarMouseLeave
-              }
-            },
             [
               _c(
                 "div",
@@ -2517,84 +2576,41 @@ var render = function() {
                               {
                                 name: "show",
                                 rawName: "v-show",
-                                value: _vm.isMouseEnter || !_vm.reduce,
-                                expression: "isMouseEnter || !reduce"
+                                value: _vm.isMouseEnter,
+                                expression: "isMouseEnter"
                               }
                             ],
                             staticClass: "logo-text"
                           },
                           [_vm._v(_vm._s(_vm.title))]
                         )
-                      : _vm._e()
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm._v(
+                      "\n                        " +
+                        _vm._s(_vm.isSidebarActive) +
+                        "\n                    "
+                    )
                   ]),
                   _vm._v(" "),
                   _c(
                     "div",
                     [
-                      _vm.showCloseButton
-                        ? [
-                            _c("feather-icon", {
-                              staticClass: "m-0 cursor-pointer",
-                              attrs: { icon: "XIcon" },
-                              on: {
-                                click: function($event) {
-                                  return _vm.$store.commit(
-                                    "TOGGLE_IS_SIDEBAR_ACTIVE",
-                                    false
-                                  )
-                                }
-                              }
-                            })
-                          ]
-                        : !_vm.showCloseButton && !_vm.sidebarItemsMin
-                        ? [
-                            _c("feather-icon", {
-                              directives: [
-                                {
-                                  name: "show",
-                                  rawName: "v-show",
-                                  value: !_vm.reduce,
-                                  expression: "!reduce"
-                                }
-                              ],
-                              staticClass: "mr-0 cursor-pointer",
-                              attrs: {
-                                icon: "DiscIcon",
-                                "svg-classes": "stroke-current",
-                                id: "btnSidebarToggler"
-                              },
-                              on: {
-                                click: function($event) {
-                                  return _vm.toggleReduce(true)
-                                }
-                              }
-                            }),
-                            _vm._v(" "),
-                            _c("feather-icon", {
-                              directives: [
-                                {
-                                  name: "show",
-                                  rawName: "v-show",
-                                  value: _vm.reduce,
-                                  expression: "reduce"
-                                }
-                              ],
-                              staticClass: "mr-0 cursor-pointer",
-                              attrs: {
-                                icon: "CircleIcon",
-                                "svg-classes": "stroke-current",
-                                id: "btnSidebarToggler"
-                              },
-                              on: {
-                                click: function($event) {
-                                  return _vm.toggleReduce(false)
-                                }
-                              }
-                            })
-                          ]
-                        : _vm._e()
+                      _c("feather-icon", {
+                        staticClass: "mr-0 cursor-pointer",
+                        attrs: {
+                          icon: "DiscIcon",
+                          "svg-classes": "stroke-current",
+                          id: "btnSidebarToggler"
+                        },
+                        on: {
+                          click: function($event) {
+                            return _vm.close()
+                          }
+                        }
+                      })
                     ],
-                    2
+                    1
                   )
                 ]
               ),
@@ -2685,7 +2701,7 @@ var render = function() {
                                           [
                                             _vm._v(
                                               _vm._s(sidebarItem.tag) +
-                                                "\n                            "
+                                                "\n                                "
                                             )
                                           ]
                                         )
@@ -2719,7 +2735,7 @@ var render = function() {
         ]
       ),
       _vm._v(" "),
-      !_vm.isSidebarActive
+      _vm.isSidebarActive
         ? _c("div", {
             directives: [
               {

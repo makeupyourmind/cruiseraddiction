@@ -123,6 +123,12 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 
 
@@ -138,7 +144,7 @@ var SquareComponent = vue__WEBPACK_IMPORTED_MODULE_4__["default"].extend({
   }
 });
 var CustomHeader = vue__WEBPACK_IMPORTED_MODULE_4__["default"].extend({
-  template: "\n    <div @click=\"onSortChanged(1, $event)\">\n        <div class=\"customHeaderLabel\" >{{params.displayName}}</div>\n        <div v-if=\"params.column.colId == order.name && order.by === 'asc'\"  :class=\"ascSort\" class=\"customSortDownLabel\"><span ref=\"eSortAsc\" class=\"ag-header-icon ag-sort-ascending-icon\" aria-hidden=\"true\"><span class=\"ag-icon ag-icon-asc\" unselectable=\"on\"></span></span></i></div>\n        <div v-if=\"params.column.colId == order.name && order.by === 'desc'\" :class=\"descSort\" class=\"customSortUpLabel\"><span ref=\"eSortDesc\" class=\"ag-header-icon ag-sort-descending-icon\" aria-hidden=\"true\"><span class=\"ag-icon ag-icon-desc\" unselectable=\"on\"></span></span></div>\n    </div>\n",
+  template: "\n    <div style=\"width: 100%; display: flex; justify-content: center\" @click=\"onSortChanged(1, $event)\">\n        <div>\n            <div class=\"customHeaderLabel\" >{{params.displayName}}</div>\n            <div v-if=\"params.column.colId == order.name && order.by === 'asc'\"  :class=\"ascSort\" class=\"customSortDownLabel\"><span ref=\"eSortAsc\" class=\"ag-header-icon ag-sort-ascending-icon\" aria-hidden=\"true\"><span class=\"ag-icon ag-icon-asc\" unselectable=\"on\"></span></span></i></div>\n            <div v-if=\"params.column.colId == order.name && order.by === 'desc'\" :class=\"descSort\" class=\"customSortUpLabel\"><span ref=\"eSortDesc\" class=\"ag-header-icon ag-sort-descending-icon\" aria-hidden=\"true\"><span class=\"ag-icon ag-icon-desc\" unselectable=\"on\"></span></span></div>\n\n        </div>\n    </div>\n",
   data: function data() {
     return {
       ascSort: null,
@@ -177,7 +183,9 @@ var CustomHeader = vue__WEBPACK_IMPORTED_MODULE_4__["default"].extend({
         name: 'order',
         value: {
           by: newOrder,
-          name: this.params.column.colId
+          name: this.params.column.colId,
+          searchBrand: this.order.searchBrand,
+          searchNumber: this.order.searchNumber
         }
       });
       this.$parent.$parent.$parent.getDataStockCa(); // this.$emit('sortChanged')
@@ -220,71 +228,75 @@ var CustomHeader = vue__WEBPACK_IMPORTED_MODULE_4__["default"].extend({
       checkboxSelection: true,
       headerCheckboxSelectionFilteredOnly: true,
       headerCheckboxSelection: true,
-      suppressMenu: true
+      suppressMenu: true,
+      pinned: "left"
     }, {
       headerName: 'Brand',
       field: 'brand_name',
-      filter: true,
+      // filter: true,
+      pinned: "left",
       suppressMenu: true // width: 175,
 
     }, {
       headerName: 'PartNumber',
       field: 'part_number',
-      filter: true,
+      // filter: true,
+      pinned: "left",
       suppressMenu: true // width: 175,
 
     }, {
       headerName: 'Description',
       field: 'description_english',
-      filter: true,
+      // filter: true,
+      pinned: "left",
       suppressMenu: true // width: 250,
 
     }, {
       headerName: 'Qty',
       field: 'qty',
-      filter: true,
+      // filter: true,
       suppressMenu: true // width: 75,
 
     }, {
       headerName: 'Min Stock',
       field: 'min_stock',
-      filter: true,
+      // filter: true,
       suppressMenu: true // width: 150,
 
     }, {
       headerName: 'List price',
       field: 'price',
-      filter: true,
+      // filter: true,
       suppressMenu: true // width: 100,
 
     }, {
       headerName: 'Min price',
       field: 'min_price',
-      filter: true,
+      // filter: true,
       suppressMenu: true // width: 100,
 
     }, {
       headerName: 'Max price',
       field: 'max_price',
-      filter: true,
+      // filter: true,
       suppressMenu: true // width: 125,
 
     }, {
       headerName: 'Last Modified',
       field: 'updated_at',
-      filter: true,
+      // filter: true,
       suppressMenu: true // width: 250,
 
     }, {
       headerName: 'Location',
       field: 'location',
-      filter: true,
+      // filter: true,
       suppressMenu: true,
       width: 125
     }, {
       headerName: 'Categories',
       field: 'categories',
-      filter: true,
+      // filter: true,
       suppressMenu: true,
       width: 125
     }, {
@@ -342,15 +354,24 @@ var CustomHeader = vue__WEBPACK_IMPORTED_MODULE_4__["default"].extend({
       var val = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
       this.$store.dispatch('stockCaModule/GET_DATA_STOCK_FROM_SERVER', {
         page: !val ? this.currentPage : val,
-        searchBrand: this.searchBrand,
-        searchNumber: this.searchNumber,
+        searchBrand: this.order.searchBrand,
+        searchNumber: this.order.searchNumber,
         orderName: this.order.name,
         orderBy: this.order.by
       });
     },
+    setOrder: function setOrder(e, type) {
+      this.$store.commit('stockCaModule/SET_VARIABLE', {
+        name: 'order',
+        value: {
+          by: this.order.by,
+          name: this.order.name,
+          searchBrand: type == 'searchBrand' ? e : this.order.searchBrand,
+          searchNumber: type == 'searchNumber' ? e : this.order.searchNumber
+        }
+      });
+    },
     test: function test(e) {
-      console.log(e);
-
       if (e.colDef.headerName === 'PartNumber') {
         if (e.data.showTable) {
           this.$store.dispatch("GET_SHOW_BUNDLE_SINGLE", {
@@ -388,7 +409,11 @@ var CustomHeader = vue__WEBPACK_IMPORTED_MODULE_4__["default"].extend({
     }
   },
   mounted: function mounted() {
+    window.document.body.style.zoom = 0.7;
     this.gridApi = this.gridOptions.api;
+  },
+  destroyed: function destroyed() {
+    window.document.body.style.zoom = 1;
   }
 });
 
@@ -406,7 +431,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, ".ag-header-cell-label {\n  justify-content: center !important;\n}\n.ag-header-cell {\n  padding: 0 !important;\n}\n.ag-header-cell:first-child {\n  padding: 0 24px !important;\n}\n.ag-theme-material .ag-cell {\n  line-height: 0 !important;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n.customHeaderMenuButton {\n  float: left;\n  margin: 0 0 0 3px;\n}\n.customHeaderLabel {\n  float: left;\n  margin: 0 0 0 3px;\n}\n.customSortDownLabel {\n  float: left;\n  margin: 0 0 0 3px;\n}\n.customSortUpLabel {\n  float: left;\n  margin: 0;\n}\n.customSortRemoveLabel {\n  float: left;\n  margin: 0 0 0 3px;\n  font-size: 11px;\n}\n.active {\n  color: cornflowerblue;\n}\n\n", ""]);
+exports.push([module.i, ".ag-header-cell-label {\n  justify-content: center !important;\n}\n.ag-header-cell {\n  padding: 0 !important;\n}\n.ag-header-cell:first-child {\n  padding: 0 24px !important;\n}\n.ag-theme-material .ag-cell {\n  line-height: 0 !important;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n.customHeaderMenuButton {\n  float: left;\n  margin: 0 0 0 3px;\n}\n.customHeaderLabel {\n  float: left;\n  margin: 0 0 0 3px;\n}\n.customSortDownLabel {\n  float: left;\n  margin: 0 0 0 3px;\n}\n.customSortUpLabel {\n  float: left;\n  margin: 0;\n}\n.customSortRemoveLabel {\n  float: left;\n  margin: 0 0 0 3px;\n  font-size: 11px;\n}\n.active {\n  color: cornflowerblue;\n}\n.ag-header-row:last-child{\n  display: none;\n}\n.ag-header{\n  min-height: 50px!important;\n  height: 50px!important;\n}\n.ag-theme-material .ag-icon-checkbox-checked{\n  color: white;\n}\n#content-area.content-area-reduced{\n  margin-left: 40px;\n}\n.ag-theme-material .ag-ltr .ag-cell[col-id=\"description_english\"]{\n  /* width: 200px; */\n  justify-content: flex-start;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  overflow-x: hidden;\n}\n#app{\n  height: calc(100% - 3.5rem);\n}\n.content-wrapper{\n  height: calc(100% - 3.5rem);\n}\n.router-view,.router-content, .vx-card__body,.content-area__content{\n  height: 100%!important;\n}\n#ag-grid-demo, .vx-card, .vx-card__collapsible-content, .ag-grid-table{\n  height: 96%!important;\n}\n.router-content{\n  margin-top: 3em!important;\n}\n", ""]);
 
 // exports
 
@@ -542,29 +567,43 @@ var render = function() {
                     "flex flex-wrap items-center justify-between ag-grid-table-actions-right"
                 },
                 [
-                  _c("vs-input", {
-                    staticClass: "mb-4 md:mb-0 mr-4",
-                    attrs: { placeholder: "Search brand" },
-                    on: { change: _vm.updateSearchQuery },
+                  _c("vs-pagination", {
+                    staticStyle: { "margin-right": "20px" },
+                    attrs: { total: _vm.totalPages, max: 7 },
                     model: {
-                      value: _vm.searchBrand,
+                      value: _vm.currentPage,
                       callback: function($$v) {
-                        _vm.searchBrand = $$v
+                        _vm.currentPage = $$v
                       },
-                      expression: "searchBrand"
+                      expression: "currentPage"
                     }
                   }),
                   _vm._v(" "),
                   _c("vs-input", {
                     staticClass: "mb-4 md:mb-0 mr-4",
-                    attrs: { placeholder: "Search part number" },
-                    on: { change: _vm.updateSearchQuery },
-                    model: {
-                      value: _vm.searchNumber,
-                      callback: function($$v) {
-                        _vm.searchNumber = $$v
+                    attrs: {
+                      value: _vm.order.searchBrand,
+                      placeholder: "Search brand"
+                    },
+                    on: {
+                      input: function($event) {
+                        return _vm.setOrder($event, "searchBrand")
                       },
-                      expression: "searchNumber"
+                      change: _vm.updateSearchQuery
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("vs-input", {
+                    staticClass: "mb-4 md:mb-0 mr-4",
+                    attrs: {
+                      value: _vm.order.searchNumber,
+                      placeholder: "Search part number"
+                    },
+                    on: {
+                      input: function($event) {
+                        return _vm.setOrder($event, "searchNumber")
+                      },
+                      change: _vm.updateSearchQuery
                     }
                   })
                 ],
@@ -576,10 +615,6 @@ var render = function() {
           _c("ag-grid-vue", {
             ref: "test",
             staticClass: "ag-theme-material w-100 my-4 ag-grid-table",
-            staticStyle: {
-              "text-align": "center!important",
-              padding: "0!important"
-            },
             attrs: {
               gridOptions: _vm.gridOptions,
               columnDefs: _vm.columnDefs,
@@ -599,17 +634,6 @@ var render = function() {
               cellClicked: function($event) {
                 return _vm.test($event)
               }
-            }
-          }),
-          _vm._v(" "),
-          _c("vs-pagination", {
-            attrs: { total: _vm.totalPages, max: 7 },
-            model: {
-              value: _vm.currentPage,
-              callback: function($$v) {
-                _vm.currentPage = $$v
-              },
-              expression: "currentPage"
             }
           })
         ],

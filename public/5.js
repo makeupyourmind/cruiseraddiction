@@ -37,6 +37,18 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -91,17 +103,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var devextreme_vue_data_grid__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! devextreme-vue/data-grid */ "./node_modules/devextreme-vue/data-grid.js");
 /* harmony import */ var devextreme_vue_data_grid__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(devextreme_vue_data_grid__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var _components_DetailTemplate__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../components/DetailTemplate */ "./resources/js/src/components/DetailTemplate.vue");
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 //
 //
 //
@@ -268,6 +269,7 @@ __webpack_require__.r(__webpack_exports__);
     _api_orders__WEBPACK_IMPORTED_MODULE_3__["Orders"].getOrders().then(function (res) {
       _this.contacts = res.body.map(function (item) {
         item.order.ID = item.id;
+        item.order.date = item.created_at;
         return item.order;
       });
       console.log(_this.contacts);
@@ -360,17 +362,34 @@ var render = function() {
           }
         },
         [
-          _c("dx-column", { attrs: { "data-field": "brand_name" } }),
-          _vm._v(" "),
           _c("dx-column", {
-            attrs: { "data-field": "count", "data-type": "date" }
+            attrs: { caption: "Brand Name", "data-field": "brand_name" }
           }),
           _vm._v(" "),
           _c("dx-column", {
-            attrs: { "data-field": "part_number", "data-type": "date" }
+            attrs: {
+              caption: "Part Number",
+              "data-field": "part_number",
+              "data-type": "date"
+            }
           }),
           _vm._v(" "),
-          _c("dx-column", { attrs: { "data-field": "warehouse" } })
+          _c("dx-column", {
+            attrs: {
+              caption: "Description",
+              "data-field": "description_english"
+            }
+          }),
+          _vm._v(" "),
+          _c("dx-column", { attrs: { caption: "QTY", "data-field": "count" } }),
+          _vm._v(" "),
+          _c("dx-column", {
+            attrs: { caption: "Warehouse", "data-field": "warehouse" }
+          }),
+          _vm._v(" "),
+          _c("dx-column", {
+            attrs: { caption: "Price", "data-field": "price" }
+          })
         ],
         1
       )
@@ -469,37 +488,31 @@ var render = function() {
             },
             [
               _c("dx-column", {
-                attrs: { width: 70, "data-field": "amount", caption: "Title" }
-              }),
-              _vm._v(" "),
-              _c("dx-column", { attrs: { "data-field": "user.city" } }),
-              _vm._v(" "),
-              _c("dx-column", { attrs: { "data-field": "user.country" } }),
-              _vm._v(" "),
-              _c("dx-column", {
-                attrs: { width: 170, "data-field": "user.email" }
+                attrs: { "data-field": "date", caption: "Date" }
               }),
               _vm._v(" "),
               _c("dx-column", {
-                attrs: { width: 125, "data-field": "user.first_name" }
-              }),
-              _vm._v(" "),
-              _c("dx-column", { attrs: { "data-field": "user.last_name" } }),
-              _vm._v(" "),
-              _c("dx-column", { attrs: { "data-field": "user.phone" } }),
-              _vm._v(" "),
-              _c("dx-column", { attrs: { "data-field": "user.postal_code" } }),
-              _vm._v(" "),
-              _c("dx-column", { attrs: { "data-field": "user.state" } }),
-              _vm._v(" "),
-              _c("dx-column", { attrs: { "data-field": "user.same_address" } }),
-              _vm._v(" "),
-              _c("dx-column", {
-                attrs: { "data-field": "user.street_address" }
+                attrs: { caption: "Order", "data-field": "ID" }
               }),
               _vm._v(" "),
               _c("dx-column", {
-                attrs: { "data-field": "user.street_address_two" }
+                attrs: { caption: "Country", "data-field": "user.country" }
+              }),
+              _vm._v(" "),
+              _c("dx-column", {
+                attrs: {
+                  width: 125,
+                  caption: "First Name",
+                  "data-field": "user.first_name"
+                }
+              }),
+              _vm._v(" "),
+              _c("dx-column", {
+                attrs: { caption: "Last Name", "data-field": "user.last_name" }
+              }),
+              _vm._v(" "),
+              _c("dx-column", {
+                attrs: { width: 70, "data-field": "amount", caption: "Total" }
               }),
               _vm._v(" "),
               _c("detail", {

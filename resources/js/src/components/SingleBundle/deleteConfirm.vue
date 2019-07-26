@@ -56,8 +56,16 @@
                     array: this.$store.getters["stockCaModule/GET_STOCK_DATA_DELETE"],
                     password: this.password
                 });
+                const order = this.$store.getters['stockCaModule/GET_DATA_STOCK_ORDER'];
+                const current = this.$store.getters['stockCaModule/GET_STOCK_DATA'];
 
-                await this.$store.dispatch("stockCaModule/GET_DATA_STOCK_FROM_SERVER");
+                await this.$store.dispatch('stockCaModule/GET_DATA_STOCK_FROM_SERVER', {
+                    page: current ? current.current_page : 1,
+                    searchBrand:order.searchBrand,
+                    searchNumber:order.searchNumber,
+                    orderName: order.name,
+                    orderBy: order.by,
+                });
 
                 this.$store.dispatch("GET_DELETE_MODULE", false)
             },
@@ -71,5 +79,9 @@
 </script>
 
 <style scoped>
-
+    .l{
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow-x: hidden;
+    }
 </style>
