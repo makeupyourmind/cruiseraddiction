@@ -6,7 +6,9 @@
             <div class="flex flex-wrap justify-between items-center">
 
                 <div class="flex flex-wrap items-center justify-between ag-grid-table-actions-right">
-                    <vs-input class="mb-4 md:mb-0 mr-4" v-model="searchQuery" @input="updateSearchQuery" placeholder="Search..." />>
+                    <vs-input class="mb-4 md:mb-0 mr-4" v-model="searchPart" @input="updateSearchQuery" placeholder="Search Part Number" />
+                    <vs-input class="mb-4 md:mb-0 mr-4" v-model="searchEmail" @input="updateSearchQuery" placeholder="Search Email" />
+                    <vs-input class="mb-4 md:mb-0 mr-4" v-model="searchCountry" @input="updateSearchQuery" placeholder="Search country" />
                 </div>
             </div>
             <!--<ag-grid-vue-->
@@ -30,45 +32,56 @@
             <!--:suppressPaginationPanel="true">-->
             <!--</ag-grid-vue>-->
             <br>
-            <dx-data-grid
-                    id="grid-container"
-                    :show-borders="true"
-                    :data-source="contacts"
-                    key-expr="ID"
-            >
-                <dx-column
-                        data-field="date"
-                        caption="Date"
-                />
-                <dx-column
-                        caption="Order"
-                        data-field="ID"/>
-                <dx-column
-                        caption="Country"
-                        data-field="user.country"/>
-                <dx-column
-                        :width="125"
-                        caption="First Name"
-                        data-field="user.first_name"
-                />
-                <dx-column
-                        caption="Last Name"
-                        data-field="user.last_name"
-                />
+            <div class="grid">
+                <dx-data-grid
+                        id="grid-container"
+                        :show-borders="true"
+                        :data-source="contacts"
+                        @rowPrepared="prepered"
+                        key-expr="ID"
+                >
+                    <dx-column
+                            data-field="date"
+                            caption="Date"
+                    />
+                    <dx-column
+                            caption="Order"
+                            data-field="id"/>
+                    <dx-column
+                            caption="Country"
+                            data-field="user.country"/>
+                    <dx-column
+                            :width="125"
+                            caption="First Name"
+                            data-field="user.first_name"
+                    />
+                    <dx-column
+                            caption="Last Name"
+                            data-field="user.last_name"
+                    />
 
-                <dx-column
-                        :width="70"
-                        data-field="amount"
-                        caption="Total"
-                />
-                <detail
-                        :enabled="true"
-                        template="detailTemplate"
-                />
-                <div slot="detailTemplate" slot-scope="{ data }">
-                    <detail-template :template-data="data"/>
-                </div>
-            </dx-data-grid>
+                    <dx-column
+                            :width="70"
+                            data-field="amount"
+                            caption="Total"
+                    />
+                    <dx-column
+                            :width="70"
+                            caption="Action"
+                            cell-template="ActionTemplate"
+                    />
+                    <div slot="ActionTemplate" slot-scope="{ data }">
+                        <action :template-data="data"/>
+                    </div>
+                    <detail
+                            :enabled="true"
+                            template="detailTemplate"
+                    />
+                    <div slot="detailTemplate" slot-scope="{ data }">
+                        <detail-template :template-data="data"/>
+                    </div>
+                </dx-data-grid>
+            </div>
 
             <vs-pagination
                     :total="totalPages"
@@ -79,7 +92,7 @@
 </template>
 
 <script>
-    import { AgGridVue } from "ag-grid-vue"
+
     import singlebundle from '../components/SingleBundle/singleBundle'
     import Vue from 'vue'
     import {Orders} from "../api/orders";
@@ -91,16 +104,18 @@
         DxDataGrid,
         DxColumn,
         DxMasterDetail,
+        DxButton
     } from 'devextreme-vue/data-grid';
     import DetailTemplate from "../components/DetailTemplate";
+    import ActionTemplate from "../components/ActionTemplate";
 
     export default {
         components: {
-            AgGridVue,
             singlebundle,
             DetailTemplate,
             DxDataGrid,
             DxColumn,
+            action:ActionTemplate,
             detail:DxMasterDetail
         },
         data() {
@@ -119,12 +134,16 @@
                 frameworkComponents:null,
                 columnDefs: null,
                 contacts: [],
-                context: null
+                interval:null,
+                context: null,
+                searchPart:'',
+                searchEmail:'',
+                searchCountry:'',
             }
         },
         computed: {
             paginationPageSize() {
-                if(this.gridApi) return this.gridApi.paginationGetPageSize()
+                if(this.gridApi) return this.gridApi.paginationGetPageSize();
                 else return 50
             },
             totalPages() {
@@ -137,13 +156,17 @@
                     else return 1
                 },
                 set(val) {
-                    // this.gridApi.paginationGoToPage(val - 1);
+                    // this.gridApi.paginationGoToPage(val - 1);TEST
                 }
             }
         },
         methods: {
             updateSearchQuery(val) {
-                this.gridApi.setQuickFilter(val);
+                clearInterval(this.interval);
+                this.interval = setTimeout(() => {
+                    this.getOrders();
+                    clearInterval(this.interval);
+                }, 300)
             },
             test(e){
                 if(e.colDef.headerName === 'PartNumber'){
@@ -161,18 +184,29 @@
                 console.log('ssss',selectedNodes)
                 // debugger;
                 // console.log(this.columnDefs.filter(item => item.checkboxSelection).map(item => ))
+            },
+            prepered(row){
+
+                if(row.rowType == 'header' || row.rowType == 'detail') return;
+                if(typeof row.rowIndex == 'undefined')return;
+                if (row.key%2) row.rowElement.style['background'] = 'white';
+                else row.rowElement.style['background'] = '#ebebeb';
+            },
+            getOrders(){
+                Orders.getOrders(this.searchPart, this.searchEmail,this.searchCountry )
+                    .then(res => {
+                        this.contacts = res.body.map((item, index) => {
+                            item.order.ID = index;
+                            item.order.id = item.id;
+                            item.order.date = item.created_at;
+                            return item.order;
+                        });
+                        console.log(this.contacts)
+                    });
             }
         },
         created() {
-            Orders.getOrders()
-                .then(res => {
-                    this.contacts = res.body.map(item => {
-                        item.order.ID = item.id;
-                        item.order.date = item.created_at;
-                        return item.order;
-                    })
-                    console.log(this.contacts)
-                });
+           this.getOrders()
             this.gridApi = this.gridOptions.api;
             this.gridColumnApi = this.gridOptions.columnApi;
         }
@@ -195,7 +229,18 @@
         align-items: center;
         justify-content: center;
     }
-    .dx-datagrid-rowsview .dx-row:nth-child(odd){
-        background: lightgrey;
+    /*#ag-grid-demo .grid > #grid-container > .dx-datagrid .dx-datagrid-rowsview .dx-row:nth-child(odd){*/
+        /*background: lightgrey;*/
+    /*}*/
+    /*.detail .dx-row:nth-child(odd), .detail .dx-row:nth-child(even){*/
+        /*background: white!important;*/
+    /*}*/
+    .dx-datagrid-group-opened:before{
+        content: "\21D1";
+        color:red
+    }
+    .dx-datagrid-group-closed:before{
+        content: "\21D3";
+        color:blue
     }
 </style>
