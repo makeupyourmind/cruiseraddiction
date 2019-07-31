@@ -469,7 +469,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       var _this = this;
 
       var module = JSON.parse(JSON.stringify(this.moduleStock));
-      module.part_number_without_to_much = module.part_number.replace(/[- )(]/g, '');
+      module.part_number_without_too_much = module.part_number.replace(/[- )(]/g, '');
       var current = this.$store.getters['stockCaModule/GET_STOCK_DATA'];
       var order = this.$store.getters['stockCaModule/GET_DATA_STOCK_ORDER'];
 

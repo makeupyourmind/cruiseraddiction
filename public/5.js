@@ -822,9 +822,7 @@ var render = function() {
       _vm._v(" "),
       _c("div", { staticClass: "total" }, [
         _vm._v(
-          "\n        Shipping : " +
-            _vm._s(_vm.shipping.total_price || 0) +
-            "\n    "
+          "\n        Shipping : " + _vm._s(_vm.shipping.value || 0) + "\n    "
         )
       ]),
       _vm._v(" "),
@@ -834,9 +832,7 @@ var render = function() {
             "Total : " +
               _vm._s(
                 _vm.getSubtotal +
-                  (_vm.shipping.total_price
-                    ? Number(_vm.shipping.total_price)
-                    : 0)
+                  (_vm.shipping.value ? Number(_vm.shipping.value) : 0)
               )
           )
         ])
