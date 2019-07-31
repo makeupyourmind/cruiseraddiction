@@ -38,8 +38,10 @@ class PartsController extends BaseController
 	//	if($caPart['PartNumber'] == '6814160010'){
 	//	    dd($caPart);
 		//}
+		$DD= '44444444-444444444';
 		$caOrder['brand_name'] = $caPart['brand']['BrandName'];
 		$caOrder['part_number'] = $caPart['PartNumber'];
+		$caOrder['part_number_without_too_much'] = str_replace(['-', '-'], '', $caPart['PartNumber']);
 		$caOrder['description_english'] = $caPart['DescriptionEnglish'];
 		$caOrder['weight_physical'] = $caPart['part']['WeightPhysical'];
 		$caOrder['weight_volumetric'] = $caPart['part']['WeightVolumetric'];
@@ -54,9 +56,9 @@ class PartsController extends BaseController
 		$caOrder['notes'] = serialize($caPart);
 		$caOrder['categories'] = $caPart['stats'] && $caPart['stats']['categories'] ? json_encode($caPart['stats']['categories']) : null;
 		$caOrder['tags'] =       $caPart['stats'] && $caPart['stats']['tags'] ? json_encode($caPart['stats']['tags']) : null;
-		$caOrder['min_price'] =  $caPart['stats'] ? $caPart['stats']['min_price'] : null;
-		$caOrder['max_price'] =  $caPart['stats'] ? $caPart['stats']['max_price'] : null;
-		$caOrder['min_stock'] =  $caPart['stats'] ? $caPart['stats']['stock_min'] : null;
+		$caOrder['min_price'] =  $caPart['stats'] ? (string) $caPart['stats']['min_price'] : null;
+		$caOrder['max_price'] =  $caPart['stats'] ? (string) $caPart['stats']['max_price'] : null;
+		$caOrder['min_stock'] =  $caPart['stats'] ? (string) $caPart['stats']['stock_min'] : null;
 		
 		$caOrder['location'] = $caPart['Location'];
 		$caOrder['is_stock_ca'] = true;
@@ -117,6 +119,7 @@ class PartsController extends BaseController
 	!$request->oder_by ?? $request->order_by = 'asc';
 	$stockPart = Part::where('is_stock_ca', true)
 		    ->where('part_number', 'LIKE', '%' . $request->part_number . '%')
+		    ->orWhere('part_number_without_too_much', 'LIKE', '%' . $request->part_number . '%')
 		    ->where('brand_name', 'LIKE', '%' . $request->brand_name . '%')
 		    ->orderBy($request->order_name, $request->order_by)
 		    ->paginate(100);
@@ -131,7 +134,7 @@ class PartsController extends BaseController
         ]);
 
         if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors(), 202);
+            return $this->sendError('Validation Error.', $validator->errors(), 403);
         }
 
         $uniqueHash = md5($request->brand_name.$request->part_number.$request->warehouse);
@@ -148,7 +151,7 @@ class PartsController extends BaseController
         ]);
 
         if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors(), 202);
+            return $this->sendError('Validation Error.', $validator->errors(), 403);
         }
 
         Part::where('brand_name', $request->brand_name)

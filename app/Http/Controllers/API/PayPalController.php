@@ -179,20 +179,20 @@ class PayPalController extends Controller
                 Part::where('unique_hash', $partHash['unique_hash'])->decrement('qty', $partHash['count']);
                 $customersOrder['data'][$dataElem]['count'] = $partHash['count'];
                 $customersOrder['data'][$dataElem]['brand_name'] = $part->brand_name;
+		$customersOrder['data'][$dataElem]['part_number_without_too_much']= str_replace(['-', '-'], '', $part->part_number);
                 $customersOrder['data'][$dataElem]['part_number'] = $part->part_number;
                 $customersOrder['data'][$dataElem]['warehouse'] = $part->warehouse;
                 $customersOrder['data'][$dataElem]['price'] = $part->price;
                 $customersOrder['data'][$dataElem]['description_english'] = $part->description_english;
                 $customersOrder['data'][$dataElem]['unique_hash'] = $part->unique_hash;
 		$dataElem++;
-
             }
             $serializedOrder = serialize($customersOrder);
 
             $newOrder = New Order;
             $newOrder->order = $serializedOrder;
             $newOrder->save();
-            return response()->json('Payment success', 200);
+            return redirect('http://cruiser-webstore.qbex.io');
         }
         \Session::put('error','Payment failed');
         return Redirect::route('addmoney.paywithpaypal');

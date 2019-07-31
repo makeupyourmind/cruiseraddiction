@@ -29,8 +29,9 @@ Route::group([
 
     Route::get('orders', 'OrdersController@index');
     Route::get('stock-ca', 'PartsController@stock_ca');
-
+    Route::get('countries', 'CountryController@get_countries');
 });
+
 
 
 Route::group([
@@ -44,9 +45,6 @@ Route::group([
 
     Route::get('user', 'UsersController@show');
     Route::put('user/{id}', 'UsersController@update');
-
-
-
 
 });
 
