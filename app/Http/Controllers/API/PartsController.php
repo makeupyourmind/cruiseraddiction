@@ -36,7 +36,7 @@ class PartsController extends BaseController
 
 		$caOrderData = array();
 	//	if($caPart['PartNumber'] == '6814160010'){
-	//	    dd($caPart);
+	//		dd($caPart);
 		//}
 		$DD= '44444444-444444444';
 		$caOrder['brand_name'] = $caPart['brand']['BrandName'];
@@ -45,7 +45,7 @@ class PartsController extends BaseController
 		$caOrder['description_english'] = $caPart['DescriptionEnglish'];
 		$caOrder['weight_physical'] = $caPart['part']['WeightPhysical'];
 		$caOrder['weight_volumetric'] = $caPart['part']['WeightVolumetric'];
-		$caOrder['qty'] = $caPart['StockQty'];
+		$caOrder['qty'] = $caPart['Stock_Qty'];
 		$caOrder['warehouse'] = 'canada';
 		$caOrder['price'] = $caPart['Price'];
 		$caOrder['unique_hash'] = 'CA_'.md5($caOrder['brand_name'].$caOrder['part_number'].'canada');
@@ -115,14 +115,24 @@ class PartsController extends BaseController
     }
 
     public function getStockCa(Request $request){
+	
 	!$request->order_name ?? $request->order_name = 'brand_name';
 	!$request->oder_by ?? $request->order_by = 'asc';
 	$stockPart = Part::where('is_stock_ca', true)
 		    ->where('part_number', 'LIKE', '%' . $request->part_number . '%')
-		    ->orWhere('part_number_without_too_much', 'LIKE', '%' . $request->part_number . '%')
+		    ->where('part_number_without_too_much', 'LIKE', '%' . $request->part_number . '%')
 		    ->where('brand_name', 'LIKE', '%' . $request->brand_name . '%')
 		    ->orderBy($request->order_name, $request->order_by)
 		    ->paginate(100);
+	
+
+/*
+	$partNumber = str_replace('-', '', $request->part_number);
+	$stockPart = Part::where('warehouse', 'canada')
+			->where('part_number', 'LIKE', '%' . $partNumber . '%')
+			->where('brand_name', 'LIKE', '%' . $request->brand_name . '%')
+			->paginate(100);
+*/
 	return response()->json($stockPart, 200);
     }
 
