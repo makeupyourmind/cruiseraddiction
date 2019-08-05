@@ -192,7 +192,9 @@ class PayPalController extends Controller
             $newOrder = New Order;
             $newOrder->order = $serializedOrder;
             $newOrder->save();
-            return redirect('http://cruiser-webstore.qbex.io');
+	    $insertedId = $newOrder->id;
+	    $customersOrder['order_id'] = $insertedId;
+            return redirect('http://cruiser-webstore.qbex.io/final?result='.base64_encode(json_encode($customersOrder)));
         }
         \Session::put('error','Payment failed');
         return Redirect::route('addmoney.paywithpaypal');
