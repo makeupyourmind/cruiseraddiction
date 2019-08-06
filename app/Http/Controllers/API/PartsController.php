@@ -36,7 +36,7 @@ class PartsController extends BaseController
 
 		$caOrderData = array();
 	//	if($caPart['PartNumber'] == '6814160010'){
-	//		dd($caPart);
+	//	    dd($caPart);
 		//}
 		$DD= '44444444-444444444';
 		$caOrder['brand_name'] = $caPart['brand']['BrandName'];
@@ -115,7 +115,6 @@ class PartsController extends BaseController
     }
 
     public function getStockCa(Request $request){
-	
 	!$request->order_name ?? $request->order_name = 'brand_name';
 	!$request->oder_by ?? $request->order_by = 'asc';
 	$stockPart = Part::where('is_stock_ca', true)

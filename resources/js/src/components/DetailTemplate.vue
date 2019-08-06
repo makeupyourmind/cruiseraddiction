@@ -104,10 +104,10 @@
             Subtotal : {{getSubtotal}}
         </div>
         <div class="total">
-            Shipping : {{shipping.total_price || 0}}
+            Shipping : {{shipping.value || 0}}
         </div>
         <div class="total">
-            <span style="font-weight: bold">Total : {{getSubtotal + (shipping.total_price ? Number(shipping.total_price) : 0)}}</span>
+            <span style="font-weight: bold">Total : {{getSubtotal + (shipping.value ? Number(shipping.value) : 0)}}</span>
         </div>
     </div>
 </template>
