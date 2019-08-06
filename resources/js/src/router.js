@@ -26,7 +26,6 @@ const router = new Router({
     mode: 'history',
     base: '/',
     routes: [
-
         {
             // =============================================================================
             // MAIN LAYOUT ROUTES
