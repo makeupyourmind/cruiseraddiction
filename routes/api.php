@@ -35,6 +35,9 @@ Route::group([
     Route::post('reviews', 'ReviewsController@store');
     Route::get('reviews/{id}', 'ReviewsController@show');
     Route::delete('reviews/{id}', 'ReviewsController@destroy');
+
+    Route::post('check-email', 'UsersController@checkEmail');
+
 });
 
 
@@ -50,6 +53,9 @@ Route::group([
 
     Route::get('user', 'UsersController@show');
     Route::put('user/{id}', 'UsersController@update');
+    Route::get('user-orders/{id}', 'OrdersController@userOrders');
 
+    Route::post('bundles', 'BundlesController@store');
+    Route::get('bundles/{id}', 'BundlesController@show');
 });
 
