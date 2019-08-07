@@ -5,6 +5,7 @@
         @vs-cancel="clearFields"
         @vs-accept="create"
         @vs-close="clearFields"
+        style="min-width: 60vw"
         :vs-active.sync="showBundleSingle">
         <!--showTable === true ? 'Create Bundle' : 'Create Single'-->
         <VuePerfectScrollbar class="scroll-area p-4" style="max-height: 75vh;"  :settings="settings">
@@ -46,7 +47,38 @@
                         <!--</li>-->
                     <!--</ul>-->
 
-                    <div class="w-full mb-6 mt-6" v-if="showTable === true">
+                    <vs-table v-if="moduleStock.bundle_parts"
+                              :data="moduleStock.bundle_parts"
+                              class="mt-5 mb-5 custom-my">
+                        <template slot="thead">
+                            <vs-th>Brand Name</vs-th>
+                            <vs-th>Description</vs-th>
+                            <vs-th>Parts Number</vs-th>
+                            <vs-th>Qty</vs-th>
+                            <vs-th>Stock Qty</vs-th>
+                        </template>
+
+                        <template slot-scope="{data}">
+                            <vs-tr :key="elem" v-for="(tr, elem) in data">
+                                <vs-td :data="data[elem].brand_name">
+                                    <p>{{data[elem].brand_name}}</p>
+                                </vs-td>
+                                <vs-td :data="data[elem].description_english">
+                                    <p>{{data[elem].description_english}}</p>
+                                </vs-td>
+                                <vs-td :data="data[elem].part_number">
+                                    <p>{{data[elem].part_number}}</p>
+                                </vs-td>
+                                <vs-td :data="data[elem].qty">
+                                    <p>{{data[elem].qty}}</p>
+                                </vs-td>
+                                <vs-td :data="data[elem].stock_qty" align="center">
+                                    <p>{{data[elem].stock_qty}}</p>
+                                </vs-td>
+                            </vs-tr>
+                        </template>
+                    </vs-table>
+                    <div class="w-full mb-6 mt-6" v-if="moduleStock.is_bundle">
                         <vs-button
                             color="success"
                             @click="fillTable = true"
@@ -125,7 +157,7 @@
                     type="line" color="dark"
                     class="mr-5"
                     style="float: left">Cancel</vs-button>
-                <form-else :table_store="table_store" @saveChanges="saveChanges"></form-else>
+                <form-else :table_store="this.moduleStock.bundle_parts" @saveChanges="saveChanges"></form-else>
             </div>
         </VuePerfectScrollbar>
     </vs-prompt>
@@ -184,7 +216,7 @@
                 ]
             },
             saveChanges(val){
-                this.table_store = val;
+                this.moduleStock.bundle_parts = val;
                 this.fillTable = false;
             },
             clearFields() {
@@ -229,7 +261,7 @@
 
                     module && (module.tags = JSON.stringify(module.tags));
 
-                    this.$store.dispatch("stockCaModule/CREATE_DATA_STOCK", module)
+                    this.$store.dispatch(`stockCaModule/${ !this.moduleStock.is_bundle ? 'CREATE_DATA_STOCK' : 'CREATE_DATA_STOCK_BUNDLE'}`, module)
                         .then(() => {
                             return this.$store.dispatch('stockCaModule/GET_DATA_STOCK_FROM_SERVER', {
                                 page: current ? current.current_page : 1,
@@ -252,7 +284,7 @@
     body{
         .vs-component{
             .vs-dialog{
-                max-width: 650px!important;
+                max-width: 1000px!important;
             }
         }
     }
@@ -266,4 +298,8 @@
     /*    display: flex;*/
     /*}*/
 
+    .custom-my .vs-table--content{
+        overflow-y: scroll;
+        max-height: 281px;
+    }
 </style>

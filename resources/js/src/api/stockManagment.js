@@ -14,6 +14,10 @@ export class StockManagment{
         return window.http.post(`api/add-parts`, data)
     }
 
+    static createBundle(data){
+        return window.http.post(`api/bundles`, data)
+    }
+
     static deletePart(data){
         const result = {...data};
         result.array = btoa(JSON.stringify(result.array));
@@ -21,8 +25,8 @@ export class StockManagment{
         return window.http.delete(`api/delete-parts?array=${result.array}&password=${result.password}`)
     }
 
-
     static reload () {
         return window.http.get(`api/stock-ca`)
     }
+
 }

@@ -3,15 +3,15 @@
         <vs-dropdown class="ml-auto md:block hidden cursor-pointer" style="margin-left:15px!important "vs-trigger-click>
             <vs-button radius icon="icon-edit" icon-pack="feather"></vs-button>
             <vs-dropdown-menu class="w-32">
-                <!--<vs-dropdown-item>-->
-                    <!--<div @click="createBundle" class="flex items-center">-->
-                        <!--<span>Creatge bundle</span>-->
-                    <!--</div>-->
-<!--&lt;!&ndash;                <singleBungleForm :activePrompt="activePrompt"></singleBungleForm>&ndash;&gt;-->
-                <!--</vs-dropdown-item>-->
+                <vs-dropdown-item>
+                    <div @click="createSingle(true)" class="flex items-center">
+                        <span>Create bundle</span>
+                    </div>
+<!--                <singleBungleForm :activePrompt="activePrompt"></singleBungleForm>-->
+                </vs-dropdown-item>
 
                 <vs-dropdown-item>
-                    <div @click="createSingle" class="flex items-center">
+                    <div @click="createSingle(false)" class="flex items-center">
                         <span>Create Single item</span>
                     </div>
                 </vs-dropdown-item>
@@ -52,15 +52,14 @@
             'select'
         ],
         methods:{
-            createBundle(){
-                this.$store.dispatch("GET_SHOW_BUNDLE_SINGLE", {module: true, showTable: true});
-            },
-            createSingle(){
+            createSingle(type){
                 const data = {
                     is_stock_ca: 1,
                     warehouse: "canada",
-                    action: 'create'
+                    action: 'create',
+                    is_bundle: Number(type)
                 };
+                type && (data.bundle_parts = []);
                 [
                     'brand_name',
                     'categories',
@@ -72,7 +71,7 @@
                     'weight_volumetric'
                 ].forEach(item => data[item] = '');
                 ['color', 'image', 'part_fits' ].forEach(item => data[item] = null);
-                ['is_bundle','qty','subst_for' ].forEach(item => data[item] = 0);
+                ['qty','subst_for' ].forEach(item => data[item] = 0);
                 this.$store.dispatch("GET_EDIT_STORE", data);
                 this.$store.dispatch("GET_SHOW_BUNDLE_SINGLE",  {module: true, showTable: false});
             },
