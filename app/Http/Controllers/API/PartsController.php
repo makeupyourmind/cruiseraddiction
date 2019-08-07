@@ -14,7 +14,9 @@ class PartsController extends BaseController
 {
 
     public function index() {
-        $parts = Part::orderBy('id', 'desc')->paginate(100);
+        $parts = Part::orderBy('id', 'desc')
+	    ->with('bundleParts')
+	    ->paginate(100);
         /*
         $unique = $parts->unique(function ($item)
         {
