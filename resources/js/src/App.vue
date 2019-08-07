@@ -101,4 +101,7 @@
         font-size: 40px;
         z-index: 100000;
     }
+    .router-content{
+        height: auto!important;
+    }
 </style>

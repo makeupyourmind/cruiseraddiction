@@ -21,26 +21,29 @@
                     <vs-td :data="data[elem].brand_name">
                         <vs-input
                             v-model="data[elem].brand_name"
+                            @input="getData($event, 'brand_name', elem)"
                             :label-placeholder="obj_store.brand_name"
-                            style="width:117px; margin-top: 0"/>
+                            style=" margin-top: 0"/>
                     </vs-td>
-                    <vs-td :data="data[elem].description">
+                    <vs-td :data="data[elem].description_english">
                         <vs-input
-                            v-model="data[elem].description"
-                            :label-placeholder="obj_store.description"
-                            style="width:117px; margin-top: 0"/>
+                            v-model="data[elem].description_english"
+                            :label-placeholder="obj_store.description_english"
+                            style=" margin-top: 0"/>
                     </vs-td>
-                    <vs-td :data="data[elem].parts_number">
+                    <vs-td :data="data[elem].part_number">
                         <vs-input
-                            v-model="data[elem].parts_number"
-                            :label-placeholder="obj_store.parts_number"
-                            style="width:117px; margin-top: 0"/>
+                            v-model="data[elem].part_number"
+                            @input="getData($event, 'part_number', elem)"
+                            :label-placeholder="obj_store.part_number"
+                            style="margin-top: 0"/>
                     </vs-td>
                     <vs-td :data="data[elem].qty">
                         <vs-input
                             v-model="data[elem].qty"
                             :label-placeholder="obj_store.qty"
-                            style="width:40px; margin-top: 0"/>
+                            :style="Number(data[elem].qty) > Number(data[elem].stock_qty) && 'color: red'"
+                            style="width:50px; margin-top: 0"/>
                     </vs-td>
                     <vs-td :data="data[elem].stock_qty" align="center">
                         <p>{{data[elem].stock_qty}}</p>
@@ -64,18 +67,25 @@
     </div>
 </template>
 <script>
+    import {StockManagment} from "../../api/stockManagment";
+
     export default {
         name: "formElse",
         data:() => ({
             obj_store:{
                 "brand_name": "Paste desc to search",
-                "description": "Paste desc to search",
-                "parts_number": "Paste desc to search",
+                "description_english": "Paste desc to search",
+                "part_number": "Paste desc to search",
                 "qty": "Qty",
             }
         }),
         props:{
             table_store: Array
+        },
+        computed:{
+            order(){
+                return this.$store.getters['stockCaModule/GET_DATA_STOCK_ORDER']
+            },
         },
         methods:{
             saveChanges(){
@@ -89,18 +99,35 @@
             },
             addRow(){
                 this.table_store.push({
-                    "id": null,
+                    "id": this.table_store.length + 1,
                     "brand_name":'',
-                    "description": '',
-                    "parts_number": '',
+                    "description_english": '',
+                    "part_number": '',
                     "qty": '',
                     "stock_qty": "0"
-
                 });
-                for(let i = 0; i < this.table_store.length; i++){
-                    this.table_store[i].id = i
-                }
             },
+            getData(e, type, index){
+                this.table_store[index][type] = e;
+                clearTimeout(this.timeout);
+                this.timeout = setTimeout(() => {
+                    if(!this.table_store[index].brand_name || !this.table_store[index].part_number){
+                        return clearTimeout(this.timeout);
+                    }
+                    StockManagment.getStockCA({
+                        page: 1,
+                        searchBrand: this.table_store[index].brand_name,
+                        searchNumber: this.table_store[index].part_number,
+                        orderName: this.order.name,
+                        orderBy: this.order.by
+                    })
+                        .then(res => {
+                            this.table_store[index].description_english = res.body.data[0].description_english;
+                            this.table_store[index].stock_qty = res.body.data[0].qty;
+                            clearTimeout(this.timeout);
+                        })
+                }, 500)
+            }
         }
     }
 </script>
