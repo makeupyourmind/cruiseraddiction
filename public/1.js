@@ -133,6 +133,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _api_stockManagment__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../api/stockManagment */ "./resources/js/src/api/stockManagment.js");
 //
 //
 //
@@ -198,20 +199,29 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "formElse",
   data: function data() {
     return {
       obj_store: {
         "brand_name": "Paste desc to search",
-        "description": "Paste desc to search",
-        "parts_number": "Paste desc to search",
+        "description_english": "Paste desc to search",
+        "part_number": "Paste desc to search",
         "qty": "Qty"
       }
     };
   },
   props: {
     table_store: Array
+  },
+  computed: {
+    order: function order() {
+      return this.$store.getters['stockCaModule/GET_DATA_STOCK_ORDER'];
+    }
   },
   methods: {
     saveChanges: function saveChanges() {
@@ -226,17 +236,36 @@ __webpack_require__.r(__webpack_exports__);
     },
     addRow: function addRow() {
       this.table_store.push({
-        "id": null,
+        "id": this.table_store.length + 1,
         "brand_name": '',
-        "description": '',
-        "parts_number": '',
+        "description_english": '',
+        "part_number": '',
         "qty": '',
         "stock_qty": "0"
       });
+    },
+    getData: function getData(e, type, index) {
+      var _this = this;
 
-      for (var i = 0; i < this.table_store.length; i++) {
-        this.table_store[i].id = i;
-      }
+      this.table_store[index][type] = e;
+      clearTimeout(this.timeout);
+      this.timeout = setTimeout(function () {
+        if (!_this.table_store[index].brand_name || !_this.table_store[index].part_number) {
+          return clearTimeout(_this.timeout);
+        }
+
+        _api_stockManagment__WEBPACK_IMPORTED_MODULE_0__["StockManagment"].getStockCA({
+          page: 1,
+          searchBrand: _this.table_store[index].brand_name,
+          searchNumber: _this.table_store[index].part_number,
+          orderName: _this.order.name,
+          orderBy: _this.order.by
+        }).then(function (res) {
+          _this.table_store[index].description_english = res.body.data[0].description_english;
+          _this.table_store[index].stock_qty = res.body.data[0].qty;
+          clearTimeout(_this.timeout);
+        });
+      }, 500);
     }
   }
 });
@@ -265,6 +294,38 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -447,7 +508,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       return ['TOYOTA', 'RENAULT', 'PEUGEUT'];
     },
     saveChanges: function saveChanges(val) {
-      this.table_store = val;
+      this.moduleStock.bundle_parts = val;
       this.fillTable = false;
     },
     clearFields: function clearFields() {
@@ -495,7 +556,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         });
       } else {
         module && (module.tags = JSON.stringify(module.tags));
-        this.$store.dispatch("stockCaModule/CREATE_DATA_STOCK", module).then(function () {
+        this.$store.dispatch("stockCaModule/".concat(!this.moduleStock.is_bundle ? 'CREATE_DATA_STOCK' : 'CREATE_DATA_STOCK_BUNDLE'), module).then(function () {
           return _this.$store.dispatch('stockCaModule/GET_DATA_STOCK_FROM_SERVER', {
             page: current ? current.current_page : 1,
             searchBrand: order.searchBrand,
@@ -578,25 +639,21 @@ __webpack_require__.r(__webpack_exports__);
   },
   props: ['select'],
   methods: {
-    createBundle: function createBundle() {
-      this.$store.dispatch("GET_SHOW_BUNDLE_SINGLE", {
-        module: true,
-        showTable: true
-      });
-    },
-    createSingle: function createSingle() {
+    createSingle: function createSingle(type) {
       var data = {
         is_stock_ca: 1,
         warehouse: "canada",
-        action: 'create'
+        action: 'create',
+        is_bundle: Number(type)
       };
+      type && (data.bundle_parts = []);
       ['brand_name', 'categories', 'description_english', 'description_full', 'tags', 'price', 'weight_physical', 'weight_volumetric'].forEach(function (item) {
         return data[item] = '';
       });
       ['color', 'image', 'part_fits'].forEach(function (item) {
         return data[item] = null;
       });
-      ['is_bundle', 'qty', 'subst_for'].forEach(function (item) {
+      ['qty', 'subst_for'].forEach(function (item) {
         return data[item] = 0;
       });
       this.$store.dispatch("GET_EDIT_STORE", data);
@@ -629,7 +686,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../node_modules/c
 
 
 // module
-exports.push([module.i, "/*=========================================================================================\n    File Name: _variables.scss\n    Description: partial- SCSS varibales\n    ----------------------------------------------------------------------------------------\n    Item Name: Vuesax Admin - VueJS Dashboard Admin Template\n      Author: Pixinvent\n    Author URL: http://www.themeforest.net/user/pixinvent\n==========================================================================================*/\n\n/*========================================================\n        SPACING\n=========================================================*/\n\n/*========================================================\n        COLORS\n=========================================================*/\n\n/*========================================================\n        TYPOGRAPHY\n=========================================================*/\n\n/*========================================================\n        TYPOGRAPHY\n=========================================================*/\n\n/*========================================================\n        DARK THEME\n=========================================================*/\npre.selected.hljs {\n  margin: 8px 0;\n  height: 295px;\n  overflow-x: scroll;\n  overflow-y: scroll;\n  border: 1px solid rgba(0, 0, 0, 0.2);\n  border-radius: 5px;\n  padding: 1rem;\n}\n.vue-simple-suggest.designed .input-wrapper input {\n  color: inherit;\n  position: relative;\n  padding: 0.7rem;\n  font-size: 1rem;\n  border-radius: 5px;\n  border: 1px solid rgba(0, 0, 0, 0.2);\n  box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.15);\n  transition: all 0.3s ease;\n  width: 100%;\n}\n.vue-simple-suggest.designed.focus .input-wrapper input {\n  border: 1px solid rgba(var(--vs-primary), 1) !important;\n}\n.vue-simple-suggest.designed .suggestions {\n  border-radius: 5px;\n}\n.vue-simple-suggest.designed .suggestions .suggest-item {\n  padding: 0.8rem 1rem;\n}\n.vue-simple-suggest.designed .suggestions .suggest-item.hover, .vue-simple-suggest.designed .suggestions .suggest-item.selected {\n  background-color: rgba(var(--vs-primary), 1) !important;\n}\n.theme-dark .vx-card .vue-simple-suggest input {\n  background: #262c49 !important;\n}\n.theme-dark .vx-card .vue-simple-suggest .suggestions {\n  background: #262c49 !important;\n}\n.theme-dark .vx-card pre.selected.hljs {\n  border-color: #414561 !important;\n}\n.theme-dark .vue-simple-suggest input {\n  background: #10163a !important;\n}\n.theme-dark .vue-simple-suggest .suggestions {\n  background: #10163a !important;\n}\n.theme-dark pre.selected.hljs {\n  border-color: #414561 !important;\n}\nbody .vs-component .vs-dialog {\n  max-width: 650px !important;\n}\n.demo-alignment > * {\n  margin-top: 0 !important;\n}\n\n/*.my_table{*/\n\n/*    border: 1px solid;*/\n\n/*}*/\n\n/*.my_table_header{*/\n\n/*    display: flex;*/\n\n/*}*/", ""]);
+exports.push([module.i, "/*=========================================================================================\n    File Name: _variables.scss\n    Description: partial- SCSS varibales\n    ----------------------------------------------------------------------------------------\n    Item Name: Vuesax Admin - VueJS Dashboard Admin Template\n      Author: Pixinvent\n    Author URL: http://www.themeforest.net/user/pixinvent\n==========================================================================================*/\n\n/*========================================================\n        SPACING\n=========================================================*/\n\n/*========================================================\n        COLORS\n=========================================================*/\n\n/*========================================================\n        TYPOGRAPHY\n=========================================================*/\n\n/*========================================================\n        TYPOGRAPHY\n=========================================================*/\n\n/*========================================================\n        DARK THEME\n=========================================================*/\npre.selected.hljs {\n  margin: 8px 0;\n  height: 295px;\n  overflow-x: scroll;\n  overflow-y: scroll;\n  border: 1px solid rgba(0, 0, 0, 0.2);\n  border-radius: 5px;\n  padding: 1rem;\n}\n.vue-simple-suggest.designed .input-wrapper input {\n  color: inherit;\n  position: relative;\n  padding: 0.7rem;\n  font-size: 1rem;\n  border-radius: 5px;\n  border: 1px solid rgba(0, 0, 0, 0.2);\n  box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.15);\n  transition: all 0.3s ease;\n  width: 100%;\n}\n.vue-simple-suggest.designed.focus .input-wrapper input {\n  border: 1px solid rgba(var(--vs-primary), 1) !important;\n}\n.vue-simple-suggest.designed .suggestions {\n  border-radius: 5px;\n}\n.vue-simple-suggest.designed .suggestions .suggest-item {\n  padding: 0.8rem 1rem;\n}\n.vue-simple-suggest.designed .suggestions .suggest-item.hover, .vue-simple-suggest.designed .suggestions .suggest-item.selected {\n  background-color: rgba(var(--vs-primary), 1) !important;\n}\n.theme-dark .vx-card .vue-simple-suggest input {\n  background: #262c49 !important;\n}\n.theme-dark .vx-card .vue-simple-suggest .suggestions {\n  background: #262c49 !important;\n}\n.theme-dark .vx-card pre.selected.hljs {\n  border-color: #414561 !important;\n}\n.theme-dark .vue-simple-suggest input {\n  background: #10163a !important;\n}\n.theme-dark .vue-simple-suggest .suggestions {\n  background: #10163a !important;\n}\n.theme-dark pre.selected.hljs {\n  border-color: #414561 !important;\n}\nbody .vs-component .vs-dialog {\n  max-width: 1000px !important;\n}\n.demo-alignment > * {\n  margin-top: 0 !important;\n}\n\n/*.my_table{*/\n\n/*    border: 1px solid;*/\n\n/*}*/\n\n/*.my_table_header{*/\n\n/*    display: flex;*/\n\n/*}*/\n.custom-my .vs-table--content {\n  overflow-y: scroll;\n  max-height: 281px;\n}", ""]);
 
 // exports
 
@@ -873,9 +930,14 @@ var render = function() {
                         { attrs: { data: data[elem].brand_name } },
                         [
                           _c("vs-input", {
-                            staticStyle: { width: "117px", "margin-top": "0" },
+                            staticStyle: { "margin-top": "0" },
                             attrs: {
                               "label-placeholder": _vm.obj_store.brand_name
+                            },
+                            on: {
+                              input: function($event) {
+                                return _vm.getData($event, "brand_name", elem)
+                              }
                             },
                             model: {
                               value: data[elem].brand_name,
@@ -891,19 +953,20 @@ var render = function() {
                       _vm._v(" "),
                       _c(
                         "vs-td",
-                        { attrs: { data: data[elem].description } },
+                        { attrs: { data: data[elem].description_english } },
                         [
                           _c("vs-input", {
-                            staticStyle: { width: "117px", "margin-top": "0" },
+                            staticStyle: { "margin-top": "0" },
                             attrs: {
-                              "label-placeholder": _vm.obj_store.description
+                              "label-placeholder":
+                                _vm.obj_store.description_english
                             },
                             model: {
-                              value: data[elem].description,
+                              value: data[elem].description_english,
                               callback: function($$v) {
-                                _vm.$set(data[elem], "description", $$v)
+                                _vm.$set(data[elem], "description_english", $$v)
                               },
-                              expression: "data[elem].description"
+                              expression: "data[elem].description_english"
                             }
                           })
                         ],
@@ -912,19 +975,24 @@ var render = function() {
                       _vm._v(" "),
                       _c(
                         "vs-td",
-                        { attrs: { data: data[elem].parts_number } },
+                        { attrs: { data: data[elem].part_number } },
                         [
                           _c("vs-input", {
-                            staticStyle: { width: "117px", "margin-top": "0" },
+                            staticStyle: { "margin-top": "0" },
                             attrs: {
-                              "label-placeholder": _vm.obj_store.parts_number
+                              "label-placeholder": _vm.obj_store.part_number
+                            },
+                            on: {
+                              input: function($event) {
+                                return _vm.getData($event, "part_number", elem)
+                              }
                             },
                             model: {
-                              value: data[elem].parts_number,
+                              value: data[elem].part_number,
                               callback: function($$v) {
-                                _vm.$set(data[elem], "parts_number", $$v)
+                                _vm.$set(data[elem], "part_number", $$v)
                               },
-                              expression: "data[elem].parts_number"
+                              expression: "data[elem].part_number"
                             }
                           })
                         ],
@@ -936,7 +1004,10 @@ var render = function() {
                         { attrs: { data: data[elem].qty } },
                         [
                           _c("vs-input", {
-                            staticStyle: { width: "40px", "margin-top": "0" },
+                            staticStyle: { width: "50px", "margin-top": "0" },
+                            style:
+                              Number(data[elem].qty) >
+                                Number(data[elem].stock_qty) && "color: red",
                             attrs: { "label-placeholder": _vm.obj_store.qty },
                             model: {
                               value: data[elem].qty,
@@ -1050,6 +1121,7 @@ var render = function() {
   return _c(
     "vs-prompt",
     {
+      staticStyle: { "min-width": "60vw" },
       attrs: {
         "vs-title": "Create Single",
         "vs-accept-text":
@@ -1150,7 +1222,136 @@ var render = function() {
                       }
                     }),
                     _vm._v(" "),
-                    _vm.showTable === true
+                    _vm.moduleStock.bundle_parts
+                      ? _c(
+                          "vs-table",
+                          {
+                            staticClass: "mt-5 mb-5 custom-my",
+                            attrs: { data: _vm.moduleStock.bundle_parts },
+                            scopedSlots: _vm._u(
+                              [
+                                {
+                                  key: "default",
+                                  fn: function(ref) {
+                                    var data = ref.data
+                                    return _vm._l(data, function(tr, elem) {
+                                      return _c(
+                                        "vs-tr",
+                                        { key: elem },
+                                        [
+                                          _c(
+                                            "vs-td",
+                                            {
+                                              attrs: {
+                                                data: data[elem].brand_name
+                                              }
+                                            },
+                                            [
+                                              _c("p", [
+                                                _vm._v(
+                                                  _vm._s(data[elem].brand_name)
+                                                )
+                                              ])
+                                            ]
+                                          ),
+                                          _vm._v(" "),
+                                          _c(
+                                            "vs-td",
+                                            {
+                                              attrs: {
+                                                data:
+                                                  data[elem].description_english
+                                              }
+                                            },
+                                            [
+                                              _c("p", [
+                                                _vm._v(
+                                                  _vm._s(
+                                                    data[elem]
+                                                      .description_english
+                                                  )
+                                                )
+                                              ])
+                                            ]
+                                          ),
+                                          _vm._v(" "),
+                                          _c(
+                                            "vs-td",
+                                            {
+                                              attrs: {
+                                                data: data[elem].part_number
+                                              }
+                                            },
+                                            [
+                                              _c("p", [
+                                                _vm._v(
+                                                  _vm._s(data[elem].part_number)
+                                                )
+                                              ])
+                                            ]
+                                          ),
+                                          _vm._v(" "),
+                                          _c(
+                                            "vs-td",
+                                            { attrs: { data: data[elem].qty } },
+                                            [
+                                              _c("p", [
+                                                _vm._v(_vm._s(data[elem].qty))
+                                              ])
+                                            ]
+                                          ),
+                                          _vm._v(" "),
+                                          _c(
+                                            "vs-td",
+                                            {
+                                              attrs: {
+                                                data: data[elem].stock_qty,
+                                                align: "center"
+                                              }
+                                            },
+                                            [
+                                              _c("p", [
+                                                _vm._v(
+                                                  _vm._s(data[elem].stock_qty)
+                                                )
+                                              ])
+                                            ]
+                                          )
+                                        ],
+                                        1
+                                      )
+                                    })
+                                  }
+                                }
+                              ],
+                              null,
+                              false,
+                              2271594282
+                            )
+                          },
+                          [
+                            _c(
+                              "template",
+                              { slot: "thead" },
+                              [
+                                _c("vs-th", [_vm._v("Brand Name")]),
+                                _vm._v(" "),
+                                _c("vs-th", [_vm._v("Description")]),
+                                _vm._v(" "),
+                                _c("vs-th", [_vm._v("Parts Number")]),
+                                _vm._v(" "),
+                                _c("vs-th", [_vm._v("Qty")]),
+                                _vm._v(" "),
+                                _c("vs-th", [_vm._v("Stock Qty")])
+                              ],
+                              1
+                            )
+                          ],
+                          2
+                        )
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.moduleStock.is_bundle
                       ? _c(
                           "div",
                           { staticClass: "w-full mb-6 mt-6" },
@@ -1373,7 +1574,7 @@ var render = function() {
                   ),
                   _vm._v(" "),
                   _c("form-else", {
-                    attrs: { table_store: _vm.table_store },
+                    attrs: { table_store: this.moduleStock.bundle_parts },
                     on: { saveChanges: _vm.saveChanges }
                   })
                 ],
@@ -1431,7 +1632,26 @@ var render = function() {
                   "div",
                   {
                     staticClass: "flex items-center",
-                    on: { click: _vm.createSingle }
+                    on: {
+                      click: function($event) {
+                        return _vm.createSingle(true)
+                      }
+                    }
+                  },
+                  [_c("span", [_vm._v("Create bundle")])]
+                )
+              ]),
+              _vm._v(" "),
+              _c("vs-dropdown-item", [
+                _c(
+                  "div",
+                  {
+                    staticClass: "flex items-center",
+                    on: {
+                      click: function($event) {
+                        return _vm.createSingle(false)
+                      }
+                    }
                   },
                   [_c("span", [_vm._v("Create Single item")])]
                 )

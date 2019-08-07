@@ -187,7 +187,7 @@
         },
 
         beforeMount() {
-            this.RELOAD();
+            // this.RELOAD();
             this.columnDefs = [
                 {
                     width: 75,

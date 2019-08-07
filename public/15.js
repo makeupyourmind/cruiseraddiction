@@ -1,1 +1,123 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[15],{735:function(l,s,a){"use strict";a.r(s);var e={data:function(){return{value1:"",value2:"",value3:""}}},t=a(13),o=Object(t.a)(e,function(){var l=this,s=l.$createElement,a=l._self._c||s;return a("div",{staticClass:"h-screen flex w-full bg-img"},[a("div",{staticClass:"vx-col sm:w-3/5 md:w-3/5 lg:w-3/4 xl:w-3/5 mx-auto self-center"},[a("vx-card",[a("div",{staticClass:"full-page-bg-color",attrs:{slot:"no-body"},slot:"no-body"},[a("div",{staticClass:"vx-row"},[a("div",{staticClass:"vx-col hidden sm:hidden md:hidden lg:block lg:w-1/2 mx-auto self-center"}),l._v(" "),a("div",{staticClass:"vx-col sm:w-full md:w-full lg:w-1/2 mx-auto self-center  d-theme-dark-bg"},[a("div",{staticClass:"p-8"},[a("div",{staticClass:"vx-card__title mb-8"},[a("h4",{staticClass:"mb-4"},[l._v("Reset Password")]),l._v(" "),a("p",[l._v("Please enter your new password.")])]),l._v(" "),a("vs-input",{staticClass:"w-full mb-6",attrs:{type:"email","label-placeholder":"Email"},model:{value:l.value1,callback:function(s){l.value1=s},expression:"value1"}}),l._v(" "),a("vs-input",{staticClass:"w-full mb-6",attrs:{type:"password","label-placeholder":"Password"},model:{value:l.value2,callback:function(s){l.value2=s},expression:"value2"}}),l._v(" "),a("vs-input",{staticClass:"w-full mb-8",attrs:{type:"password","label-placeholder":"Confirm Password"},model:{value:l.value3,callback:function(s){l.value3=s},expression:"value3"}}),l._v(" "),a("div",{staticClass:"flex flex-wrap justify-between flex-col-reverse sm:flex-row"},[a("vs-button",{staticClass:"w-full sm:w-auto mb-8 sm:mb-auto mt-3 sm:mt-auto",attrs:{type:"border",to:"/pages/login"}},[l._v("Go Back To Login")]),l._v(" "),a("vs-button",{staticClass:"w-full sm:w-auto"},[l._v("Reset")])],1)],1)])])])])],1)])},[],!1,null,null,null);s.default=o.exports}}]);
+(window["webpackJsonp"] = window["webpackJsonp"] || []).push([[15],{
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/src/views/pages/Error404.vue?vue&type=template&id=2e220845&":
+/*!****************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/src/views/pages/Error404.vue?vue&type=template&id=2e220845& ***!
+  \****************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "h-screen flex w-full bg-img" }, [
+    _c(
+      "div",
+      {
+        staticClass:
+          "vx-col flex items-center justify-center flex-col sm:w-1/2 md:w-3/5 lg:w-3/4 xl:w-1/2 mx-auto text-center"
+      },
+      [
+        _c("img", {
+          staticClass: "mx-auto mb-4",
+          attrs: {
+            src: __webpack_require__(/*! @assets/images/pages/404.png */ "./resources/assets/images/pages/404.png"),
+            alt: "graphic-404"
+          }
+        }),
+        _vm._v(" "),
+        _c("h1", { staticClass: "mb-12 text-5xl d-theme-heading-color" }, [
+          _vm._v("404 - Page Not Found!")
+        ]),
+        _vm._v(" "),
+        _c("p", { staticClass: "mb-16 d-theme-text-inverse" }, [
+          _vm._v(
+            "paraphonic unassessable foramination Caulopteris worral Spirophyton encrimson esparcet aggerate chondrule restate whistler shallopy biosystematy area bertram plotting unstarting quarterstaff."
+          )
+        ]),
+        _vm._v(" "),
+        _c("vs-button", { attrs: { size: "large", to: "/" } }, [
+          _vm._v("Back to Home")
+        ])
+      ],
+      1
+    )
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./resources/assets/images/pages/404.png":
+/*!***********************************************!*\
+  !*** ./resources/assets/images/pages/404.png ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "/images/404.png?0a38972b4083f43522258cbe550a3cb7";
+
+/***/ }),
+
+/***/ "./resources/js/src/views/pages/Error404.vue":
+/*!***************************************************!*\
+  !*** ./resources/js/src/views/pages/Error404.vue ***!
+  \***************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _Error404_vue_vue_type_template_id_2e220845___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Error404.vue?vue&type=template&id=2e220845& */ "./resources/js/src/views/pages/Error404.vue?vue&type=template&id=2e220845&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+var script = {}
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_1__["default"])(
+  script,
+  _Error404_vue_vue_type_template_id_2e220845___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _Error404_vue_vue_type_template_id_2e220845___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/src/views/pages/Error404.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/src/views/pages/Error404.vue?vue&type=template&id=2e220845&":
+/*!**********************************************************************************!*\
+  !*** ./resources/js/src/views/pages/Error404.vue?vue&type=template&id=2e220845& ***!
+  \**********************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Error404_vue_vue_type_template_id_2e220845___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../node_modules/vue-loader/lib??vue-loader-options!./Error404.vue?vue&type=template&id=2e220845& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/src/views/pages/Error404.vue?vue&type=template&id=2e220845&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Error404_vue_vue_type_template_id_2e220845___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Error404_vue_vue_type_template_id_2e220845___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ })
+
+}]);

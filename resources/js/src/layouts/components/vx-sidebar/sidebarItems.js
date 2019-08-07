@@ -29,7 +29,13 @@ export default [
   {
     url: "/orders",
     name: "Orders",
-    slug: "page2",
+    slug: "Orders",
+    icon: "FileIcon",
+  },
+  {
+    url: "/reviews",
+    name: "Reviews",
+    slug: "reviews",
     icon: "FileIcon",
   },
 ]

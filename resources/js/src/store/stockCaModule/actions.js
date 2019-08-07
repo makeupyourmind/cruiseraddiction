@@ -10,6 +10,9 @@ const actions = {
     CREATE_DATA_STOCK({ commit, dispatch, state }, data) {
         return StockManagment.createPart(data).then(() => state.current_page)
     },
+    CREATE_DATA_STOCK_BUNDLE({ commit, dispatch, state }, data) {
+        return StockManagment.createBundle(data).then(() => state.current_page)
+    },
     DELETE_DATA_STOCK({ commit, dispatch, state }, data) {
         return StockManagment.deletePart(data).then(() => state.current_page)
     },

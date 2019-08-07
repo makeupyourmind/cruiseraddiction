@@ -70,6 +70,14 @@ const router = new Router({
                         pageTitle: 'orders',
                     },
                 },
+                {
+                    path: '/reviews',
+                    name: 'reviews',
+                    component: () => import('./views/reviews.vue'),
+                    meta: {
+                        pageTitle: 'reviews',
+                    },
+                },
             ],
         },
         {
