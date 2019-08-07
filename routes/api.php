@@ -30,6 +30,11 @@ Route::group([
     Route::get('orders', 'OrdersController@index');
     Route::get('stock-ca', 'PartsController@stock_ca');
     Route::get('countries', 'CountryController@get_countries');
+
+    Route::get('reviews', 'ReviewsController@index');
+    Route::post('reviews', 'ReviewsController@store');
+    Route::get('reviews/{id}', 'ReviewsController@show');
+    Route::delete('reviews/{id}', 'ReviewsController@destroy');
 });
 
 
