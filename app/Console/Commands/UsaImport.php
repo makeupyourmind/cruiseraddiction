@@ -42,6 +42,7 @@ class UsaImport extends Command
         $data   = array_map(function($datas) { return str_getcsv($datas,"\t"); }, file($path));
         foreach($data as $row) {
 	    $uniqueHash = 'USA_'.md5('TOYOTA'.$row[0].'usa');
+	    $row[2] = $row[2]*1.35;
             $inputs = ['part_number' => $row[0], 'description_english' => $row[1], 'price' => $row[2], 'brand_name' => 'TOYOTA', 'qty' => 1, 'warehouse' => 'usa', 'unique_hash' => $uniqueHash];
             $part = Part::create($inputs);
         }
