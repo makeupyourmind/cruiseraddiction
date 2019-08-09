@@ -15,8 +15,7 @@ class PartsController extends BaseController
 
     public function index() {
         $parts = Part::orderBy('id', 'desc')
-	    ->with('bundleParts')
-	    ->paginate(100);
+		->paginate(100);
         /*
         $unique = $parts->unique(function ($item)
         {
@@ -93,7 +92,7 @@ class PartsController extends BaseController
 
         $parts = Part::where('brand_name', $request->brand)
                     ->where('part_number', $request->part_number)
-                    ->get(['brand_name', 'part_number', 'description_english', 'weight_physical'])->toArray();
+                    ->get()->toArray();
         $partsList = array();
 
         foreach($parts as $part) {
@@ -104,7 +103,7 @@ class PartsController extends BaseController
 
             $partData = Part::where('brand_name', $part['brand_name'])
                         ->where('part_number', $part['part_number'])
-                        ->get(['qty', 'price', 'warehouse', 'unique_hash'])->toArray();
+                        ->get()->toArray();
             for($j = 0; $j < count($partData); $j++) {
                 $partsList['data'][$j]['warehouses'] = $partData[$j]['warehouse'];
                 $partsList['data'][$j]['available'] = $partData[$j]['qty'];
@@ -120,8 +119,8 @@ class PartsController extends BaseController
 	!$request->order_name ?? $request->order_name = 'brand_name';
 	!$request->oder_by ?? $request->order_by = 'asc';
 	$stockPart = Part::where('is_stock_ca', true)
-		    ->where('part_number', 'LIKE', '%' . $request->part_number . '%')
-		    ->where('part_number_without_too_much', 'LIKE', '%' . $request->part_number . '%')
+		    ->whereRaw("REPLACE(part_number, '-', '') LIKE '%".str_replace('-', '', $request->part_number)."%'")
+		    //->where('part_number_without_too_much', 'LIKE', '%' . $request->part_number . '%')
 		    ->where('brand_name', 'LIKE', '%' . $request->brand_name . '%')
 		    ->orderBy($request->order_name, $request->order_by)
 		    ->paginate(100);
@@ -164,10 +163,31 @@ class PartsController extends BaseController
         if($validator->fails()){
             return $this->sendError('Validation Error.', $validator->errors(), 403);
         }
+	if($request->is_bundle == 0) {
+    	    Part::where('brand_name', $request->brand_name)
+        	->where('part_number', $request->part_number)
+        	->update($request->all());
 
-        Part::where('brand_name', $request->brand_name)
-            ->where('part_number', $request->part_number)
-            ->update($request->all());
+	} else {
+	    $bundle = Part::where('brand_name', $request->brand_name)
+        	->where('part_number', $request->part_number)
+        	->update(['part_number' => $request->part_number, 'brand_name' => $request->brand_name, 'description_english' => $request->description_english, 
+		    'description_full' => $request->description_full, 'min_stock' => $request->min_stock, 'price' => $request->price, 
+		    'min_price' => $request->min_price, 'max_price' => $request->max_price, 'location' => $request->location, 'categories' => $request->categories]);
+	    $bundleId =  Part::where('brand_name', $request->brand_name)
+        		->where('part_number', $request->part_number)
+			->first();
+	    //dd($bundleId->id);
+	    Part::where('bundle_id', $bundleId->id)
+		->update(['bundle_id' => 0]);
+	    foreach($request->bundle_parts as $bundlePart) {
+		Part::where('brand_name', $bundlePart['brand_name'])
+		    ->where('part_number', $bundlePart['part_number'])
+		    ->where('warehouse', 'canada')
+		    ->update(['bundle_id' => $bundleId->id, 'bundle_qty' => $bundlePart['bundle_qty'], 'description_english' => $bundlePart['description_english']]);
+	    }
+
+	}
         return $this->sendResponse('Success', 'Part modified successfully.');
     }
 

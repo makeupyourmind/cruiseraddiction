@@ -99,6 +99,7 @@ class GetPriceList extends Command
                 $row[3] = (float)str_replace(',', '.', $row[3]);
                 $row[4] = (float)str_replace(',', '.', $row[4]);
                 $row[7] = (float)str_replace(',', '.', $row[7]);
+		$row[7] = (float)((($row[3]*6.0)+$row[7]*0.061+$row[7])*1.3)*1.037;
 
                 if (is_null($row[3]) || is_null($row[4]) || is_null($row[5]) || is_null($row[7])) {
                     $parsingLogText .= $r . " " . Carbon::now() . " NULL or empty value" . "\n";

@@ -34,10 +34,8 @@ class BundlesController extends BaseController
         return $this->sendResponse($newBundle, 'New bundle created successfully.');
     }
 
-
-    public function show($id) {
-	$bundle = Part::find($id);
-	return response()->json($bundle, 200);
+    public function deleteFromBundle($id) {
+	
     }
 
 
