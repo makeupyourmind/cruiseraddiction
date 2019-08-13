@@ -15,9 +15,7 @@ class CreatePartsImagesTable extends Migration
     {
         Schema::create('parts_images', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('partnumber');
-            $table->string('brand');
-            $table->string('image');
+            $table->string('image')->nullable();
             $table->timestamps();
         });
     }
