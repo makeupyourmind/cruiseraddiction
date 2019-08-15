@@ -45,4 +45,16 @@ class UsersController extends BaseController
         return $this->sendResponse('Success', 'User modified successfully.');
     }
 
+    public function checkEmail(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email|unique:users,email',
+	]);
+
+        if($validator->fails()){
+            return $this->sendError('Validation Error.', $validator->errors(), 202);
+        }
+        return $this->sendResponse('Success', 'Email not used');
+
+    }
+
 }

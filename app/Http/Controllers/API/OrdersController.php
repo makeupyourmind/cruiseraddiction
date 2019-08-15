@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Model\Country;
 use App\Model\Order;
+use App\User;
+use Illuminate\Support\Facades\Auth;
 
 class OrdersController extends Controller
 {
@@ -44,5 +46,15 @@ class OrdersController extends Controller
 //dd($filter_orders);
 //dd(is_array($filter_orders->all()));
 	return array_values($filter_orders->all());
+    }
+
+    public function userOrders($id) {
+	$email = Auth::user()->email;
+	$serializedOrders = Order::where('order', 'like', '%"'.$email.'"%')->get();
+	$orders = $serializedOrders->each(function($item, $key) {
+    	    $item['order'] = unserialize($item['order']);
+	});
+	return $orders->toJson();
+
     }
 }
