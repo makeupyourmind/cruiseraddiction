@@ -70,7 +70,10 @@ class UploadImages extends Command
 		    'image' => $partImage
 		];
 		PartImage::create($insertImage);
-		$explPartNum = explode('-', $partImage);
+		$cutJpg = explode('-', $partImage);
+		unset($cutJpg[(count($cutJpg) - 1)]);
+		//$explPartNum = explode('-', $partImage);
+		$explPartNum[0] = implode('-', $cutJpg);
 		if($prev == '' || $prev == $explPartNum[0]) {
 		    $collectNumbers[] = $partImage;
 
@@ -78,7 +81,11 @@ class UploadImages extends Command
 		    //var_dump($collectNumbers); //die();
 		    //$serialImg = serialize($collectNumbers);
 		    $serialImg = json_encode($collectNumbers);
-		    Part::where('part_number', $prev)
+
+//		    Part::where('part_number', $prev)
+//			->update(['image' => $serialImg]);
+
+		    Part::whereRaw("REPLACE(part_number, '-', '') LIKE '%".str_replace('-', '', trim($prev))."%'")
 			->update(['image' => $serialImg]);
 		    //DB::connection()->getpdo()->exec("UPDATE parts SET image='$serialImg' WHERE part_number='{$explPartNum[0]}'");
 		    $collectNumbers = array();
@@ -88,8 +95,14 @@ class UploadImages extends Command
 		if($partKey == (count($partsImages) - 1)) {
 		    //$serialImg = serialize($collectNumbers);
 		    $serialImg = json_encode($collectNumbers);
-		    Part::where('part_number', $explPartNum[0])
+
+
+//		    Part::where('part_number', $explPartNum[0])
+//			->update(['image' => $serialImg]);
+
+		    Part::whereRaw("REPLACE(part_number, '-', '') LIKE '%".str_replace('-', '', trim($explPartNum[0]))."%'")
 			->update(['image' => $serialImg]);
+
 		    //DB::connection()->getpdo()->exec("UPDATE parts SET image='$serialImg' WHERE part_number='{$explPartNum[0]}'");
 		    $collectNumbers = array();
 		    $collectNumbers[] = $partImage;

@@ -38,7 +38,7 @@ class PartsSearchController extends BaseController
                 $partsList[$i]['part_number'] = $part['part_number'];
                 $partsList[$i]['description_english'] = $part['description_english'];
                 $partsList[$i]['weight_physical'] = $part['weight_physical'];
-		$partsList[$i]['image'] = $part['image'];
+		$partsList[$i]['images'] = $part['image'];
 
 		$partData = Part::where('brand_name', $part['brand_name'])->whereRaw("REPLACE(part_number, '-', '') LIKE '%".str_replace('-', '', trim($part['part_number']))."%'")->get()->toArray();
                 ////$partData = Part::where('brand_name', $part['brand_name'])->where('part_number', $part['part_number'])->get()->toArray();

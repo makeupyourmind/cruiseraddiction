@@ -12,4 +12,12 @@ class BundlePart extends Model
 	'bundle_id', 'part_id'
     ];
 
+    protected $with = ['bundleParts'];
+
+    public function bundleParts() {
+	return $this->hasMany('App\Model\Part', 'id', 'part_id');
+    }
+
+
+
 }
