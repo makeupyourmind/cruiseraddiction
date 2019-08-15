@@ -6,7 +6,7 @@
             type="relief"
             icon="icon-save"
             icon-pack="feather">Save Changes</vs-button>
-        <vs-table :data="table_store" class="mt-5 mb-5">
+        <vs-table :data="table_data" class="mt-5 mb-5">
             <template slot="thead">
                 <vs-th>Brand Name</vs-th>
                 <vs-th>Description</vs-th>
@@ -38,15 +38,15 @@
                             :label-placeholder="obj_store.part_number"
                             style="margin-top: 0"/>
                     </vs-td>
-                    <vs-td :data="data[elem].qty">
+                    <vs-td :data="data[elem].bundle_qty">
                         <vs-input
-                            v-model="data[elem].qty"
+                            v-model="data[elem].bundle_qty"
                             :label-placeholder="obj_store.qty"
-                            :style="Number(data[elem].qty) > Number(data[elem].stock_qty) && 'color: red'"
+                            :style="Number(data[elem].bundle_qty) > Number(data[elem].qty) && 'color: red'"
                             style="width:50px; margin-top: 0"/>
                     </vs-td>
-                    <vs-td :data="data[elem].stock_qty" align="center">
-                        <p>{{data[elem].stock_qty}}</p>
+                    <vs-td :data="data[elem].qty" align="center">
+                        <p>{{data[elem].qty}}</p>
                     </vs-td>
                     <vs-td>
                         <vs-button
@@ -77,10 +77,17 @@
                 "description_english": "Paste desc to search",
                 "part_number": "Paste desc to search",
                 "qty": "Qty",
-            }
+            },
+            table_data: []
         }),
         props:{
             table_store: Array
+        },
+        created(){
+            this.table_data = JSON.parse(JSON.stringify(this.table_store)).map(item => {
+                item.id = Math.random().toString(36).substr(2);
+                return item;
+            })
         },
         computed:{
             order(){
@@ -89,41 +96,45 @@
         },
         methods:{
             saveChanges(){
-              this.$emit("saveChanges", this.table_store)
+              this.$emit("saveChanges", this.table_data)
             },
             deleteRow(id){
-                this.table_store.splice(id, 1);
-                for(let i = 0; i < this.table_store.length; i++){
-                    this.table_store[i].id = i
-                }
+                let indexM;
+                this.table_data.find((item, index) => {
+                    const bool = item.id === id;
+                    bool && (indexM = index);
+                    return bool;
+                });
+                typeof indexM == 'number' && this.table_data.splice(indexM, 1);
+
             },
             addRow(){
-                this.table_store.push({
-                    "id": this.table_store.length + 1,
+                this.table_data.push({
+                    "id": Math.random().toString(36).substr(2),
                     "brand_name":'',
                     "description_english": '',
                     "part_number": '',
                     "qty": '',
-                    "stock_qty": "0"
+                    "bundle_qty": "0"
                 });
             },
             getData(e, type, index){
-                this.table_store[index][type] = e;
+                this.table_data[index][type] = e;
                 clearTimeout(this.timeout);
                 this.timeout = setTimeout(() => {
-                    if(!this.table_store[index].brand_name || !this.table_store[index].part_number){
+                    if(!this.table_data[index].brand_name || !this.table_data[index].part_number){
                         return clearTimeout(this.timeout);
                     }
                     StockManagment.getStockCA({
                         page: 1,
-                        searchBrand: this.table_store[index].brand_name,
-                        searchNumber: this.table_store[index].part_number,
+                        searchBrand: this.table_data[index].brand_name,
+                        searchNumber: this.table_data[index].part_number,
                         orderName: this.order.name,
                         orderBy: this.order.by
                     })
                         .then(res => {
-                            this.table_store[index].description_english = res.body.data[0].description_english;
-                            this.table_store[index].stock_qty = res.body.data[0].qty;
+                            this.table_data[index].description_english = res.body.data[0].description_english;
+                            this.table_data[index].qty = res.body.data[0].qty;
                             clearTimeout(this.timeout);
                         })
                 }, 500)

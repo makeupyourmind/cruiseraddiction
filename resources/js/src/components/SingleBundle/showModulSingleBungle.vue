@@ -47,7 +47,7 @@
                         <!--</li>-->
                     <!--</ul>-->
 
-                    <vs-table v-if="moduleStock.bundle_parts"
+                    <vs-table v-if="moduleStock.is_bundle && moduleStock.bundle_parts"
                               :data="moduleStock.bundle_parts"
                               class="mt-5 mb-5 custom-my">
                         <template slot="thead">
@@ -69,11 +69,13 @@
                                 <vs-td :data="data[elem].part_number">
                                     <p>{{data[elem].part_number}}</p>
                                 </vs-td>
-                                <vs-td :data="data[elem].qty">
-                                    <p>{{data[elem].qty}}</p>
+                                <vs-td :data="data[elem].bundle_qty">
+                                    <p :style="Number(data[elem].bundle_qty) > Number(data[elem].qty) && 'color: red'">
+                                        {{data[elem].bundle_qty}}
+                                    </p>
                                 </vs-td>
-                                <vs-td :data="data[elem].stock_qty" align="center">
-                                    <p>{{data[elem].stock_qty}}</p>
+                                <vs-td :data="data[elem].qty" align="center">
+                                    <p>{{data[elem].qty}}</p>
                                 </vs-td>
                             </vs-tr>
                         </template>
@@ -261,6 +263,14 @@
 
                     module && (module.tags = JSON.stringify(module.tags));
 
+                    if(this.moduleStock.is_bundle) {
+                        module.bundle_parts = module.bundle_parts.map(item => {
+                            item.stock_qty = item.qty;
+                            item.qty = item.bundle_qty;
+                            item.bundle_qty && delete item.bundle_qty;
+                            return item;
+                        })
+                    }
                     this.$store.dispatch(`stockCaModule/${ !this.moduleStock.is_bundle ? 'CREATE_DATA_STOCK' : 'CREATE_DATA_STOCK_BUNDLE'}`, module)
                         .then(() => {
                             return this.$store.dispatch('stockCaModule/GET_DATA_STOCK_FROM_SERVER', {
