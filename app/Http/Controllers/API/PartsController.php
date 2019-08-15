@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\API\BaseController as BaseController;
 use Validator;
 use App\Model\Part;
+use App\Model\BundlePart;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Hash;
 
@@ -15,6 +16,7 @@ class PartsController extends BaseController
 
     public function index() {
         $parts = Part::orderBy('id', 'desc')
+		->whereIn('brand_name', ['TOYOTA', 'KOYO', 'AISIN', 'TAIHO', 'NSK', 'HKT', '555', 'TOYO', 'NACHI', 'MITSUBOSHI'])
 		->paginate(100);
         /*
         $unique = $parts->unique(function ($item)
@@ -73,9 +75,7 @@ class PartsController extends BaseController
     }
 
     public function randoms() {
-        $randomParts = Part::where('id', '>', '1')
-			->where('id', '<', '100000')
-			->get()->random(12);
+        $randomParts = Part::whereBetween('id', [1100000, 1101000])->get()->random(12);
         return response()->json($randomParts, 200);
     }
 
@@ -125,16 +125,23 @@ class PartsController extends BaseController
 		    ->where('brand_name', 'LIKE', '%' . $request->brand_name . '%')
 		    ->orderBy($request->order_name, $request->order_by)
 		    ->paginate(100);
-	
+	$stockPartArr = $stockPart->toArray();
 
+	$mergedParts = array();
+	if(count($stockPartArr['data'][0]['bundle_pivot']) > 0) {
+	    foreach($stockPartArr['data'][0]['bundle_pivot'] as $allPivots) {
+		    $mergedParts[] = $allPivots['bundle_parts'][0];
+	    }
 /*
 	$partNumber = str_replace('-', '', $request->part_number);
 	$stockPart = Part::where('warehouse', 'canada')
 			->where('part_number', 'LIKE', '%' . $partNumber . '%')
 			->where('brand_name', 'LIKE', '%' . $request->brand_name . '%')
 			->paginate(100);
-*/
-	return response()->json($stockPart, 200);
+*/	
+	}
+	$stockPartArr['data'][0]['bundle_parts'] = $mergedParts;
+	return response()->json($stockPartArr, 200);
     }
 
     public function store(Request $request) {
@@ -164,12 +171,13 @@ class PartsController extends BaseController
         if($validator->fails()){
             return $this->sendError('Validation Error.', $validator->errors(), 403);
         }
-	if($request->is_bundle == 0) {
+	if($request->is_bundle == '0') {
     	    Part::where('brand_name', $request->brand_name)
         	->where('part_number', $request->part_number)
         	->update($request->all());
 
 	} else {
+
 	    $bundle = Part::where('brand_name', $request->brand_name)
         	->where('part_number', $request->part_number)
         	->update(['part_number' => $request->part_number, 'brand_name' => $request->brand_name, 'description_english' => $request->description_english, 
@@ -179,13 +187,24 @@ class PartsController extends BaseController
         		->where('part_number', $request->part_number)
 			->first();
 	    //dd($bundleId->id);
-	    Part::where('bundle_id', $bundleId->id)
-		->update(['bundle_id' => 0]);
+
+	    //Part::where('bundle_id', $bundleId->id)
+	//	->update(['bundle_id' => 0]);
+	    BundlePart::where('bundle_id', $bundleId->id)->delete();
 	    foreach($request->bundle_parts as $bundlePart) {
 		Part::where('brand_name', $bundlePart['brand_name'])
 		    ->where('part_number', $bundlePart['part_number'])
 		    ->where('warehouse', 'canada')
-		    ->update(['bundle_id' => $bundleId->id, 'bundle_qty' => $bundlePart['bundle_qty'], 'description_english' => $bundlePart['description_english']]);
+		    //->update(['bundle_id' => $bundleId->id, 'bundle_qty' => $bundlePart['bundle_qty'], 'description_english' => $bundlePart['description_english']]);
+		    ->update(['bundle_qty' => $bundlePart['bundle_qty'], 'description_english' => $bundlePart['description_english']]);
+		$part = Part::where('brand_name', $bundlePart['brand_name'])
+			->where('part_number', $bundlePart['part_number'])
+			->where('warehouse', 'canada')
+			->first();
+		BundlePart::updateOrCreate(
+		    ['bundle_id' => $bundleId->id, 'part_id' => $part->id],
+		    ['bundle_id' => $bundleId->id, 'part_id' => $part->id]
+		);
 	    }
 
 	}

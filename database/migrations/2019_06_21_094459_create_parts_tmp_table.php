@@ -32,7 +32,7 @@ class CreatePartsTmpTable extends Migration
             $table->integer('subst_for')->default('0');
             $table->string('modified_by')->nullable();
 	    $table->text('notes')->nullable();
-	    $table->integer('bundle_id')->default(0);
+	    $table->string('bundle_id', '512')->default(0);
 	    $table->integer('bundle_qty')->default(0);
             $table->timestamps();
         });
