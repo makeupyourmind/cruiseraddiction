@@ -30,25 +30,28 @@ class PartsSearchController extends BaseController
 		$parts = Part::whereRaw("REPLACE(part_number, '-', '') LIKE '%".str_replace('-', '', trim($partNums[$i]))."%'")->get()->toArray();
 	    //dd($parts);
             $usedParts = array();
+	    $k = 0;
             foreach ($parts as $part) {
+		//var_dump($part);
                 $partUniq = $part['brand_name'] . $part['part_number'];
                 if (in_array($partUniq, $usedParts)) continue;
                 $usedParts[] = $partUniq;
-                $partsList[$i]['brand_name'] = $part['brand_name'];
-                $partsList[$i]['part_number'] = $part['part_number'];
-                $partsList[$i]['description_english'] = $part['description_english'];
-                $partsList[$i]['weight_physical'] = $part['weight_physical'];
-		$partsList[$i]['images'] = $part['image'];
+                $partsList[$i][$k]['brand_name'] = $part['brand_name'];
+                $partsList[$i][$k]['part_number'] = $part['part_number'];
+                $partsList[$i][$k]['description_english'] = $part['description_english'];
+                $partsList[$i][$k]['weight_physical'] = $part['weight_physical'];
+		$partsList[$i][$k]['images'] = $part['image'];
 
-		$partData = Part::where('brand_name', $part['brand_name'])->whereRaw("REPLACE(part_number, '-', '') LIKE '%".str_replace('-', '', trim($part['part_number']))."%'")->get()->toArray();
-                ////$partData = Part::where('brand_name', $part['brand_name'])->where('part_number', $part['part_number'])->get()->toArray();
+		//$partData = Part::where('brand_name', $part['brand_name'])->whereRaw("REPLACE(part_number, '-', '') LIKE '%".str_replace('-', '', trim($part['part_number']))."%'")->get()->toArray();
+                $partData = Part::where('brand_name', $part['brand_name'])->where('part_number', $part['part_number'])->get()->toArray();
                 //foreach ($partData as $data) {
                 for($j = 0; $j < count($partData); $j++) {
-                    $partsList[$i]['data'][$j]['warehouses'] = $partData[$j]['warehouse'];
-                    $partsList[$i]['data'][$j]['available'] = $partData[$j]['qty'];
-                    $partsList[$i]['data'][$j]['prices'] = $partData[$j]['price'];
-                    $partsList[$i]['data'][$j]['unique_hashes'] = $partData[$j]['unique_hash'];
+                    $partsList[$i][$k]['data'][$j]['warehouses'] = $partData[$j]['warehouse'];
+                    $partsList[$i][$k]['data'][$j]['available'] = $partData[$j]['qty'];
+                    $partsList[$i][$k]['data'][$j]['prices'] = $partData[$j]['price'];
+                    $partsList[$i][$k]['data'][$j]['unique_hashes'] = $partData[$j]['unique_hash'];
                 }
+		$k++;
 		//}
             }
         }

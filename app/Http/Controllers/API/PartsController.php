@@ -125,7 +125,12 @@ class PartsController extends BaseController
 		    ->where('brand_name', 'LIKE', '%' . $request->brand_name . '%')
 		    ->orderBy($request->order_name, $request->order_by)
 		    ->paginate(100);
+	if($stockPart->count() == 0) {
+	    $stockPartArr['data'] = array();
+	    return response()->json($stockPartArr, 200);
+	}
 	$stockPartArr = $stockPart->toArray();
+
 
 	$mergedParts = array();
 	if(count($stockPartArr['data'][0]['bundle_pivot']) > 0) {
