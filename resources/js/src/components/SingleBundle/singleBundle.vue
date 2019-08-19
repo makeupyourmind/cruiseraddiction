@@ -2,7 +2,7 @@
     <div>
         <vs-dropdown class="ml-auto md:block hidden cursor-pointer" style="margin-left:15px!important "vs-trigger-click>
             <vs-button radius icon="icon-edit" icon-pack="feather"></vs-button>
-            <vs-dropdown-menu class="w-32">
+            <vs-dropdown-menu class="w-32" style="margin-left: 50px">
                 <vs-dropdown-item>
                     <div @click="createSingle(true)" class="flex items-center">
                         <span>Create bundle</span>

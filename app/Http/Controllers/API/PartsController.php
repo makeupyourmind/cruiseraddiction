@@ -130,8 +130,6 @@ class PartsController extends BaseController
 	    return response()->json($stockPartArr, 200);
 	}
 	$stockPartArr = $stockPart->toArray();
-
-
 	$mergedParts = array();
 	if(count($stockPartArr['data'][0]['bundle_pivot']) > 0) {
 	    foreach($stockPartArr['data'][0]['bundle_pivot'] as $allPivots) {
