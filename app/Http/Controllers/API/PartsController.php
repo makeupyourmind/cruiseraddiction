@@ -32,7 +32,7 @@ class PartsController extends BaseController
 	$client = new \GuzzleHttp\Client();
 
 	for($i = 1; $i <= 19; $i++) {
-    	    $request = $client->get('https://cruisera.ddns.net/api/stock_ca/list?page='.$i);
+    	    $request = $client->get('http://cruisera.ddns.net/api/stock_ca/list?page='.$i);
     	    $responseJson = $request->getBody()->getContents();
 	    $response = json_decode($responseJson, true);
 	    foreach($response['data'] as $caPart) {
