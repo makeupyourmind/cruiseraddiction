@@ -13,7 +13,7 @@ import App from './App.vue'
 import VueResource from 'vue-resource';
 Vue.use(VueResource);
 window.http = Vue.http;
-Vue.http.options.root = 'https://cruiser-webstore-back.qbex.io/';
+Vue.http.options.root = 'http://back.cruiseraddiction.com/';
 // Vuesax Component Framework
 import Vuesax from 'vuesax'
 
