@@ -34,7 +34,7 @@ class PartsController extends BaseController
 	return response()->json('Importing stock Ca failed!',200);
 
 	for($i = 1; $i <= 19; $i++) {
-    	    $request = $client->get('http://cruisera.ddns.net/api/stock_ca/list?page='.$i);
+    	    $request = $client->get('http://system.cruiseraddiction.com/api/stock_ca/list?page='.$i);
     	    $responseJson = $request->getBody()->getContents();
 	    $response = json_decode($responseJson, true);
 	    //dd($response);
