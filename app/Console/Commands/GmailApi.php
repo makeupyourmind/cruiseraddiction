@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use GuzzleHttp\Client;
+use Excel;
 
 class GmailApi extends Command
 {
@@ -53,7 +54,8 @@ class GmailApi extends Command
 	    $getEmailRequest = $client->get('https://www.googleapis.com/gmail/v1/users/cruiseraddiction.web@gmail.com/messages/'.$email["id"].'?access_token='.$accessToken);
     	    $emailText = $getEmailRequest->getBody()->getContents();
 	    $emailTextArray = json_decode($emailText, true);
-	    if(!isset($emailTextArray['payload']['parts'][1]['body']['attachmentId'])) continue;
+	    //dd($emailTextArray['payload']['parts'][1]['filename']);
+	    if(!isset($emailTextArray['payload']['parts'][1]['body']['attachmentId']) || substr_count($emailTextArray['payload']['parts'][1]['filename'], '_CANLON') == 0 ) continue;
 	    $attachmentId = $emailTextArray['payload']['parts'][1]['body']['attachmentId'];
 	    
 	    $attachmentRequest = $client->get('https://www.googleapis.com/gmail/v1/users/cruiseraddiction.web@gmail.com/messages/'.$email["id"].'/attachments/'.$attachmentId.'?access_token='.$accessToken);
@@ -61,10 +63,21 @@ class GmailApi extends Command
 	    $attachmentEncoded = json_decode($attachmentArray, true);
 	    $attachmentEncodedData = $attachmentEncoded['data'];
 	    $attachment = strtr($attachmentEncodedData, array('-' => '+', '_' => '/'));
-    	    $myfile = fopen(storage_path('app/excel.xlsx'), 'w+');
-	    //$myfile = fopen(__DIR__."/excel.xlsx", "w+");
+	    $filePath = storage_path('app/excel.xls');
+    	    $myfile = fopen($filePath, 'w+');
 	    fwrite($myfile, base64_decode($attachment));
 	    fclose($myfile);
+
+	    //$excelData = Excel::import('', $filePath)->toArray('', $filePath);
+	    $excelData = Excel::toArray('', $filePath);
+	    foreach($excelData[0] as $excelRow) {
+		if(!is_numeric($excelRow[4])) continue;
+		
+		dd($excelRow);
+		
+	    }
+
+
 	    die();
 	}
 
