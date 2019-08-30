@@ -95,7 +95,7 @@ class PayPalController extends Controller
             ->setDescription('Your transaction description');
         $redirect_urls = new RedirectUrls();
 //        $redirect_urls->setReturnUrl(URL::route('payment.status')) /** Specify return URL **/
-          $redirect_urls->setReturnUrl('http://cruiser-webstore-back.qbex.io/paypal/success') /** Specify return URL **/
+          $redirect_urls->setReturnUrl('http://back.cruiseraddiction.com/paypal/success') /** Specify return URL **/
 
                 ->setCancelUrl(URL::route('payment.status'));
         $payment = new Payment();
@@ -185,6 +185,7 @@ class PayPalController extends Controller
                 $customersOrder['data'][$dataElem]['price'] = $part->price;
                 $customersOrder['data'][$dataElem]['description_english'] = $part->description_english;
                 $customersOrder['data'][$dataElem]['unique_hash'] = $part->unique_hash;
+		$customersOrder['data'][$dataElem]['client_column_two'] = time().$dataElem;
 		$dataElem++;
             }
             $serializedOrder = serialize($customersOrder);
@@ -194,7 +195,7 @@ class PayPalController extends Controller
             $newOrder->save();
 	    $insertedId = $newOrder->id;
 	    $customersOrder['order_id'] = $insertedId;
-            return redirect('http://cruiser-webstore.qbex.io/final?result='.base64_encode(json_encode($customersOrder)));
+            return redirect('http://cruiseraddiction.com/final?result='.base64_encode(json_encode($customersOrder)));
         }
         \Session::put('error','Payment failed');
         return Redirect::route('addmoney.paywithpaypal');

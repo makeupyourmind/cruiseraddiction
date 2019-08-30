@@ -9,12 +9,16 @@
     "license": "MIT",
     "require": {
         "php": "^7.1.3",
+        "dacastro4/laravel-gmail": "^2.0",
         "fideloper/proxy": "^4.0",
+        "google/apiclient": "^2.0",
         "guzzlehttp/guzzle": "^6.3",
         "laravel/framework": "5.8.*",
         "laravel/passport": "^7.3",
         "laravel/tinker": "^1.0",
+        "maatwebsite/excel": "^3.1",
         "paypal/rest-api-sdk-php": "^1.14",
+        "rap2hpoutre/fast-excel": "^1.2",
         "shippo/shippo-php": "^1.4"
     },
     "require-dev": {

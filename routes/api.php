@@ -19,6 +19,7 @@ Route::group([
     Route::post('login', 'RegisterController@login');
 
     Route::post('parts-search', 'PartsSearchController@index');
+    Route::post('parts-search1', 'PartsSearchController@index');
 
     Route::post('parts', 'PartsController@show');
     Route::get('parts', 'PartsController@index');
@@ -38,9 +39,21 @@ Route::group([
 
     Route::post('check-email', 'UsersController@checkEmail');
 
+    Route::get('/oauth/gmail', function (){
+	return LaravelGmail::redirect();
+    });
+
+    Route::get('/oauth/gmail/callback', function (){
+	LaravelGmail::makeToken();
+	return redirect()->to('/');
+    });
+
+    Route::get('/oauth/gmail/logout', function (){
+	LaravelGmail::logout(); //It returns exception if fails
+	return redirect()->to('/');
+    });
+
 });
-
-
 
 Route::group([
     'namespace' => 'API',

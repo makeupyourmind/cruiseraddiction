@@ -31,10 +31,14 @@ class PartsController extends BaseController
     public function stock_ca() {
 	$client = new \GuzzleHttp\Client();
 
+	//return response()->json('Importing stock Ca failed!',200);
+
 	for($i = 1; $i <= 19; $i++) {
-    	    $request = $client->get('https://cruisera.ddns.net/api/stock_ca/list?page='.$i);
+    	    $request = $client->get('http://system.cruiseraddiction.com/api/stock_ca/list?page='.$i);
     	    $responseJson = $request->getBody()->getContents();
 	    $response = json_decode($responseJson, true);
+	    //dd($response);
+	    //if(!$response['data']) return response()->json('Importing stock Ca failed!',200);
 	    foreach($response['data'] as $caPart) {
 
 		$caOrderData = array();
