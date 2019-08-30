@@ -20,6 +20,7 @@ class CreateAttachmentsTable extends Migration
 	    $table->string('artikul');
 	    $table->string('status');
 	    $table->string('order_date');
+	    $table->integer('status_id');
             $table->timestamps();
         });
     }

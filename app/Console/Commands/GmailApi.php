@@ -74,13 +74,23 @@ class GmailApi extends Command
 	    $excelData = Excel::toArray('', $filePath);
 	    $newAttachmentData = array();
 	    foreach($excelData[0] as $excelRow) {
+		if(substr_count($excelRow[19], 'ОТГРУЗИЛИ') > 0) {
+		    $statusId = 3;
+		} elseif($excelRow[19] == 'ЗАКУПЛЕНО') {
+		    $statusId = 2;
+		} elseif($excelRow[19] == 'В_РАБОТЕ') {
+		    $statusId = 1;
+		} elseif($excelRow[19] == 'НЕТ') {
+		    $statusId = 4;
+		} else $statusId = 0;
 		if(!is_numeric($excelRow[4])) continue;
 		$newAttachmentData = [
 		    'client_column_one' => $excelRow[5],
 		    'client_column_two' => $excelRow[6],
 		    'artikul'	        => $excelRow[13],
 		    'status'		=> $excelRow[19], 
-		    'order_date'	=> $excelRow[0]
+		    'order_date'	=> $excelRow[0],
+		    'status_id'		=> $statusId
 		];
 		Attachment::create($newAttachmentData);
 		//dd($excelRow);
