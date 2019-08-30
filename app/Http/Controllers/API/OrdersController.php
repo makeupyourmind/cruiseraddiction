@@ -8,6 +8,7 @@ use App\Model\Country;
 use App\Model\Order;
 use App\User;
 use Illuminate\Support\Facades\Auth;
+use App\Model\Attachment;
 
 class OrdersController extends Controller
 {

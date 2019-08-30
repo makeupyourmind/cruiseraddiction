@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use GuzzleHttp\Client;
 use Excel;
+use App\Model\Attachment;
 
 class GmailApi extends Command
 {
@@ -49,6 +50,7 @@ class GmailApi extends Command
 	$messagesRequest = $client->get('https://www.googleapis.com/gmail/v1/users/cruiseraddiction.web@gmail.com/messages?access_token='.$accessToken);
     	$emailsList = $messagesRequest->getBody()->getContents();
 	$emailsArray = json_decode($emailsList, true);
+	Attachment::truncate();
 	foreach($emailsArray['messages'] as $email) {
 
 	    $getEmailRequest = $client->get('https://www.googleapis.com/gmail/v1/users/cruiseraddiction.web@gmail.com/messages/'.$email["id"].'?access_token='.$accessToken);
@@ -70,14 +72,20 @@ class GmailApi extends Command
 
 	    //$excelData = Excel::import('', $filePath)->toArray('', $filePath);
 	    $excelData = Excel::toArray('', $filePath);
+	    $newAttachmentData = array();
 	    foreach($excelData[0] as $excelRow) {
 		if(!is_numeric($excelRow[4])) continue;
-		
-		dd($excelRow);
+		$newAttachmentData = [
+		    'client_column_one' => $excelRow[5],
+		    'client_column_two' => $excelRow[6],
+		    'artikul'	        => $excelRow[13],
+		    'status'		=> $excelRow[19], 
+		    'order_date'	=> $excelRow[0]
+		];
+		Attachment::create($newAttachmentData);
+		//dd($excelRow);
 		
 	    }
-
-
 	    die();
 	}
 

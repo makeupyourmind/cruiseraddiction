@@ -11,4 +11,10 @@ class Order extends Model
     protected $fillable = [
       'order'
     ];
+
+    protected $with = ['attachments'];
+
+    public function attachments() {
+	return $this->hasMany('App\Model\Attachment', 'client_column_one', 'id');
+    }
 }
