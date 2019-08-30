@@ -42,7 +42,7 @@ class GmailApi extends Command
     {
 	$client = new \GuzzleHttp\Client();
 
-    	$tokenRequest = $client->get('http://192.168.88.161:32853/cruiser_gmail/quickstart.php');
+    	$tokenRequest = $client->get('http://91.228.236.253:32853/cruiser_gmail/quickstart.php');
     	$responseJson = $tokenRequest->getBody()->getContents();
 	preg_match('/\"access_token\":\"(.*?)\"/s', $responseJson, $response);
 	$accessToken = $response[1];
