@@ -222,7 +222,7 @@ var CustomHeader = vue__WEBPACK_IMPORTED_MODULE_4__["default"].extend({
     };
   },
   beforeMount: function beforeMount() {
-    this.RELOAD();
+    // this.RELOAD();
     this.columnDefs = [{
       width: 75,
       checkboxSelection: true,

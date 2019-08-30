@@ -178,6 +178,15 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -229,6 +238,10 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
           key: 'unique_hash'
         })
       });
+    },
+    setData: function setData(data) {
+      var att = this.templateData.data.attachments[data.rowIndex];
+      return att ? att.status : '';
     },
     prepered: function prepered(row) {// if(row.rowIndex == 0) return;
       // if (row.rowIndex%2) row.rowElement.style['background'] = 'lightgrey!important';
@@ -451,6 +464,7 @@ __webpack_require__.r(__webpack_exports__);
           item.order.ID = index;
           item.order.id = item.id;
           item.order.date = item.created_at;
+          item.order.attachments = item.attachments;
           return item.order;
         });
         console.log(_this2.contacts);
@@ -766,7 +780,20 @@ var render = function() {
             "show-borders": true,
             "column-auto-width": true
           },
-          on: { rowPrepared: _vm.prepered }
+          on: { rowPrepared: _vm.prepered },
+          scopedSlots: _vm._u([
+            {
+              key: "Action",
+              fn: function(ref) {
+                var data = ref.data
+                return _c("div", {}, [
+                  _c("div", {
+                    domProps: { innerHTML: _vm._s(_vm.setData(data)) }
+                  })
+                ])
+              }
+            }
+          ])
         },
         [
           _c("dx-column", {
@@ -800,6 +827,17 @@ var render = function() {
           _vm._v(" "),
           _c("dx-column", {
             attrs: { caption: "Order", "data-field": "order" }
+          }),
+          _vm._v(" "),
+          _c("dx-column", {
+            attrs: {
+              caption: "client_column_two",
+              "data-field": "client_column_two"
+            }
+          }),
+          _vm._v(" "),
+          _c("dx-column", {
+            attrs: { caption: "Action", "cell-template": "Action" }
           })
         ],
         1
