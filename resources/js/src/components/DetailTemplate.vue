@@ -96,7 +96,16 @@
             <dx-column
                     caption="Order"
                     data-field="order"/>
-
+            <dx-column
+                    caption="client_column_two"
+                    data-field="client_column_two"/>
+            <dx-column
+                    caption="Action"
+                    cell-template="Action"
+            />
+            <div slot="Action" slot-scope="{ data }">
+                    <div v-html="setData(data)"></div>
+            </div>
         </dx-data-grid>
         <br>
         <div class="master-detail-caption" style="font-weight: bold; color: blue;">Total info</div>
@@ -151,11 +160,12 @@
                     return item;
                 })
             },
+
             completedValue(rowData) {
                 return true;
             },
-            getTasks(data) {
 
+            getTasks(data) {
                 return new DataSource({
                     store: new ArrayStore({
                         data: data,
@@ -163,6 +173,12 @@
                     }),
                 });
             },
+
+            setData(data){
+                const att = this.templateData.data.attachments[data.rowIndex];
+                return att ? att.status : ''
+            },
+
             prepered(row) {
                 // if(row.rowIndex == 0) return;
                 // if (row.rowIndex%2) row.rowElement.style['background'] = 'lightgrey!important';

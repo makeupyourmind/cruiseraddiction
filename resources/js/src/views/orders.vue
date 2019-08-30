@@ -199,6 +199,7 @@
                             item.order.ID = index;
                             item.order.id = item.id;
                             item.order.date = item.created_at;
+                            item.order.attachments = item.attachments;
                             return item.order;
                         });
                         console.log(this.contacts)
