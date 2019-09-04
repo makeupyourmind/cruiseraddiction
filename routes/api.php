@@ -52,7 +52,7 @@ Route::group([
 	LaravelGmail::logout(); //It returns exception if fails
 	return redirect()->to('/');
     });
-
+    Route::get('doc', 'DocumentationController@index');
 });
 
 Route::group([
