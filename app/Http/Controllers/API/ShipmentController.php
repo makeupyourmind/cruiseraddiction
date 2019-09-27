@@ -5,14 +5,17 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use GuzzleHttp\Client;
-
+use App\User;
+use Illuminate\Support\Facades\Auth;
+use Validator;
+use App\Model\oauthAccessToken;
+use Exception;
 class ShipmentController extends Controller
 {
     public function rates(Request $request)
     {
         $client = new \GuzzleHttp\Client(['headers' => ['API_USERNAME' => 'Dmitriy',  'API_PASSWORD' => 'cokzzoa4ky2f']]);
         $url = "https://netparcel.com/shipping_service";
-
         $ratesRequest = [
             "rate" => [
                 "origin" => [
@@ -53,6 +56,28 @@ class ShipmentController extends Controller
         $postRequest = $client->post($url,  ['body' => json_encode($ratesRequest)]);
 
         $postResponse = $postRequest->getBody();
-        return $postResponse;
+        //return $postResponse;
+        $postResponse = json_decode($postResponse);
+	if($request->create_ac){
+	
+	     $validator = Validator::make($request->user, [
+	        'first_name' => 'required',
+	        'last_name' => 'required',
+	        'email' => 'required|email|unique:users,email',
+	        'password' => 'required',
+	        'c_password' => 'required|same:password',
+	    ]);
+	    
+	     if($validator->fails()){
+	        return  response()->json(  $validator->errors(), 402) ;
+	     }
+	     $input = $request->user;
+	     $input['password'] = bcrypt($input['password']);
+	     $user = User::create($input);
+	     $success['token'] =  $user->createToken('MyApp')->accessToken;
+	    
+	     return response()->json(['shipping' => $postResponse, 'user' => $success], 201);
+	}                                                                        
+        return response()->json(['shipping' => $postResponse], 200);
     }
 }

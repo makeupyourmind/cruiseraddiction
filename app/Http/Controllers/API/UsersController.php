@@ -11,6 +11,7 @@ use Validator;
 class UsersController extends BaseController
 {
     public function show() {
+	//return response()->json('lox', 404);
         $user = Auth::user();
         return response()->json($user, 200);
 

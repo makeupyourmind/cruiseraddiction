@@ -46,8 +46,8 @@ class GetPriceList extends Command
         //$files = Storage::disk('ftp')->files('CANLON+CPT+Emirates+USD+Cashless payment+Delivery not included in prices+MULTIBRAND.txt', true);
 
         $file = 'CANLON+CPT+Emirates+USD+Cashless payment+Delivery not included in prices+MULTIBRAND.txt';
-        //// $contents = Storage::disk('ftp')->get($file);
-        //// Storage::put('pricelist.csv', $contents);
+         //$contents = Storage::disk('ftp')->get($file);
+	 //Storage::put('pricelist.csv', $contents);
         $path = storage_path('app/pricelist.csv');
         $fileContent = Storage::get('pricelist.csv');
 
@@ -74,7 +74,7 @@ class GetPriceList extends Command
         Storage::put('pricelist.csv', $fileContent);
         //dd($fileContent);
 
-
+	
 
         $data   = array_map(function($datas) { return str_getcsv($datas,";"); }, file($path));
         ////Storage::delete('pricelist.csv');
