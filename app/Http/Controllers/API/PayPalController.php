@@ -95,7 +95,8 @@ class PayPalController extends Controller
             ->setDescription('Your transaction description');
         $redirect_urls = new RedirectUrls();
 //        $redirect_urls->setReturnUrl(URL::route('payment.status')) /** Specify return URL **/
-          $redirect_urls->setReturnUrl('https://testback.cruiseraddiction.com/paypal/success') /** Specify return URL **/
+//          $redirect_urls->setReturnUrl('https://testback.cruiseraddiction.com/paypal/success') /** Specify return URL **/
+          $redirect_urls->setReturnUrl('https://back.cruiseraddiction.com/paypal/success') /** Specify return URL **/
 
                 ->setCancelUrl(URL::route('payment.status'));
         $payment = new Payment();

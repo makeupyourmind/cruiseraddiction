@@ -13,7 +13,8 @@ import App from './App.vue'
 import VueResource from 'vue-resource';
 Vue.use(VueResource);
 window.http = Vue.http;
-Vue.http.options.root = 'https://testback.cruiseraddiction.com/';
+Vue.http.options.root = 'https://back.cruiseraddiction.com/';
+
 // Vuesax Component Framework
 import Vuesax from 'vuesax'
 
