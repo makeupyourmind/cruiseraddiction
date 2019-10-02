@@ -14,7 +14,7 @@ class Part extends Model
         'unique_hash', 'is_stock_ca','categories', 'tags', 'min_price', 'max_price', 'min_stock', 'location', 'part_number_without_too_much'
     ];
 
-    protected $with = ['bundlePivot'];
+    protected $with = ['bundlePivot' ];
 
 
 /*    public function bundleParts()
@@ -27,7 +27,8 @@ class Part extends Model
         public function bundlePivot()
     {
         return $this->hasMany('App\Model\BundlePart', 'bundle_id', 'id');
-    }
+}
 
+  
 
 }

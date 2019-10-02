@@ -2,7 +2,9 @@
 
 return array(
     /** set your paypal credential **/
-    'client_id' =>'AVobLRHB4o8KJbYx4Snn9OzscJTKAS2lyS9hXg5UkRzh0APnYlbUy23tyFldq8cVA0V5lpWCGqLaakFT',
+    //nt_id' => //LRHB4o8KJbYx4Snn9OzscJTKAS2lyS9hXg5UkRzh0APnYlbUy23tyFldq8cVA0V5lpWCGqLaakFT',
+    //cret' => //Q-n8hGTO4HByWcvgvegbxL7zGHAoLavf0Gxa2hMNEFKW-tnAWs7Ym6j1J6Dahsq-S25ha7IJsChKlc',
+    'client_id' => 'AVobLRHB4o8KJbYx4Snn9OzscJTKAS2lyS9hXg5UkRzh0APnYlbUy23tyFldq8cVA0V5lpWCGqLaakFT',
     'secret' => 'EFQ-n8hGTO4HByWcvgvegbxL7zGHAoLavf0Gxa2hMNEFKW-tnAWs7Ym6j1J6Dahsq-S25ha7IJsChKlc',
     /**
      * SDK configuration
