@@ -95,7 +95,8 @@ class GetPriceList extends Command
 
             if ($r != 1) {
                 $row[8] = md5($row[0].$row[1].$row[6]);
-
+		$row[1] = str_replace("-", '', str_replace('"', '', str_replace("'", '', $row[1])));
+		$row[9] = $row[1];
                 $row[3] = (float)str_replace(',', '.', $row[3]);
                 $row[4] = (float)str_replace(',', '.', $row[4]);
                 $row[7] = (float)str_replace(',', '.', $row[7]);
@@ -161,7 +162,7 @@ class GetPriceList extends Command
 
             } else {
                 $row[8] = 'unique_hash';
-                //$row[9] = 'stock_history';
+                $row[9] = 'full_part_number';
 
             }
 
@@ -187,14 +188,15 @@ class GetPriceList extends Command
 
         $req2 = DB::connection()->getpdo()->exec("INSERT INTO parts
                     (brand_name, part_number, description_english, weight_physical, weight_volumetric, qty, warehouse, 
-                    price, unique_hash)
+                    price, unique_hash, full_part_number)
                     SELECT brand_name, part_number, description_english, weight_physical, weight_volumetric, qty, warehouse, 
-                    price, unique_hash FROM parts_tmp
+                    price, unique_hash, part_fits FROM parts_tmp
                     ON DUPLICATE KEY UPDATE
                     parts.qty = parts_tmp.qty,
-                    parts.price = parts_tmp.price");
+                    parts.price = parts_tmp.price,
+                    parts.full_part_number = parts_tmp.part_fits");
 
-       // $req3 =  DB::connection()->getpdo()->exec("DELETE FROM parts WHERE LOWER(brand_name) NOT IN ('koyo', 'toyo', 'taiho', 'nsk', 'hkt', 'mitsuboshi', 'ntn', 'aisin', 'valeo', 'shimahide', '555', 'toyota')");
+        $req3 =  DB::connection()->getpdo()->exec("DELETE FROM parts WHERE LOWER(brand_name) NOT IN ('koyo', 'toyo', 'taiho', 'nsk', 'hkt', 'mitsuboshi', 'ntn', 'aisin', 'valeo', 'shimahide', '555', 'toyota')");
 
     }
 }

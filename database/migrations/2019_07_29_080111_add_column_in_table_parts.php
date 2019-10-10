@@ -22,6 +22,7 @@ class AddColumnInTableParts extends Migration
             $table->string('min_stock')->nullable();
             $table->boolean('is_stock_ca')->default(false);
             $table->string('location')->nullable();
+            $table->text('full_part_number')->nullable();
         });
     }
 

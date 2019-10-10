@@ -79,7 +79,7 @@ class PartsController extends BaseController
     }
 
     public function randoms() {
-        $randomParts = Part::whereBetween('id', [1100000, 1101000])->get()->random(12);
+        $randomParts = Part::where('id', '>' ,'139862')->take(10000)->get()->random(12);
         return response()->json($randomParts, 200);
     }
 

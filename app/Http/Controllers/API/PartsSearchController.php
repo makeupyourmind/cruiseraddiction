@@ -25,8 +25,10 @@ class PartsSearchController extends BaseController
 	    ////$parts = Part::where('part_number', trim($partNums[$i]))->get()->toArray();
 	    //$parts=Part::all();
 	//    dd($parts);
+		$txt =str_replace("-", '', str_replace('"', '', str_replace("'", '',$partNums[$i])));
+		
 		//$parts=Part::where('part_number', $partNums[$i])->get();select('part_number', 'brand_name', 'description_english', 'weight_physical', 'warehouse', 'qty', 'price', 'unique_hash', 'image')
-		$parts=Part::select('part_number', 'brand_name', 'description_english', 'weight_physical', 'warehouse', 'qty', 'price', 'unique_hash', 'image')->where('part_number', $partNums[$i])->get();
+		$parts=Part::select('part_number', 'brand_name', 'description_english', 'weight_physical', 'warehouse', 'qty', 'price', 'unique_hash', 'image')->where('part_number', $txt)->get();
 		//dd($parts);
 	//	$parts = Part::whereRaw("REPLACE(part_number, '-', '') LIKE '%".str_replace('-', '', trim($partNums[$i]))."%'")->get()->toArray();
 	    //dd($parts);
