@@ -14,7 +14,7 @@ class AddColumnInTablePartsTmp extends Migration
     public function up()
     {
         Schema::table('parts_tmp', function (Blueprint $table) {
-            $table->text('categories')->nullable();            
+            $table->text('categories')->nullable();
 	    $table->text('tags')->nullable();
 	    $table->string('min_price')->nullable();
 	    $table->string('max_price')->nullable();
@@ -22,7 +22,6 @@ class AddColumnInTablePartsTmp extends Migration
 	    $table->string('min_stock')->nullable();
 	    $table->boolean('in_stock_ca')->nullable();
 	    $table->string('location')->nullable();
-	    $table->text('full_part_number')->nullable();
         });
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Model\SameDataPartBundle;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\API\BaseController as BaseController;
@@ -24,23 +25,35 @@ class BundlesController extends BaseController
         $uniqueHash = 'BDL_'.md5($request->brand_name.$request->part_number.$request->warehouse);
         $request->merge(['unique_hash' => $uniqueHash, 'is_bundle' => '1']);
         $newBundle = Part::create($request->all());
+
 	foreach($request->bundle_parts as $bundlePart) {
-	    $part = Part::where('brand_name', $bundlePart['brand_name'])
-			->where('part_number', $bundlePart['part_number'])
-			->where('warehouse', 'canada')
-			->first();
+
+	    $part = Part::where("part_number",'LIKE','%' . $bundlePart['part_number']. '%' )
+            ->where('brand_name', 'LIKE', '%' . $bundlePart['brand_name']. '%')
+            ->where('warehouse', 'canada')
+            ->first();
+
 	    $newBundleRel = [
-		'bundle_id' => $newBundle->id,
-		'part_id' => $part->id
+            'bundle_id' => $newBundle['id'],
+            'part_id' => $part->id
 	    ];
-	    BundlePart::create($newBundleRel);
+//
+//
+        BundlePart::create($newBundleRel);
+        SameDataPartBundle::create([
+            'qty' => $bundlePart['qty'],
+            'description' => $bundlePart['description_english'],
+            'bundle_id' => $newBundle['id'],
+            'bundle_part_id' => $part->id
+        ]);
+
 
 /*
 	    if($part->bundle_id == '0') {
 		$bundleIdArr = [$newBundle->id];
 		$encBundleId = json_encode($bundleIdArr);
 	    } else {
-		
+
 		$decBundleId = json_decode($part->bundle_id, true);
 		$decBundleId[] = $newBundle->id;
 		$encBundleId = json_encode($decBundleId);
@@ -62,7 +75,7 @@ class BundlesController extends BaseController
     }
 
     public function deleteFromBundle($id) {
-	
+
     }
 
 

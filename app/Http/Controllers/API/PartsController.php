@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Model\SameDataPartBundle;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\API\BaseController as BaseController;
@@ -66,7 +67,7 @@ class PartsController extends BaseController
 		$caOrder['min_price'] =  $caPart['stats'] ? (string) $caPart['stats']['min_price'] : null;
 		$caOrder['max_price'] =  $caPart['stats'] ? (string) $caPart['stats']['max_price'] : null;
 		$caOrder['min_stock'] =  $caPart['stats'] ? (string) $caPart['stats']['stock_min'] : null;
-		
+
 		$caOrder['location'] = $caPart['Location'];
 		$caOrder['is_stock_ca'] = true;
 
@@ -145,7 +146,7 @@ class PartsController extends BaseController
 			->where('part_number', 'LIKE', '%' . $partNumber . '%')
 			->where('brand_name', 'LIKE', '%' . $request->brand_name . '%')
 			->paginate(100);
-*/	
+*/
 	}
 	$stockPartArr['data'][0]['bundle_parts'] = $mergedParts;
 	return response()->json($stockPartArr, 200);
@@ -178,7 +179,7 @@ class PartsController extends BaseController
         if($validator->fails()){
             return $this->sendError('Validation Error.', $validator->errors(), 403);
         }
-	if($request->is_bundle == '0') {
+	if(!$request->is_bundle) {
     	    Part::where('brand_name', $request->brand_name)
         	->where('part_number', $request->part_number)
         	->update($request->all());
@@ -187,31 +188,52 @@ class PartsController extends BaseController
 
 	    $bundle = Part::where('brand_name', $request->brand_name)
         	->where('part_number', $request->part_number)
-        	->update(['part_number' => $request->part_number, 'brand_name' => $request->brand_name, 'description_english' => $request->description_english, 
-		    'description_full' => $request->description_full, 'min_stock' => $request->min_stock, 'price' => $request->price, 
+        	->update(['part_number' => $request->part_number, 'brand_name' => $request->brand_name, 'description_english' => $request->description_english,
+		    'description_full' => $request->description_full, 'min_stock' => $request->min_stock, 'price' => $request->price,
 		    'min_price' => $request->min_price, 'max_price' => $request->max_price, 'location' => $request->location, 'categories' => $request->categories]);
 	    $bundleId =  Part::where('brand_name', $request->brand_name)
         		->where('part_number', $request->part_number)
 			->first();
-	    //dd($bundleId->id);
 
 	    //Part::where('bundle_id', $bundleId->id)
 	//	->update(['bundle_id' => 0]);
 	    BundlePart::where('bundle_id', $bundleId->id)->delete();
+        SameDataPartBundle::where('bundle_id', $bundleId->id)->delete();
 	    foreach($request->bundle_parts as $bundlePart) {
-		Part::where('brand_name', $bundlePart['brand_name'])
-		    ->where('part_number', $bundlePart['part_number'])
-		    ->where('warehouse', 'canada')
-		    //->update(['bundle_id' => $bundleId->id, 'bundle_qty' => $bundlePart['bundle_qty'], 'description_english' => $bundlePart['description_english']]);
-		    ->update(['bundle_qty' => $bundlePart['bundle_qty'], 'description_english' => $bundlePart['description_english']]);
-		$part = Part::where('brand_name', $bundlePart['brand_name'])
-			->where('part_number', $bundlePart['part_number'])
-			->where('warehouse', 'canada')
-			->first();
+//		Part::where('brand_name', $bundlePart['brand_name'])
+//		    ->where('part_number', $bundlePart['part_number'])
+//		    ->where('warehouse', 'canada')
+//		    //->update(['bundle_id' => $bundleId->id, 'bundle_qty' => $bundlePart['bundle_qty'], 'description_english' => $bundlePart['description_english']]);
+//		    ->update(['bundle_qty' => $bundlePart['bundle_qty'], 'description_english' => $bundlePart['description_english']]);
+            $part = Part::where("part_number",'LIKE','%' . $bundlePart['part_number']. '%' )
+                ->where('brand_name', 'LIKE', '%' . $bundlePart['brand_name']. '%')
+                ->where('warehouse', 'canada')
+                ->first();
 		BundlePart::updateOrCreate(
-		    ['bundle_id' => $bundleId->id, 'part_id' => $part->id],
-		    ['bundle_id' => $bundleId->id, 'part_id' => $part->id]
+		    [
+		        'bundle_id' => $bundleId->id,
+                'part_id' => $part->id,
+//                'qty' => $bundlePart->bundle_qty,
+//                'description' => $bundlePart->description_english
+            ],
+		    [
+		        'bundle_id' => $bundleId->id,
+                'part_id' => $part->id,
+//                'qty' => $bundlePart->bundle_qty,
+//                'description' => $bundlePart->description_english
+            ]
 		);
+
+
+            SameDataPartBundle::updateOrCreate(
+                [
+                    'bundle_part_id' => $part->id
+                ],
+                [
+                    'qty' => $bundlePart['qty'],
+                    'description' => $bundlePart['description_english'],
+                ]
+            );
 	    }
 
 	}
@@ -233,9 +255,9 @@ class PartsController extends BaseController
 	if(count($array) == 0) {
 	    return response()->json(['error' => 'nothing selected'], 406);
 	};
-    	
+
 	foreach($array as $part_destroyed) {
-	    
+
             $validator = Validator::make((array) $part_destroyed, [
                 'brand_name' => 'required|string',
                 'part_number' => 'required|string',

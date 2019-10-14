@@ -15,8 +15,8 @@ class CreateBundlePartsTable extends Migration
     {
         Schema::create('bundle_parts', function (Blueprint $table) {
             $table->bigIncrements('id');
-	    $table->integer('bundle_id');
-	    $table->integer('part_id');
+            $table->integer('bundle_id');
+            $table->integer('part_id');
             $table->timestamps();
         });
     }

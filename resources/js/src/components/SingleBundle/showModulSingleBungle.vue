@@ -193,7 +193,18 @@
             moduleStock: null,
         }),
         created(){
-            this.moduleStock = Object.assign({}, this.$store.getters.STORE_EDIT);
+            this.moduleStock = JSON.parse(JSON.stringify(this.$store.getters.STORE_EDIT));
+
+            this.moduleStock.bundle_parts = this.moduleStock.bundle_pivot ? this.moduleStock.bundle_pivot.map((item) => {
+                return {
+                    bundle_qty: item.bundle_parts[0].bundle_part_data.qty,
+                    description_english: item.bundle_parts[0].bundle_part_data.description,
+                    brand_name:  item.bundle_parts[0].brand_name,
+                    part_number: item.bundle_parts[0].part_number,
+                    qty:  item.bundle_parts[0].qty
+                };
+            }) : [];
+            delete this.moduleStock.bundle_pivot;
             this.moduleStock.tags = !this.moduleStock.tags ? [] : JSON.parse(this.moduleStock.tags)
         },
         computed:{
@@ -236,17 +247,28 @@
             },
             create(){
                 const module =  JSON.parse(JSON.stringify(this.moduleStock));
-
-                module.part_number_without_too_much =  module.part_number.replace(/[- )(]/g,'');
+                this.$store.commit('isNoActive', true);
+                module.part_number ? module.part_number_without_too_much =  module.part_number.replace(/[- )(]/g,'') :null;
                 const current = this.$store.getters['stockCaModule/GET_STOCK_DATA'];
                 const order = this.$store.getters['stockCaModule/GET_DATA_STOCK_ORDER'];
                 if(this.moduleStock.action == 'update'){
-
+                    if(!module.is_bundle) {
+                        module && delete module.bundle_parts;
+                        module && delete module.bundle_pivot;
+                    }
                     module && delete module.brand;
                     module && delete module.action;
                     module && delete module.id;
                     module && delete module.unique_hash;
                     module && (module.tags = JSON.stringify(module.tags));
+                    if(this.moduleStock.is_bundle) {
+                        module.bundle_parts = module.bundle_parts.map(item => {
+                            item.stock_qty = item.qty;
+                            item.qty = item.bundle_qty;
+                            item.bundle_qty && delete item.bundle_qty;
+                            return item;
+                        })
+                    }
                     this.$store.dispatch("stockCaModule/UPDATE_DATA_STOCK", module)
                         .then(() => {
                             return this.$store.dispatch('stockCaModule/GET_DATA_STOCK_FROM_SERVER', {
@@ -257,7 +279,11 @@
                                 orderBy: order.by,
                             });
                         })
-                        .then(() => this.$store.dispatch("GET_SHOW_BUNDLE_SINGLE", {module:false, showTable:false}));
+                        .then(() => {
+                            this.$store.dispatch("GET_SHOW_BUNDLE_SINGLE", {module:false, showTable:false})
+                            this.$store.commit('isNoActive', false)
+                        })
+                        .catch( () =>  this.$store.commit('isNoActive', false));
 
                 } else {
 
@@ -281,7 +307,11 @@
                                 orderBy: order.by,
                             });
                         })
-                        .then(() => this.$store.dispatch("GET_SHOW_BUNDLE_SINGLE", {module:false, showTable:false}));
+                        .then(() => {
+                            this.$store.dispatch("GET_SHOW_BUNDLE_SINGLE", {module:false, showTable:false});
+                            this.$store.commit('isNoActive', false)
+                        })
+                        .catch( () =>  this.$store.commit('isNoActive', false));
                 }
             }
         }

@@ -386,7 +386,8 @@
             RELOAD() {
                 this.$store.commit('isNoActive', true);
                 StockManagment.reload()
-                    .then(res => this.$store.commit('isNoActive', false))
+                    .then(() => this.getDataStockCa(1))
+                    .then(()=> this.$store.commit('isNoActive', false))
             }
         },
         mounted() {
