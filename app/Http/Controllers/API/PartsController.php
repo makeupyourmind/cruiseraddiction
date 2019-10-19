@@ -174,6 +174,12 @@ class PartsController extends BaseController
         $validator = Validator::make($request->all(), [
             'brand_name' => 'required|string',
             'part_number' => 'required|string',
+            'description_full' => 'required',
+            'description_english' => 'required',
+            'min_stock' => 'required',
+            'qty' => 'required',
+            'price' => 'required',
+            'min_price' => 'required'
         ]);
 
         if($validator->fails()){
@@ -193,7 +199,9 @@ class PartsController extends BaseController
 		    'min_price' => $request->min_price, 'max_price' => $request->max_price, 'location' => $request->location, 'categories' => $request->categories]);
 	    $bundleId =  Part::where('brand_name', $request->brand_name)
         		->where('part_number', $request->part_number)
-			->first();
+            ->first();
+        
+        $arr = array();
 
 	    //Part::where('bundle_id', $bundleId->id)
 	//	->update(['bundle_id' => 0]);
@@ -209,6 +217,10 @@ class PartsController extends BaseController
                 ->where('brand_name', 'LIKE', '%' . $bundlePart['brand_name']. '%')
                 ->where('warehouse', 'canada')
                 ->first();
+            $bundle_parts = floor(intval($part->qty) / intval($bundlePart["qty"]));
+            // dump(intval($bundlePart["qty"]), intval($part->qty), '\n');
+            array_push($arr, $bundle_parts);
+
 		BundlePart::updateOrCreate(
 		    [
 		        'bundle_id' => $bundleId->id,
@@ -234,7 +246,21 @@ class PartsController extends BaseController
                     'description' => $bundlePart['description_english'],
                 ]
             );
-	    }
+        }
+        // $arr = array_filter($arr, self::bigger());
+        $arr = array_filter(
+            $arr,
+            function ($value) {
+                return $value > -1;
+            }
+        );
+        // var_dump($arr);
+        $arr = min($arr);
+        
+        // $bundle->update(['qty' => $arr]);
+        $bundle = Part::where('brand_name', $request->brand_name)
+        	->where('part_number', $request->part_number)
+        	->update(['qty' => $arr]);
 
 	}
         return $this->sendResponse('Success', 'Part modified successfully.');
