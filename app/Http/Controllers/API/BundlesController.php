@@ -16,6 +16,14 @@ class BundlesController extends BaseController
         $validator = Validator::make($request->all(), [
             'brand_name' => 'required|string',
             'part_number' => 'required|string',
+            'brand_name' => 'required|string',
+            'part_number' => 'required',
+            'description_full' => 'required',
+            'description_english' => 'required',
+            'min_stock' => 'required',
+            'qty' => 'required',
+            'price' => 'required',
+            'min_price' => 'required'
         ]);
 
         if($validator->fails()){
@@ -26,12 +34,23 @@ class BundlesController extends BaseController
         $request->merge(['unique_hash' => $uniqueHash, 'is_bundle' => '1']);
         $newBundle = Part::create($request->all());
 
+        // let arr = [];
+        //     this.moduleStock.bundle_parts = this.moduleStock.bundle_parts.map(item => {
+        //         arr.push(Math.floor(parseInt(item.qty) / parseInt(item.bundle_qty)));
+        //         return item
+        //     });
+        //     arr = arr.filter(i => i > -1);
+        //     this.moduleStock.qty = Math.min(...arr);
+        $arr = array();
 	foreach($request->bundle_parts as $bundlePart) {
 
 	    $part = Part::where("part_number",'LIKE','%' . $bundlePart['part_number']. '%' )
             ->where('brand_name', 'LIKE', '%' . $bundlePart['brand_name']. '%')
             ->where('warehouse', 'canada')
             ->first();
+        $bundle_parts = floor(intval($part->qty) / intval($bundlePart["qty"]));
+
+        array_push($arr, $bundle_parts);
 
 	    $newBundleRel = [
             'bundle_id' => $newBundle['id'],
@@ -69,9 +88,23 @@ class BundlesController extends BaseController
 		->update(['bundle_id' => $newBundle->id, 'bundle_qty' => $bundlePart['qty'], 'description_english' => $bundlePart['description_english']]);
 	    */
 
-	}
+    }
+    
+    //    $arr = array_filter($arr, $this->bigger);
+        $arr = array_filter(
+            $arr,
+            function ($value) {
+                return $value > -1;
+            }
+        );
+       $arr = min($arr);
 
-        return $this->sendResponse($newBundle, 'New bundle created successfully.');
+       $newBundle->update(['qty' => $arr]);
+    //    $newBundle = Part::where('brand_name', $request->brand_name)
+    //     	->where('part_number', $request->part_number)
+    //     	->update(['qty' => $arr]);
+
+       return $this->sendResponse($newBundle, 'New bundle created successfully.');
     }
 
     public function deleteFromBundle($id) {
