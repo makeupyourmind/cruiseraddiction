@@ -1,6 +1,6 @@
 <template>
     <vs-prompt
-        vs-title="Create Single"
+        :vs-title="moduleStock.is_bundle? 'Bundle' : 'Single item'"
         :vs-accept-text="moduleStock.action != 'update'? 'Create' : 'Save'"
         @vs-cancel="clearFields"
         @vs-accept="create"
@@ -22,12 +22,13 @@
                         name="partNum"
                         label-placeholder="Part Number"
                         v-model="moduleStock.part_number"
-                        :style="!moduleStock.part_number && 'border: 1px solid red'"
+                        @input="getData($event)"
+                        :style="(!moduleStock.part_number|| errorPart)  && 'border: 1px solid red'"
                         class="w-full mb-6" />
                     <vs-input
                         name="description"
                         label-placeholder="Description"
-                        :style="!moduleStock.part_number && 'border: 1px solid red'"
+                        :style="!moduleStock.description_full && 'border: 1px solid red'"
                         v-model="moduleStock.description_full"
                         class="w-full mb-6" />
                     <vs-input
@@ -101,8 +102,7 @@
                     <vs-input
                         name="current Stock"
                         label-placeholder="Current"
-                        disabled="true"
-
+                        :disabled="moduleStock.is_bundle"
                         :style="Number(moduleStock.min_stock) > Number(moduleStock.qty) && 'color: red'"
                         v-model="moduleStock.qty"
                         class="w-full mb-6" />
@@ -182,6 +182,7 @@
     import vSelect from 'vue-select'
     import formElse from "./formElse"
     import { mapGetters } from 'vuex';
+    import {StockManagment} from "../../api/stockManagment";
     export default {
         name: "showModulSingleBungle",
         components:{
@@ -201,6 +202,8 @@
             test: false,
             table_store:[],
             moduleStock: null,
+            timeout: null,
+            errorPart: false
         }),
         created(){
             this.moduleStock = JSON.parse(JSON.stringify(this.$store.getters.STORE_EDIT));
@@ -223,8 +226,9 @@
                 return item
             });
             arr = arr.filter(i => i > -1);
-            this.moduleStock.qty = Math.min(...arr);
-            this.moduleStock.tags = !this.moduleStock.tags ? [] : JSON.parse(this.moduleStock.tags)
+            this.moduleStock.qty = Array.isArray(arr) ? arr.length > 0 ? Math.min(...arr) : 0 : 0;
+            this.moduleStock.tags = !this.moduleStock.tags ? [] : JSON.parse(this.moduleStock.tags);
+
         },
         computed:{
             ...mapGetters({
@@ -237,7 +241,10 @@
                 get() {
                     return this.$store.getters.SHOWBUNDLESINGLE
                 }
-            }
+            },
+            order(){
+                return this.$store.getters['stockCaModule/GET_DATA_STOCK_ORDER']
+            },
         },
         methods:{
             simpleSuggestionList() {
@@ -272,6 +279,7 @@
                 this.moduleStock.tags.splice(this.moduleStock.tags.indexOf(item), 1)
             },
             create(){
+                if(this.errorPart) return;
                 const module =  JSON.parse(JSON.stringify(this.moduleStock));
                 this.$store.commit('isNoActive', true);
                 module.part_number ? module.part_number_without_too_much =  module.part_number.replace(/[- )(]/g,'') :null;
@@ -334,6 +342,28 @@
                         })
                         .catch( () =>  this.$store.commit('isNoActive', false));
                 }
+            },
+            getData(e){
+                this.errorPart = false;
+                clearTimeout(this.timeout);
+                this.timeout = setTimeout(() => {
+                    if(!this.moduleStock.brand_name || !this.moduleStock.part_number){
+                        return clearTimeout(this.timeout);
+                    }
+                    StockManagment.getStockCA({
+                        page: 1,
+                        searchBrand: this.moduleStock.brand_name,
+                        searchNumber: this.moduleStock.part_number,
+                        orderName: 'brand_name',
+                        orderBy: 'desc'
+                    })
+                        .then(({body}) => {
+                            if(body && body.data && Array.isArray(body.data) && body.data.length > 0) {
+                                this.errorPart = true;
+                            }
+                            clearTimeout(this.timeout);
+                        })
+                }, 500)
             }
         }
     }

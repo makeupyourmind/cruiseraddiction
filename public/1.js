@@ -267,8 +267,8 @@ __webpack_require__.r(__webpack_exports__);
           page: 1,
           searchBrand: _this.table_data[index].brand_name,
           searchNumber: _this.table_data[index].part_number,
-          orderName: _this.order.name,
-          orderBy: _this.order.by
+          orderName: 'brand_name',
+          orderBy: 'desc'
         }).then(function (res) {
           _this.table_data[index].description_english = res.body.data[0].description_english;
           _this.table_data[index].qty = res.body.data[0].qty;
@@ -299,6 +299,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue_select__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(vue_select__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _formElse__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./formElse */ "./resources/js/src/components/SingleBundle/formElse.vue");
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var _api_stockManagment__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../api/stockManagment */ "./resources/js/src/api/stockManagment.js");
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -496,6 +497,7 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
 
 
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "showModulSingleBungle",
   components: {
@@ -515,7 +517,9 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       tag: '',
       test: false,
       table_store: [],
-      moduleStock: null
+      moduleStock: null,
+      timeout: null,
+      errorPart: false
     };
   },
   created: function created() {
@@ -540,7 +544,7 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     arr = arr.filter(function (i) {
       return i > -1;
     });
-    this.moduleStock.qty = Math.min.apply(Math, _toConsumableArray(arr));
+    this.moduleStock.qty = Array.isArray(arr) ? arr.length > 0 ? Math.min.apply(Math, _toConsumableArray(arr)) : 0 : 0;
     this.moduleStock.tags = !this.moduleStock.tags ? [] : JSON.parse(this.moduleStock.tags);
   },
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_5__["mapGetters"])({
@@ -553,6 +557,9 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       get: function get() {
         return this.$store.getters.SHOWBUNDLESINGLE;
       }
+    },
+    order: function order() {
+      return this.$store.getters['stockCaModule/GET_DATA_STOCK_ORDER'];
     }
   }),
   methods: {
@@ -589,6 +596,7 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     create: function create() {
       var _this = this;
 
+      if (this.errorPart) return;
       var module = JSON.parse(JSON.stringify(this.moduleStock));
       this.$store.commit('isNoActive', true);
       module.part_number ? module.part_number_without_too_much = module.part_number.replace(/[- )(]/g, '') : null;
@@ -654,6 +662,33 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
           return _this.$store.commit('isNoActive', false);
         });
       }
+    },
+    getData: function getData(e) {
+      var _this2 = this;
+
+      this.errorPart = false;
+      clearTimeout(this.timeout);
+      this.timeout = setTimeout(function () {
+        if (!_this2.moduleStock.brand_name || !_this2.moduleStock.part_number) {
+          return clearTimeout(_this2.timeout);
+        }
+
+        _api_stockManagment__WEBPACK_IMPORTED_MODULE_6__["StockManagment"].getStockCA({
+          page: 1,
+          searchBrand: _this2.moduleStock.brand_name,
+          searchNumber: _this2.moduleStock.part_number,
+          orderName: 'brand_name',
+          orderBy: 'desc'
+        }).then(function (_ref) {
+          var body = _ref.body;
+
+          if (body && body.data && Array.isArray(body.data) && body.data.length > 0) {
+            _this2.errorPart = true;
+          }
+
+          clearTimeout(_this2.timeout);
+        });
+      }, 500);
     }
   }
 });
@@ -1204,7 +1239,7 @@ var render = function() {
     {
       staticStyle: { "min-width": "60vw" },
       attrs: {
-        "vs-title": "Create Single",
+        "vs-title": _vm.moduleStock.is_bundle ? "Bundle" : "Single item",
         "vs-accept-text":
           _vm.moduleStock.action != "update" ? "Create" : "Save",
         "vs-active": _vm.showBundleSingle
@@ -1263,10 +1298,16 @@ var render = function() {
                     _c("vs-input", {
                       staticClass: "w-full mb-6",
                       style:
-                        !_vm.moduleStock.part_number && "border: 1px solid red",
+                        (!_vm.moduleStock.part_number || _vm.errorPart) &&
+                        "border: 1px solid red",
                       attrs: {
                         name: "partNum",
                         "label-placeholder": "Part Number"
+                      },
+                      on: {
+                        input: function($event) {
+                          return _vm.getData($event)
+                        }
                       },
                       model: {
                         value: _vm.moduleStock.part_number,
@@ -1280,7 +1321,8 @@ var render = function() {
                     _c("vs-input", {
                       staticClass: "w-full mb-6",
                       style:
-                        !_vm.moduleStock.part_number && "border: 1px solid red",
+                        !_vm.moduleStock.description_full &&
+                        "border: 1px solid red",
                       attrs: {
                         name: "description",
                         "label-placeholder": "Description"
@@ -1512,7 +1554,7 @@ var render = function() {
                       attrs: {
                         name: "current Stock",
                         "label-placeholder": "Current",
-                        disabled: "true"
+                        disabled: _vm.moduleStock.is_bundle
                       },
                       model: {
                         value: _vm.moduleStock.qty,

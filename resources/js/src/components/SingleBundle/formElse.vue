@@ -129,8 +129,8 @@
                         page: 1,
                         searchBrand: this.table_data[index].brand_name,
                         searchNumber: this.table_data[index].part_number,
-                        orderName: this.order.name,
-                        orderBy: this.order.by
+                        orderName: 'brand_name',
+                        orderBy: 'desc'
                     })
                         .then(res => {
                             this.table_data[index].description_english = res.body.data[0].description_english;
