@@ -227,7 +227,11 @@
                 return item
             });
             arr = arr.filter(i => i > -1);
-            this.moduleStock.qty = Array.isArray(arr) ? arr.length > 0 ? Math.min(...arr) : 0 : this.moduleStock.qty ? this.moduleStock.qty : 0;
+            if(this.moduleStock.is_bundle) {
+                this.moduleStock.qty = Array.isArray(arr) && arr.length > 0 ? Math.min(...arr) : 0;
+            } else {
+                this.moduleStock.qty =  this.moduleStock.qty ? this.moduleStock.qty : 0
+            }
             this.moduleStock.tags = !this.moduleStock.tags ? [] : JSON.parse(this.moduleStock.tags);
 
         },
