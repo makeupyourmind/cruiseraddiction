@@ -491,6 +491,7 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 //
 //
 //
+//
 
 
 
@@ -1554,7 +1555,8 @@ var render = function() {
                       attrs: {
                         name: "current Stock",
                         "label-placeholder": "Current",
-                        disabled: _vm.moduleStock.is_bundle
+                        disabled:
+                          Number(_vm.moduleStock.is_bundle) == 1 ? true : false
                       },
                       model: {
                         value: _vm.moduleStock.qty,

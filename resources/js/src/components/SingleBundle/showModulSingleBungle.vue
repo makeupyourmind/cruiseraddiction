@@ -99,10 +99,11 @@
                         :style="!moduleStock.min_stock && 'border: 1px solid red'"
                         v-model="moduleStock.min_stock"
                         class="w-full mb-6" />
+
                     <vs-input
                         name="current Stock"
                         label-placeholder="Current"
-                        :disabled="moduleStock.is_bundle"
+                        :disabled="Number(moduleStock.is_bundle) == 1 ? true : false"
                         :style="Number(moduleStock.min_stock) > Number(moduleStock.qty) && 'color: red'"
                         v-model="moduleStock.qty"
                         class="w-full mb-6" />
