@@ -224,10 +224,10 @@ class PartsController extends BaseController
             ]
 		);
 
-
             SameDataPartBundle::updateOrCreate(
                 [
-                    'bundle_part_id' => $part->id
+                    'bundle_part_id' => $part->id,
+                    'bundle_id' => $bundleId->id
                 ],
                 [
                     'qty' => $bundlePart['qty'],

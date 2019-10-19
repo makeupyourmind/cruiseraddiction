@@ -1,4 +1,4 @@
-(window["webpackJsonp"] = window["webpackJsonp"] || []).push([[1],{
+(window["webpackJsonp"] = window["webpackJsonp"] || []).push([[19],{
 
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/src/components/SingleBundle/deleteConfirm.vue?vue&type=script&lang=js&":
 /*!*****************************************************************************************************************************************************************************************!*\
@@ -313,7 +313,6 @@ function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.
 
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
 
-//
 //
 //
 //
@@ -1384,11 +1383,11 @@ var render = function() {
                                                 },
                                                 [
                                                   _vm._v(
-                                                    "\n                                    " +
+                                                    "\n                                        " +
                                                       _vm._s(
                                                         data[elem].bundle_qty
                                                       ) +
-                                                      "\n                                "
+                                                      "\n                                    "
                                                   )
                                                 ]
                                               )
@@ -1418,7 +1417,7 @@ var render = function() {
                               ],
                               null,
                               false,
-                              2934420749
+                              2579861517
                             )
                           },
                           [
@@ -1472,24 +1471,6 @@ var render = function() {
                     _vm._v(" "),
                     _c("vs-input", {
                       staticClass: "w-full mb-6",
-                      attrs: {
-                        name: "minStock",
-                        "label-placeholder": "Min Stock"
-                      },
-                      model: {
-                        value: _vm.moduleStock.min_stock,
-                        callback: function($$v) {
-                          _vm.$set(_vm.moduleStock, "min_stock", $$v)
-                        },
-                        expression: "moduleStock.min_stock"
-                      }
-                    }),
-                    _vm._v(" "),
-                    _c("vs-input", {
-                      staticClass: "w-full mb-6",
-                      style:
-                        Number(_vm.moduleStock.min_stock) >
-                          Number(_vm.moduleStock.qty) && "color: red",
                       attrs: {
                         name: "current Stock",
                         "label-placeholder": "Current",
@@ -1637,9 +1618,9 @@ var render = function() {
                             },
                             [
                               _vm._v(
-                                "\n                        " +
+                                "\n                            " +
                                   _vm._s(chip) +
-                                  "\n                    "
+                                  "\n                        "
                               )
                             ]
                           )

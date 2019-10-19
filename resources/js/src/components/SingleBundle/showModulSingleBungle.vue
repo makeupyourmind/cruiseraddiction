@@ -96,6 +96,8 @@
                     <vs-input
                         name="current Stock"
                         label-placeholder="Current"
+                        disabled="true"
+                        :style="Number(moduleStock.min_stock) > Number(moduleStock.qty) && 'color: red'"
                         v-model="moduleStock.qty"
                         class="w-full mb-6" />
                     <!--<vs-input-->
@@ -196,15 +198,24 @@
             this.moduleStock = JSON.parse(JSON.stringify(this.$store.getters.STORE_EDIT));
 
             this.moduleStock.bundle_parts = this.moduleStock.bundle_pivot ? this.moduleStock.bundle_pivot.map((item) => {
+                const bundle_parts = item.bundle_parts[0];
+                const bundle_part_data = bundle_parts.bundle_part_data;
                 return {
-                    bundle_qty: item.bundle_parts[0].bundle_part_data.qty,
-                    description_english: item.bundle_parts[0].bundle_part_data.description,
-                    brand_name:  item.bundle_parts[0].brand_name,
-                    part_number: item.bundle_parts[0].part_number,
-                    qty:  item.bundle_parts[0].qty
+                    bundle_qty: bundle_part_data ? bundle_part_data.qty : 0,
+                    description_english: bundle_part_data ? bundle_part_data.description : '',
+                    brand_name:  bundle_parts.brand_name,
+                    part_number: bundle_parts.part_number,
+                    qty:  bundle_parts.qty
                 };
             }) : [];
             delete this.moduleStock.bundle_pivot;
+            let arr = [];
+            this.moduleStock.bundle_parts = this.moduleStock.bundle_parts.map(item => {
+                arr.push(Math.floor(parseInt(item.qty) / parseInt(item.bundle_qty)));
+                return item
+            });
+            arr = arr.filter(i => i > -1);
+            this.moduleStock.qty = Math.min(...arr);
             this.moduleStock.tags = !this.moduleStock.tags ? [] : JSON.parse(this.moduleStock.tags)
         },
         computed:{
@@ -229,7 +240,14 @@
                 ]
             },
             saveChanges(val){
-                this.moduleStock.bundle_parts = val;
+
+                let arr = [];
+                this.moduleStock.bundle_parts = val.map(item => {
+                    arr.push(Math.floor(parseInt(item.qty) / parseInt(item.bundle_qty)));
+                    return item
+                });
+                arr = arr.filter(i => i > -1);
+                this.moduleStock.qty = Math.min(...arr);
                 this.fillTable = false;
             },
             clearFields() {
@@ -251,6 +269,16 @@
                 module.part_number ? module.part_number_without_too_much =  module.part_number.replace(/[- )(]/g,'') :null;
                 const current = this.$store.getters['stockCaModule/GET_STOCK_DATA'];
                 const order = this.$store.getters['stockCaModule/GET_DATA_STOCK_ORDER'];
+
+                if(this.moduleStock.is_bundle) {
+                    module.bundle_parts = module.bundle_parts.map(item => {
+                        item.stock_qty = item.qty;
+                        item.qty = item.bundle_qty;
+                        item.bundle_qty && delete item.bundle_qty;
+                        return item;
+                    });
+                }
+
                 if(this.moduleStock.action == 'update'){
                     if(!module.is_bundle) {
                         module && delete module.bundle_parts;
@@ -261,14 +289,7 @@
                     module && delete module.id;
                     module && delete module.unique_hash;
                     module && (module.tags = JSON.stringify(module.tags));
-                    if(this.moduleStock.is_bundle) {
-                        module.bundle_parts = module.bundle_parts.map(item => {
-                            item.stock_qty = item.qty;
-                            item.qty = item.bundle_qty;
-                            item.bundle_qty && delete item.bundle_qty;
-                            return item;
-                        })
-                    }
+
                     this.$store.dispatch("stockCaModule/UPDATE_DATA_STOCK", module)
                         .then(() => {
                             return this.$store.dispatch('stockCaModule/GET_DATA_STOCK_FROM_SERVER', {
@@ -289,14 +310,6 @@
 
                     module && (module.tags = JSON.stringify(module.tags));
 
-                    if(this.moduleStock.is_bundle) {
-                        module.bundle_parts = module.bundle_parts.map(item => {
-                            item.stock_qty = item.qty;
-                            item.qty = item.bundle_qty;
-                            item.bundle_qty && delete item.bundle_qty;
-                            return item;
-                        })
-                    }
                     this.$store.dispatch(`stockCaModule/${ !this.moduleStock.is_bundle ? 'CREATE_DATA_STOCK' : 'CREATE_DATA_STOCK_BUNDLE'}`, module)
                         .then(() => {
                             return this.$store.dispatch('stockCaModule/GET_DATA_STOCK_FROM_SERVER', {
