@@ -227,7 +227,7 @@
                 return item
             });
             arr = arr.filter(i => i > -1);
-            this.moduleStock.qty = Array.isArray(arr) ? arr.length > 0 ? Math.min(...arr) : 0 : 0;
+            this.moduleStock.qty = Array.isArray(arr) ? arr.length > 0 ? Math.min(...arr) : 0 : this.moduleStock.qty ? this.moduleStock.qty : 0;
             this.moduleStock.tags = !this.moduleStock.tags ? [] : JSON.parse(this.moduleStock.tags);
 
         },
