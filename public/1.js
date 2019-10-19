@@ -482,6 +482,14 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -1236,6 +1244,8 @@ var render = function() {
                   },
                   [
                     _c("vue-simple-suggest", {
+                      style:
+                        !_vm.moduleStock.brand_name && "border: 1px solid red",
                       attrs: {
                         placeholder: "Brand name",
                         list: _vm.simpleSuggestionList,
@@ -1252,6 +1262,8 @@ var render = function() {
                     _vm._v(" "),
                     _c("vs-input", {
                       staticClass: "w-full mb-6",
+                      style:
+                        !_vm.moduleStock.part_number && "border: 1px solid red",
                       attrs: {
                         name: "partNum",
                         "label-placeholder": "Part Number"
@@ -1267,6 +1279,8 @@ var render = function() {
                     _vm._v(" "),
                     _c("vs-input", {
                       staticClass: "w-full mb-6",
+                      style:
+                        !_vm.moduleStock.part_number && "border: 1px solid red",
                       attrs: {
                         name: "description",
                         "label-placeholder": "Description"
@@ -1282,6 +1296,9 @@ var render = function() {
                     _vm._v(" "),
                     _c("vs-input", {
                       staticClass: "w-full mb-6",
+                      style:
+                        !_vm.moduleStock.description_english &&
+                        "border: 1px solid red",
                       attrs: {
                         name: "descriptionFull",
                         "label-placeholder": "Description Full"
@@ -1472,6 +1489,8 @@ var render = function() {
                     _vm._v(" "),
                     _c("vs-input", {
                       staticClass: "w-full mb-6",
+                      style:
+                        !_vm.moduleStock.min_stock && "border: 1px solid red",
                       attrs: {
                         name: "minStock",
                         "label-placeholder": "Min Stock"
@@ -1506,6 +1525,7 @@ var render = function() {
                     _vm._v(" "),
                     _c("vs-input", {
                       staticClass: "w-full mb-6",
+                      style: !_vm.moduleStock.price && "border: 1px solid red",
                       attrs: {
                         name: "listPrice",
                         "label-placeholder": "List Price"
@@ -1521,6 +1541,8 @@ var render = function() {
                     _vm._v(" "),
                     _c("vs-input", {
                       staticClass: "w-full mb-6",
+                      style:
+                        !_vm.moduleStock.min_price && "border: 1px solid red",
                       attrs: {
                         name: "minPrice",
                         "label-placeholder": "Min Price"

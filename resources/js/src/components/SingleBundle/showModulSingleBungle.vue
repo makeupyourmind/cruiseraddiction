@@ -15,21 +15,25 @@
                         v-model="moduleStock.brand_name"
                         placeholder="Brand name"
                         :list="simpleSuggestionList"
+                        :style="!moduleStock.brand_name && 'border: 1px solid red'"
                         :filter-by-query="true">
                     </vue-simple-suggest>
                     <vs-input
                         name="partNum"
                         label-placeholder="Part Number"
                         v-model="moduleStock.part_number"
+                        :style="!moduleStock.part_number && 'border: 1px solid red'"
                         class="w-full mb-6" />
                     <vs-input
                         name="description"
                         label-placeholder="Description"
+                        :style="!moduleStock.part_number && 'border: 1px solid red'"
                         v-model="moduleStock.description_full"
                         class="w-full mb-6" />
                     <vs-input
                         name="descriptionFull"
                         label-placeholder="Description Full"
+                        :style="!moduleStock.description_english && 'border: 1px solid red'"
                         v-model="moduleStock.description_english"
                         class="w-full mb-6" />
                     <!--<ul class="demo-alignment">-->
@@ -91,12 +95,14 @@
                     <vs-input
                         name="minStock"
                         label-placeholder="Min Stock"
+                        :style="!moduleStock.min_stock && 'border: 1px solid red'"
                         v-model="moduleStock.min_stock"
                         class="w-full mb-6" />
                     <vs-input
                         name="current Stock"
                         label-placeholder="Current"
                         disabled="true"
+
                         :style="Number(moduleStock.min_stock) > Number(moduleStock.qty) && 'color: red'"
                         v-model="moduleStock.qty"
                         class="w-full mb-6" />
@@ -109,10 +115,12 @@
                     <vs-input
                         name="listPrice"
                         label-placeholder="List Price"
+                        :style="!moduleStock.price && 'border: 1px solid red'"
                         v-model="moduleStock.price"
                         class="w-full mb-6" />
                     <vs-input
                         name="minPrice"
+                        :style="!moduleStock.min_price && 'border: 1px solid red'"
                         label-placeholder="Min Price"
                         v-model="moduleStock.min_price"
                         class="w-full mb-6" />
