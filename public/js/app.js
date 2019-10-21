@@ -60629,7 +60629,7 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
       path: '/',
       name: 'Stock management',
       component: function component() {
-        return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(2), __webpack_require__.e(3), __webpack_require__.e(1), __webpack_require__.e(6)]).then(__webpack_require__.bind(null, /*! ./views/stockManagement.vue */ "./resources/js/src/views/stockManagement.vue"));
+        return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(18), __webpack_require__.e(4), __webpack_require__.e(19), __webpack_require__.e(6)]).then(__webpack_require__.bind(null, /*! ./views/stockManagement.vue */ "./resources/js/src/views/stockManagement.vue"));
       },
       meta: {
         pageTitle: "Stock Management"
@@ -60650,7 +60650,7 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
       path: '/orders',
       name: 'orders',
       component: function component() {
-        return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(2), __webpack_require__.e(4), __webpack_require__.e(1), __webpack_require__.e(5)]).then(__webpack_require__.bind(null, /*! ./views/orders.vue */ "./resources/js/src/views/orders.vue"));
+        return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(18), __webpack_require__.e(3), __webpack_require__.e(19), __webpack_require__.e(5)]).then(__webpack_require__.bind(null, /*! ./views/orders.vue */ "./resources/js/src/views/orders.vue"));
       },
       meta: {
         breadcrumb: [{
@@ -60666,7 +60666,7 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
       path: '/reviews',
       name: 'reviews',
       component: function component() {
-        return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(2), __webpack_require__.e(3), __webpack_require__.e(1), __webpack_require__.e(9)]).then(__webpack_require__.bind(null, /*! ./views/reviews.vue */ "./resources/js/src/views/reviews.vue"));
+        return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(18), __webpack_require__.e(4), __webpack_require__.e(19), __webpack_require__.e(9)]).then(__webpack_require__.bind(null, /*! ./views/reviews.vue */ "./resources/js/src/views/reviews.vue"));
       },
       meta: {
         pageTitle: 'reviews'
@@ -60687,7 +60687,7 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
       path: '/',
       name: 'Stock management',
       component: function component() {
-        return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(2), __webpack_require__.e(3), __webpack_require__.e(1), __webpack_require__.e(6)]).then(__webpack_require__.bind(null, /*! ./views/stockManagement.vue */ "./resources/js/src/views/stockManagement.vue"));
+        return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(18), __webpack_require__.e(4), __webpack_require__.e(19), __webpack_require__.e(6)]).then(__webpack_require__.bind(null, /*! ./views/stockManagement.vue */ "./resources/js/src/views/stockManagement.vue"));
       },
       meta: {
         pageTitle: "Stock Management"
@@ -60708,7 +60708,7 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
       path: '/orders',
       name: 'orders',
       component: function component() {
-        return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(2), __webpack_require__.e(4), __webpack_require__.e(1), __webpack_require__.e(5)]).then(__webpack_require__.bind(null, /*! ./views/orders.vue */ "./resources/js/src/views/orders.vue"));
+        return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(18), __webpack_require__.e(3), __webpack_require__.e(19), __webpack_require__.e(5)]).then(__webpack_require__.bind(null, /*! ./views/orders.vue */ "./resources/js/src/views/orders.vue"));
       },
       meta: {
         breadcrumb: [{
