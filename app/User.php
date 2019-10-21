@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'email', 'password', 'first_name', 'last_name', 'ihmud_username', 'street_address', 'street_address_two',
+        'email', 'isVerified', 'password', 'first_name', 'last_name', 'ihmud_username', 'street_address', 'street_address_two',
         'city', 'state', 'postal_code', 'country', 'phone', 'frame_number', 'date_of_production', 'original_country', 'subscribed_for_news', 'search_history'
     ];
 
@@ -37,4 +37,9 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function verification_token()
+    {
+        return $this->hasOne('App\VerificationToken');
+    }
 }

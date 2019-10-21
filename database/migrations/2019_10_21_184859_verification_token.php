@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePasswordResetsTable extends Migration
+class VerificationToken extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,13 @@ class CreatePasswordResetsTable extends Migration
      */
     public function up()
     {
-        Schema::create('password_resets', function (Blueprint $table) {
+        //
+        Schema::create('verification_tokens', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('email')->index();
+            $table->bigInteger('user_id')->unsigned();
             $table->string('token');
-            $table->string('url');
-            // $table->timestamp('created_at')->nullable();
             $table->timestamps();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
@@ -30,6 +30,6 @@ class CreatePasswordResetsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('password_resets');
+        //
     }
 }

@@ -16,7 +16,11 @@ Route::group([
     'namespace' => 'API'], function () {
 
     Route::post('register', 'RegisterController@register');
+    Route::get('verifyRegistration', 'RegisterController@verifyRegistration');
     Route::post('login', 'RegisterController@login');
+    Route::post('forgot', 'ForgotPasswordController@forgotPassword');
+    Route::get('forgot/{token}', 'ForgotPasswordController@checkToken');
+    Route::post('resetPassword', 'ResetPasswordController@resetPassword');
 
     Route::post('parts-search', 'PartsSearchController@index');
     Route::get('parts-search1', 'PartsSearchController@index');
