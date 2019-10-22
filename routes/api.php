@@ -14,7 +14,7 @@ use Illuminate\Http\Request;
 */
 Route::group([
     'namespace' => 'API'], function () {
-
+    Route::get('test', 'RegisterController@test');    
     Route::post('register', 'RegisterController@register');
     Route::get('verifyRegistration', 'RegisterController@verifyRegistration');
     Route::post('login', 'RegisterController@login');

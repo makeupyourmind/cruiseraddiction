@@ -15,7 +15,7 @@ use Mail;
 use Illuminate\Support\Facades\Input;
 Use Redirect;
 use Illuminate\Support\Str;
-
+use App\Model\Part;
 class RegisterController extends BaseController
 {
     /**
@@ -58,7 +58,7 @@ class RegisterController extends BaseController
         Mail::send("email.registration", $data , function ($mail) use ($user) {
             $mail->from('support@gmail.com');
             $mail->to($user->email)
-                 ->subject('Welcome to our site');
+                 ->subject('Confirm registration');
         });
         // return $this->sendResponse($success, 'User register successfully.');
         return $this->sendResponse("", 'Check your email');
@@ -77,6 +77,11 @@ class RegisterController extends BaseController
             $updated = User::where('email', Input::get("email"))->update([
                 'isVerified' => 1
             ]);
+            Mail::send("email.registration_done", $data , function ($mail) use ($user) {
+                $mail->from('support@gmail.com');
+                $mail->to($user->email)
+                     ->subject('Welcome to our site');
+            });
             return Redirect::to("https://www.cruiseraddiction.com/chack-register");
         }
     }
@@ -117,4 +122,30 @@ class RegisterController extends BaseController
         return $this->sendResponse('', 'User logged out successfully.');
     }
 
+    public function test(){
+        $parts = Part::where([
+            ['warehouse', 'canada'],
+            ['qty', '<', 5]
+        ])->get();
+        $arr = array();
+
+        foreach($parts as $part){
+            $obj["brand_name"] = $part->brand_name;
+            $obj["part_number"] = $part->part_number;
+            $obj["qty"] = $part->qty;
+            array_push($arr, $obj);
+        }
+
+        $data = array(
+            'parts' => $arr
+        );
+
+        Mail::send("email.lowQuantity", $data, function ($mail) {
+            $mail->from('support@gmail.com');
+            $mail->to("nikitosnov@gmail.com")
+                 ->subject('Low Quantity');
+        });
+
+        return response()->json($arr);
+    }
 }
