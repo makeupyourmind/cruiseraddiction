@@ -11,6 +11,7 @@ use App\Model\Part;
 use App\Model\BundlePart;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Hash;
+use Excel;
 
 class PartsController extends BaseController
 {
@@ -167,8 +168,63 @@ class PartsController extends BaseController
         $request->merge(["unique_hash"=>$uniqueHash]);
         $newPart = Part::create($request->all());
 
+        // $part = Part::where([ 
+        //     ['brand_name', $request->brand_name],
+        //     ['part_number', $request->part_number],
+        //     ['warehouse', 'canada']
+        // ])->first();
+        // if($part && $request->price == 0 ){
+        //     $insert_data = self::trigger();
+        //     foreach($insert_data as $data){
+        //         if($data["BRAND"] == $request->brand_name && $data["PART NUMBER"]){
+        //             $cost = $data["UNIT PRICE"];
+        //             $weight = $part->weight_physical;
+        //             $price = ((($weight * 6.0) + $cost * 0.061 + $cost) * 1.3) * 1.037;
+        //             $part->update(['price' => $price]);
+        //         }
+        //     }
+        // }
+        // else{
+        //     $newPart = Part::create($request->all());
+        // }
+
         return $this->sendResponse($newPart, 'New product created successfully.');
     }
+
+    // public function trigger(){
+    //     $data = Excel::toCollection(null, 'proforma.xls', 'local');
+    //     if(count((array)$data) > 0 ){
+    //         foreach($data->toArray() as $key => $value){
+    //             foreach($value as $row){
+    //                 if($row[0] >= 1 && $row[6] == "STOCK"){
+    //                     $insert_data [] = array(
+    //                         'S/N' => $row[0],
+    //                         'ORDER DATE' => $row[1],
+    //                         'ALGORITHM' => $row[2],
+    //                         'REF' => $row[3],
+    //                         'ORDER NUMDER' => $row[4],
+    //                         'ORDER ROW NN' => $row[5],
+    //                         'CLIENT COLUMN 1' => $row[6],
+    //                         'CLIENT COLUMN 2' => $row[7],
+    //                         'CLIENT COLUMN 3' => $row[8],
+    //                         'CLIENT COLUMN 4' => $row[9],
+    //                         'CLIENT COLUMN 5' => $row[10],
+    //                         'BRAND' => $row[11],
+    //                         'DESCRIPTION' => $row[12],
+    //                         'PART NUMBER' => $row[13],
+    //                         'QTY' => $row[14],
+    //                         'UNIT PRICE' => $row[15],
+    //                         'TOTAL TAXABLE PRICE' => $row[16],
+    //                         'VAT AMOUNT' => $row[17],
+    //                         'TOTAL PRICE PAYABLE (INCL. VAT)' => $row[18],                          
+    //                     );
+    //                 }
+    //             }
+    //         }
+    //     }
+
+    //     return $insert_data;
+    // }
 
     public function update(Request $request) {
         $validator = Validator::make($request->all(), [
@@ -188,13 +244,16 @@ class PartsController extends BaseController
 	if(!$request->is_bundle) {
     	    Part::where('brand_name', $request->brand_name)
         	->where('part_number', $request->part_number)
-        	->update($request->all());
+            ->update($request->all());
+            Part::where('brand_name', $request->brand_name)
+            ->where('part_number', $request->part_number)
+            ->update(['changedAdministrator' => 1]);
 
 	} else {
 
 	    $bundle = Part::where('brand_name', $request->brand_name)
         	->where('part_number', $request->part_number)
-        	->update(['part_number' => $request->part_number, 'brand_name' => $request->brand_name, 'description_english' => $request->description_english,
+        	->update(['changedAdministrator' => 1, 'part_number' => $request->part_number, 'brand_name' => $request->brand_name, 'description_english' => $request->description_english,
 		    'description_full' => $request->description_full, 'min_stock' => $request->min_stock, 'price' => $request->price,
 		    'min_price' => $request->min_price, 'max_price' => $request->max_price, 'location' => $request->location, 'categories' => $request->categories]);
 	    $bundleId =  Part::where('brand_name', $request->brand_name)
@@ -247,17 +306,16 @@ class PartsController extends BaseController
                 ]
             );
         }
-        // $arr = array_filter($arr, self::bigger());
+
         $arr = array_filter(
             $arr,
             function ($value) {
                 return $value > -1;
             }
         );
-        // var_dump($arr);
+
         $arr = min($arr);
-        
-        // $bundle->update(['qty' => $arr]);
+
         $bundle = Part::where('brand_name', $request->brand_name)
         	->where('part_number', $request->part_number)
         	->update(['qty' => $arr]);

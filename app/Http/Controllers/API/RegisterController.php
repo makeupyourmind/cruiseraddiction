@@ -16,6 +16,9 @@ use Illuminate\Support\Facades\Input;
 Use Redirect;
 use Illuminate\Support\Str;
 use App\Model\Part;
+use Excel;
+use Storage;
+
 class RegisterController extends BaseController
 {
     /**
@@ -149,5 +152,73 @@ class RegisterController extends BaseController
         });
 
         return response()->json($arr);
+        // /// ot suda
+        // $data = Excel::toCollection(null, 'proforma.xls', 'local');
+
+        // if(count((array)$data) > 0 ){
+        //     foreach($data->toArray() as $key => $value){
+        //         foreach($value as $row){
+        //             if($row[0] >= 1 && $row[6] == "STOCK"){
+        //                 $insert_data [] = array(
+        //                     'S/N' => $row[0],
+        //                     'ORDER DATE' => $row[1],
+        //                     'ALGORITHM' => $row[2],
+        //                     'REF' => $row[3],
+        //                     'ORDER NUMDER' => $row[4],
+        //                     'ORDER ROW NN' => $row[5],
+        //                     'CLIENT COLUMN 1' => $row[6],
+        //                     'CLIENT COLUMN 2' => $row[7],
+        //                     'CLIENT COLUMN 3' => $row[8],
+        //                     'CLIENT COLUMN 4' => $row[9],
+        //                     'CLIENT COLUMN 5' => $row[10],
+        //                     'BRAND' => $row[11],
+        //                     'DESCRIPTION' => $row[12],
+        //                     'PART NUMBER' => $row[13],
+        //                     'QTY' => $row[14],
+        //                     'UNIT PRICE' => $row[15],
+        //                     'TOTAL TAXABLE PRICE' => $row[16],
+        //                     'VAT AMOUNT' => $row[17],
+        //                     'TOTAL PRICE PAYABLE (INCL. VAT)' => $row[18],                          
+        //                 );
+        //             }
+        //         }
+        //     }
+
+        //     foreach($insert_data as $data){
+
+        //         $part = Part::where([ 
+        //                 ['brand_name', $data["BRAND"]],
+        //                 ['part_number', $data["PART NUMBER"]],
+        //                 ['warehouse', 'canada']
+        //             ])->first();
+        //         if($part && $part->changedAdministrator == true){
+        //             $part->update(['price' => $part->price]);
+        //         }
+        //         else if($part && $part->changedAdministrator == false){
+        //             $weight = $part->weight_physical;
+        //             $cost = $data["UNIT PRICE"];
+        //             $price = ((($weight * 6.0) + $cost * 0.061 + $cost) * 1.3) * 1.037;
+        //             $part->update(['price' => $price]);
+        //         }
+        //         else{
+        //             $weight = $part->weight_physical;
+        //             $cost = $data["UNIT PRICE"];
+        //             $price = ((($weight * 6.0) + $cost * 0.061 + $cost) * 1.3) * 1.037;
+        //             Part::create([
+        //                 "brand_name" => $data["brand_name"],
+        //                 "part_number" => $data["PART NUMBER"],
+        //                 "description_english" => $data["DESCRIPTION"],
+        //                 "qty" => $data["QTY"],
+        //                 "warehouse" => "canada",
+        //                 "price" => $price
+        //             ]);
+        //         }
+        //     }
+        //     //return response()->json($part);
+
+        //     if(!empty($insert_data)){
+        //         return response()->json($insert_data);
+        //     }
+        // }
     }
 }

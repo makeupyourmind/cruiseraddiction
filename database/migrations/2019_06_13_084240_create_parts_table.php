@@ -22,6 +22,7 @@ class CreatePartsTable extends Migration
             $table->string('weight_volumetric')->nullable();
             $table->integer('qty')->default('0');
             $table->string('warehouse')->nullable();
+            $table->boolean('changedAdministrator')->default(0);
             $table->string('price')->default('0');
             $table->string('unique_hash')->unique();
             $table->text('part_fits')->nullable();

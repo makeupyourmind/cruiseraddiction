@@ -42,37 +42,66 @@ class UsersController extends BaseController
             return $this->sendError('Validation Error.', $validator->errors(), 202);
         }
 
-        User::where('id', $id)
-            ->update($request->all());
-        return $this->sendResponse('Success', 'User modified successfully.');
-    }
+        $user = User::where('id', $id)->get()->first();
 
-    public function updateSome(Request $request, $id){
-        if($request->email){
-            $validator = Validator::make($request->email, [
-                'email' => 'required|string|email'
-            ]);
+        $diff = self::recursive_array_diff($user, $request->all());
 
-            if($validator->fails()){
-                return $this->sendError('Validation Error.', $validator->errors(), 400);
-            }
-        }
-        $user = User::where('id', $id)->first();
-        User::where('id', $id)
-            ->update($request->all());
-        $changes = $request->all();
         $data = array(
-            'changes' => $changes
+            'user' => $user,
+            'changes' => $diff
         );
 
-        Mail::send("email.changesInAccount", $data , function ($mail) use ($user) {
-            $mail->from('support@gmail.com');
-            $mail->to($user->email)
-                    ->subject('Changes In Account');
-        });
+        if(count($diff) > 0){
+            Mail::send("email.changesInAccount", $data , function ($mail) use ($user) {
+                $mail->from('support@gmail.com');
+                $mail->to($user->email)
+                        ->subject('Changes In Account');
+            });
+        }
 
-        return $this->sendResponse($request->all(), 'User modified successfully.');
+        // User::where('id', $id)
+        //     ->update($request->all());
+        // return $this->sendResponse('Success', 'User modified successfully.');
+        return $this->sendResponse(array('user' => $user, 'changes' => $diff), 'User modified successfully.');
     }
+
+    public function recursive_array_diff($a1, $a2) { 
+        $r = array(); 
+        $a1 = $a1->toArray();
+        foreach ($a2 as $key => $value) {
+            if($a1[$key] != $a2[$key]){
+                $r[$key] = $value;
+            }
+        }
+        return $r; 
+    }
+
+    // public function updateSome(Request $request, $id){
+    //     if($request->email){
+    //         $validator = Validator::make($request->email, [
+    //             'email' => 'required|string|email'
+    //         ]);
+
+    //         if($validator->fails()){
+    //             return $this->sendError('Validation Error.', $validator->errors(), 400);
+    //         }
+    //     }
+    //     $user = User::where('id', $id)->first();
+    //     User::where('id', $id)
+    //         ->update($request->all());
+    //     $changes = $request->all();
+    //     $data = array(
+    //         'changes' => $changes
+    //     );
+
+    //     Mail::send("email.changesInAccount", $data , function ($mail) use ($user) {
+    //         $mail->from('support@gmail.com');
+    //         $mail->to($user->email)
+    //                 ->subject('Changes In Account');
+    //     });
+
+    //     return $this->sendResponse($request->all(), 'User modified successfully.');
+    // }
 
     public function checkEmail(Request $request) {
         $validator = Validator::make($request->all(), [
