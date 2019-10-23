@@ -60,8 +60,7 @@ Route::group([
 });
 
 Route::group([
-    'namespace' => 'API',
-    'middleware' => 'auth:api'], function () {
+    'namespace' => 'API'], function () {
 
     Route::post('logout', 'RegisterController@logout');
     Route::post('add-parts', 'PartsController@store');
@@ -70,6 +69,7 @@ Route::group([
 
     Route::get('user', 'UsersController@show');
     Route::put('user/{id}', 'UsersController@update');
+    Route::patch('user/{id}', 'UsersController@updateSome');
     Route::get('user-orders/{id}', 'OrdersController@userOrders');
 
     Route::post('bundles', 'BundlesController@store');

@@ -7,6 +7,7 @@ use App\Http\Controllers\API\BaseController as BaseController;
 use App\User;
 use Illuminate\Support\Facades\Auth;
 use Validator;
+use Mail;
 
 class UsersController extends BaseController
 {
@@ -44,6 +45,33 @@ class UsersController extends BaseController
         User::where('id', $id)
             ->update($request->all());
         return $this->sendResponse('Success', 'User modified successfully.');
+    }
+
+    public function updateSome(Request $request, $id){
+        if($request->email){
+            $validator = Validator::make($request->email, [
+                'email' => 'required|string|email'
+            ]);
+
+            if($validator->fails()){
+                return $this->sendError('Validation Error.', $validator->errors(), 400);
+            }
+        }
+        $user = User::where('id', $id)->first();
+        User::where('id', $id)
+            ->update($request->all());
+        $changes = $request->all();
+        $data = array(
+            'changes' => $changes
+        );
+
+        Mail::send("email.changesInAccount", $data , function ($mail) use ($user) {
+            $mail->from('support@gmail.com');
+            $mail->to($user->email)
+                    ->subject('Changes In Account');
+        });
+
+        return $this->sendResponse($request->all(), 'User modified successfully.');
     }
 
     public function checkEmail(Request $request) {

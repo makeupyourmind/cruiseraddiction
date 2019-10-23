@@ -50,7 +50,7 @@ class RegisterController extends BaseController
             'token' => $token 
         ]);
 
-        $url = "http://localhost:8000/api/verifyRegistration?token=".$token."&"."email=".$user->email;
+        $url = "http://localhost:8000/api/verifyRegistration?token=".$token;
         $data = array(
             'url'=> $url,
         );
@@ -66,24 +66,26 @@ class RegisterController extends BaseController
 
     public function verifyRegistration(Request $request){
 
-        $user = User::where('email', Input::get("email"))->first();
-        if($user->isVerified){
+        $foundToken = VerificationToken::with(['user'])->where('token', Input::get("token"))->first();
+        if(!$foundToken){
+            return response()->json("NOT FOUND TOKEN");
+        }
+        if($foundToken->user->isVerified){
             return $this->sendResponse("", 'Email Already Verified');
         }
 
-        $foundToken = VerificationToken::where('token', Input::get("token"));
+        $updated = User::where('email', $foundToken->user->email)->update([
+            'isVerified' => 1
+        ]);
 
-        if($foundToken){
-            $updated = User::where('email', Input::get("email"))->update([
-                'isVerified' => 1
-            ]);
-            Mail::send("email.registration_done", $data , function ($mail) use ($user) {
-                $mail->from('support@gmail.com');
-                $mail->to($user->email)
-                     ->subject('Welcome to our site');
-            });
-            return Redirect::to("https://www.cruiseraddiction.com/chack-register");
-        }
+        Mail::send("email.registration_done", [""] , function ($mail) use ($foundToken) {
+            $mail->from('support@gmail.com');
+            $mail->to($foundToken->user->email)
+                    ->subject('Welcome to our site');
+        });
+
+        return Redirect::to("https://www.cruiseraddiction.com/chack-register");
+       
     }
 
     public function login(Request $request)
