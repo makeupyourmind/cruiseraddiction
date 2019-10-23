@@ -60,7 +60,8 @@ Route::group([
 });
 
 Route::group([
-    'namespace' => 'API'], function () {
+    'namespace' => 'API',
+    'middleware' => 'auth:api'], function () {
 
     Route::post('logout', 'RegisterController@logout');
     Route::post('add-parts', 'PartsController@store');
