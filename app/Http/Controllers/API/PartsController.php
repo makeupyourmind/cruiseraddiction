@@ -167,64 +167,43 @@ class PartsController extends BaseController
         $uniqueHash = md5($request->brand_name.$request->part_number.$request->warehouse);
         $request->merge(["unique_hash"=>$uniqueHash]);
         $newPart = Part::create($request->all());
-
-        // $part = Part::where([ 
-        //     ['brand_name', $request->brand_name],
-        //     ['part_number', $request->part_number],
-        //     ['warehouse', 'canada']
-        // ])->first();
-        // if($part && $request->price == 0 ){
-        //     $insert_data = self::trigger();
-        //     foreach($insert_data as $data){
-        //         if($data["BRAND"] == $request->brand_name && $data["PART NUMBER"]){
-        //             $cost = $data["UNIT PRICE"];
-        //             $weight = $part->weight_physical;
-        //             $price = ((($weight * 6.0) + $cost * 0.061 + $cost) * 1.3) * 1.037;
-        //             $part->update(['price' => $price]);
-        //         }
-        //     }
-        // }
-        // else{
-        //     $newPart = Part::create($request->all());
-        // }
-
         return $this->sendResponse($newPart, 'New product created successfully.');
     }
 
-    // public function trigger(){
-    //     $data = Excel::toCollection(null, 'proforma.xls', 'local');
-    //     if(count((array)$data) > 0 ){
-    //         foreach($data->toArray() as $key => $value){
-    //             foreach($value as $row){
-    //                 if($row[0] >= 1 && $row[6] == "STOCK"){
-    //                     $insert_data [] = array(
-    //                         'S/N' => $row[0],
-    //                         'ORDER DATE' => $row[1],
-    //                         'ALGORITHM' => $row[2],
-    //                         'REF' => $row[3],
-    //                         'ORDER NUMDER' => $row[4],
-    //                         'ORDER ROW NN' => $row[5],
-    //                         'CLIENT COLUMN 1' => $row[6],
-    //                         'CLIENT COLUMN 2' => $row[7],
-    //                         'CLIENT COLUMN 3' => $row[8],
-    //                         'CLIENT COLUMN 4' => $row[9],
-    //                         'CLIENT COLUMN 5' => $row[10],
-    //                         'BRAND' => $row[11],
-    //                         'DESCRIPTION' => $row[12],
-    //                         'PART NUMBER' => $row[13],
-    //                         'QTY' => $row[14],
-    //                         'UNIT PRICE' => $row[15],
-    //                         'TOTAL TAXABLE PRICE' => $row[16],
-    //                         'VAT AMOUNT' => $row[17],
-    //                         'TOTAL PRICE PAYABLE (INCL. VAT)' => $row[18],                          
-    //                     );
-    //                 }
-    //             }
-    //         }
-    //     }
+    public function trigger(){
+        $data = Excel::toCollection(null, 'proforma.xls', 'local');
+        if(count((array)$data) > 0 ){
+            foreach($data->toArray() as $key => $value){
+                foreach($value as $row){
+                    if($row[0] >= 1 && $row[6] == "STOCK"){
+                        $insert_data [] = array(
+                            'S/N' => $row[0],
+                            'ORDER DATE' => $row[1],
+                            'ALGORITHM' => $row[2],
+                            'REF' => $row[3],
+                            'ORDER NUMDER' => $row[4],
+                            'ORDER ROW NN' => $row[5],
+                            'CLIENT COLUMN 1' => $row[6],
+                            'CLIENT COLUMN 2' => $row[7],
+                            'CLIENT COLUMN 3' => $row[8],
+                            'CLIENT COLUMN 4' => $row[9],
+                            'CLIENT COLUMN 5' => $row[10],
+                            'BRAND' => $row[11],
+                            'DESCRIPTION' => $row[12],
+                            'PART NUMBER' => $row[13],
+                            'QTY' => $row[14],
+                            'UNIT PRICE' => $row[15],
+                            'TOTAL TAXABLE PRICE' => $row[16],
+                            'VAT AMOUNT' => $row[17],
+                            'TOTAL PRICE PAYABLE (INCL. VAT)' => $row[18],                          
+                        );
+                    }
+                }
+            }
+        }
 
-    //     return $insert_data;
-    // }
+        return $insert_data;
+    }
 
     public function update(Request $request) {
         $validator = Validator::make($request->all(), [
@@ -241,25 +220,45 @@ class PartsController extends BaseController
         if($validator->fails()){
             return $this->sendError('Validation Error.', $validator->errors(), 403);
         }
-	if(!$request->is_bundle) {
-    	    Part::where('brand_name', $request->brand_name)
-        	->where('part_number', $request->part_number)
-            ->update($request->all());
-            Part::where('brand_name', $request->brand_name)
-            ->where('part_number', $request->part_number)
-            ->update(['changedAdministrator' => 1]);
 
-	} else {
+    $part = Part::where('brand_name', $request->brand_name)
+        ->where('part_number', $request->part_number)->first();
+    
+    if($part && $request->price == "0"){
+        $insert_data = self::trigger();
+        foreach($insert_data as $data){
+            if($data["BRAND"] == $request->brand_name && str_replace( "-", "", $data["PART NUMBER"]) == $request->part_number){
+                $cost = $data["UNIT PRICE"];
+                $weight = $part->weight_physical;
+                $price = ((($weight * 6.0) + $cost * 0.061 + $cost) * 1.3) * 1.037;
+                $part->update(['changedAdministrator' => 0, 'price' => $price, 'qty' => $part->qty + $data["QTY"]]);
+            }
+        }
+    }
+	else if(!$request->is_bundle) {
+            // dd("here");
+    	    Part::where('brand_name', $request->brand_name)
+            ->where('part_number', $request->part_number)
+            ->update($request->except(['bundle_part_data', 'changedAdministrator']));
+            // ->update($request->all());
+            if((float) $part->price != (float) $request->price){
+                $part->update(['changedAdministrator' => 1]);
+            }
+	} else if($request->is_bundle) {
+
+        if((float) $part->price != (float) $request->price){
+            $part->update(['changedAdministrator' => 1]);
+        }
 
 	    $bundle = Part::where('brand_name', $request->brand_name)
         	->where('part_number', $request->part_number)
-        	->update(['changedAdministrator' => 1, 'part_number' => $request->part_number, 'brand_name' => $request->brand_name, 'description_english' => $request->description_english,
+        	->update(['part_number' => $request->part_number, 'brand_name' => $request->brand_name, 'description_english' => $request->description_english,
 		    'description_full' => $request->description_full, 'min_stock' => $request->min_stock, 'price' => $request->price,
 		    'min_price' => $request->min_price, 'max_price' => $request->max_price, 'location' => $request->location, 'categories' => $request->categories]);
 	    $bundleId =  Part::where('brand_name', $request->brand_name)
         		->where('part_number', $request->part_number)
             ->first();
-        
+
         $arr = array();
 
 	    //Part::where('bundle_id', $bundleId->id)

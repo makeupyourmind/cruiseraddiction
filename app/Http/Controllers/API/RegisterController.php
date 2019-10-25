@@ -128,97 +128,107 @@ class RegisterController extends BaseController
     }
 
     public function test(){
-        $parts = Part::where([
-            ['warehouse', 'canada'],
-            ['qty', '<', 5]
-        ])->get();
-        $arr = array();
+        // $parts = Part::where([
+        //     ['warehouse', 'canada'],
+        //     ['qty', '<', 5]
+        // ])->get();
+        // $arr = array();
 
-        foreach($parts as $part){
-            $obj["brand_name"] = $part->brand_name;
-            $obj["part_number"] = $part->part_number;
-            $obj["qty"] = $part->qty;
-            array_push($arr, $obj);
-        }
-
-        $data = array(
-            'parts' => $arr
-        );
-
-        Mail::send("email.lowQuantity", $data, function ($mail) {
-            $mail->from('support@gmail.com');
-            $mail->to("nikitosnov@gmail.com")
-                 ->subject('Low Quantity');
-        });
-
-        return response()->json($arr);
-        // /// ot suda
-        // $data = Excel::toCollection(null, 'proforma.xls', 'local');
-
-        // if(count((array)$data) > 0 ){
-        //     foreach($data->toArray() as $key => $value){
-        //         foreach($value as $row){
-        //             if($row[0] >= 1 && $row[6] == "STOCK"){
-        //                 $insert_data [] = array(
-        //                     'S/N' => $row[0],
-        //                     'ORDER DATE' => $row[1],
-        //                     'ALGORITHM' => $row[2],
-        //                     'REF' => $row[3],
-        //                     'ORDER NUMDER' => $row[4],
-        //                     'ORDER ROW NN' => $row[5],
-        //                     'CLIENT COLUMN 1' => $row[6],
-        //                     'CLIENT COLUMN 2' => $row[7],
-        //                     'CLIENT COLUMN 3' => $row[8],
-        //                     'CLIENT COLUMN 4' => $row[9],
-        //                     'CLIENT COLUMN 5' => $row[10],
-        //                     'BRAND' => $row[11],
-        //                     'DESCRIPTION' => $row[12],
-        //                     'PART NUMBER' => $row[13],
-        //                     'QTY' => $row[14],
-        //                     'UNIT PRICE' => $row[15],
-        //                     'TOTAL TAXABLE PRICE' => $row[16],
-        //                     'VAT AMOUNT' => $row[17],
-        //                     'TOTAL PRICE PAYABLE (INCL. VAT)' => $row[18],                          
-        //                 );
-        //             }
-        //         }
-        //     }
-
-        //     foreach($insert_data as $data){
-
-        //         $part = Part::where([ 
-        //                 ['brand_name', $data["BRAND"]],
-        //                 ['part_number', $data["PART NUMBER"]],
-        //                 ['warehouse', 'canada']
-        //             ])->first();
-        //         if($part && $part->changedAdministrator == true){
-        //             $part->update(['price' => $part->price]);
-        //         }
-        //         else if($part && $part->changedAdministrator == false){
-        //             $weight = $part->weight_physical;
-        //             $cost = $data["UNIT PRICE"];
-        //             $price = ((($weight * 6.0) + $cost * 0.061 + $cost) * 1.3) * 1.037;
-        //             $part->update(['price' => $price]);
-        //         }
-        //         else{
-        //             $weight = $part->weight_physical;
-        //             $cost = $data["UNIT PRICE"];
-        //             $price = ((($weight * 6.0) + $cost * 0.061 + $cost) * 1.3) * 1.037;
-        //             Part::create([
-        //                 "brand_name" => $data["brand_name"],
-        //                 "part_number" => $data["PART NUMBER"],
-        //                 "description_english" => $data["DESCRIPTION"],
-        //                 "qty" => $data["QTY"],
-        //                 "warehouse" => "canada",
-        //                 "price" => $price
-        //             ]);
-        //         }
-        //     }
-        //     //return response()->json($part);
-
-        //     if(!empty($insert_data)){
-        //         return response()->json($insert_data);
-        //     }
+        // foreach($parts as $part){
+        //     $obj["brand_name"] = $part->brand_name;
+        //     $obj["part_number"] = $part->part_number;
+        //     $obj["qty"] = $part->qty;
+        //     array_push($arr, $obj);
         // }
+
+        // $data = array(
+        //     'parts' => $arr
+        // );
+
+        // Mail::send("email.lowQuantity", $data, function ($mail) {
+        //     $mail->from('support@gmail.com');
+        //     $mail->to("nikitosnov@gmail.com")
+        //          ->subject('Low Quantity');
+        // });
+
+        // return response()->json($arr);
+        // /// ot suda
+        $data = Excel::toCollection(null, 'proforma.xls', 'local');
+
+        if(count((array)$data) > 0 ){
+            foreach($data->toArray() as $key => $value){
+                foreach($value as $row){
+                    if($row[0] >= 1 && $row[6] == "STOCK"){
+                        $insert_data [] = array(
+                            'S/N' => $row[0],
+                            'ORDER DATE' => $row[1],
+                            'ALGORITHM' => $row[2],
+                            'REF' => $row[3],
+                            'ORDER NUMDER' => $row[4],
+                            'ORDER ROW NN' => $row[5],
+                            'CLIENT COLUMN 1' => $row[6],
+                            'CLIENT COLUMN 2' => $row[7],
+                            'CLIENT COLUMN 3' => $row[8],
+                            'CLIENT COLUMN 4' => $row[9],
+                            'CLIENT COLUMN 5' => $row[10],
+                            'BRAND' => $row[11],
+                            'DESCRIPTION' => $row[12],
+                            'PART NUMBER' => $row[13],
+                            'QTY' => $row[14],
+                            'UNIT PRICE' => $row[15],
+                            'TOTAL TAXABLE PRICE' => $row[16],
+                            'VAT AMOUNT' => $row[17],
+                            'TOTAL PRICE PAYABLE (INCL. VAT)' => $row[18],                          
+                        );
+                    }
+                }
+            }
+
+            foreach($insert_data as $data){
+                $part = Part::where([ 
+                        ['brand_name', $data["BRAND"]],
+                        ['part_number', $data["PART NUMBER"]],
+                        ['warehouse', 'canada']
+                    ])->first();
+                // if(!$part){
+                //     return response()->json($part);
+                // }
+                if($part && $part->changedAdministrator == true){
+                    $part->update(['price' => $part->price, 'qty' => $part->qty + $data["QTY"] ]);
+                }
+                else if($part && $part->changedAdministrator == false){
+                    $weight = $part->weight_physical;
+                    $cost = $data["UNIT PRICE"];
+                    $price = ((($weight * 6.0) + $cost * 0.061 + $cost) * 1.3) * 1.037;
+                    $part->update(['price' => $price, 'qty' => $part->qty + $data["QTY"] ]);
+                }
+                else if(!$part){
+                    $part = Part::where([ 
+                        ['brand_name', $data["BRAND"]],
+                        ['part_number', $data["PART NUMBER"]]
+                    ])->first();
+                    if($part){
+                        $weight = $part->weight_physical;
+                        $cost = $data["UNIT PRICE"];
+                        $price = ((($weight * 6.0) + $cost * 0.061 + $cost) * 1.3) * 1.037;
+                        $uniqueHash = md5($data["BRAND"].$data["PART NUMBER"]."canada");
+                        Part::create([
+                            "brand_name" => $data["BRAND"],
+                            "part_number" => $data["PART NUMBER"],
+                            "description_english" => $data["DESCRIPTION"],
+                            "qty" => $data["QTY"],
+                            "warehouse" => "canada",
+                            "price" => $price,
+                            "unique_hash" => $uniqueHash,
+                            "is_stock_ca" => 1
+                        ]);
+                    }
+                }
+            }
+            
+            if(!empty($insert_data)){
+                return response()->json($insert_data);
+            }
+        }
     }
 }
