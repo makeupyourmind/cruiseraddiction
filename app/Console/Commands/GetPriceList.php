@@ -179,7 +179,8 @@ class GetPriceList extends Command
         fclose($fp);
 
         PartTmp::truncate();
-        $req1 = DB::connection()->getpdo()->exec("LOAD DATA LOCAL INFILE '". "storage/app/pricelistNew.csv" ."' 
+        // "storage/app/pricelistNew.csv"
+        $req1 = DB::connection()->getpdo()->exec("LOAD DATA LOCAL INFILE '". storage_path('app/pricelistNew.csv') ."' 
                     INTO TABLE parts_tmp 
                     FIELDS TERMINATED BY ';' 
                     ENCLOSED BY '\"'
