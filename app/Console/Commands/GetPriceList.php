@@ -47,6 +47,12 @@ class GetPriceList extends Command
 
         $file = 'CANLON+CPT+Emirates+USD+Cashless payment+Delivery not included in prices+MULTIBRAND.txt';
         $contents = Storage::disk('ftp')->get($file);
+        $time = Storage::disk('ftp')->lastModified($file);
+        $writedTime = Storage::get('GetPriceList.txt');
+        if($time == $writedTime){
+            return;
+        }
+        Storage::put('GetPriceList.txt', $time);   
 	Storage::put('pricelist.csv', $contents);
         $path = storage_path('app/pricelist.csv');
         $fileContent = Storage::get('pricelist.csv');
@@ -180,7 +186,8 @@ class GetPriceList extends Command
 
         PartTmp::truncate();
         // "storage/app/pricelistNew.csv"
-        $req1 = DB::connection()->getpdo()->exec("LOAD DATA LOCAL INFILE '". storage_path('app/pricelistNew.csv') ."' 
+        // storage_path('app/pricelistNew.csv')
+        $req1 = DB::connection()->getpdo()->exec("LOAD DATA LOCAL INFILE '". "storage/app/pricelistNew.csv" ."' 
                     INTO TABLE parts_tmp 
                     FIELDS TERMINATED BY ';' 
                     ENCLOSED BY '\"'

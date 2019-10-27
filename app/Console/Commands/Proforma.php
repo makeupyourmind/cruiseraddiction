@@ -39,6 +39,113 @@ class Proforma extends Command
      */
     public function handle()
     {
+
+        $hostname = env("IMAP_HOSTNAME");
+        $username = env("IMAP_USERNAME");
+        $password = env("IMAP_PASSWORD");
+        $inbox = imap_open($hostname,$username,$password) or die('Cannot connect to Gmail: ' . imap_last_error());
+        $emails = imap_search($inbox,'ALL');
+        $dates = [];
+        $most_recent = 0;
+        if($emails) {
+            rsort($emails);
+            foreach($emails as $email_number) 
+            {
+                $overview = imap_fetch_overview($inbox,$email_number,0);
+                array_push($dates, $overview[0]->date);
+            }
+            foreach($dates as $key => $date){
+                if( strtotime($date) < strtotime('now') && strtotime($date) > strtotime($dates[$most_recent]) ){
+                    $most_recent = $key;
+                }
+            }
+            $max = $dates[$most_recent];
+            $writedTime = Storage::get('ProformaTime.txt');
+            if($max == $writedTime){
+                return;
+            }
+            Storage::put('ProformaTime.txt', $max); 
+            foreach($emails as $email_number) 
+            {
+                $overview = imap_fetch_overview($inbox,$email_number,0);
+
+                $message = imap_fetchbody($inbox,$email_number,2);
+
+                $structure = imap_fetchstructure($inbox, $email_number);
+
+                $attachments = array();
+
+                if(isset($structure->parts) && count($structure->parts)) 
+                {
+                    for($i = 0; $i < count($structure->parts); $i++) 
+                    {
+                        $attachments[$i] = array(
+                            'is_attachment' => false,
+                            'filename' => '',
+                            'name' => '',
+                            'attachment' => '',
+                            'date' => $overview[0]->date,
+                            'subject' => $overview[0]->subject
+                        );
+
+                        if($structure->parts[$i]->ifdparameters) 
+                        {
+                            foreach($structure->parts[$i]->dparameters as $object) 
+                            {
+                                if(strtolower($object->attribute) == 'filename') 
+                                {
+                                    $attachments[$i]['is_attachment'] = true;
+                                    $attachments[$i]['filename'] = $object->value;
+                                }
+                            }
+                        }
+
+                        if($structure->parts[$i]->ifparameters) 
+                        {
+                            foreach($structure->parts[$i]->parameters as $object) 
+                            {
+                                if(strtolower($object->attribute) == 'name') 
+                                {
+                                    $attachments[$i]['is_attachment'] = true;
+                                    $attachments[$i]['name'] = $object->value;
+                                }
+                            }
+                        }
+
+                        if($attachments[$i]['is_attachment']) 
+                        {
+                            $attachments[$i]['attachment'] = imap_fetchbody($inbox, $email_number, $i+1);
+
+                            if($structure->parts[$i]->encoding == 3) 
+                            { 
+                                $attachments[$i]['attachment'] = base64_decode($attachments[$i]['attachment']);
+                            }
+                            elseif($structure->parts[$i]->encoding == 4) 
+                            { 
+                                $attachments[$i]['attachment'] = quoted_printable_decode($attachments[$i]['attachment']);
+                            }
+                        }
+                    }
+                }
+
+                foreach($attachments as $attachment)
+                {
+                    if($attachment["date"] == $max && $attachment["subject"] == "Proforma"){
+                        $filename = $attachment['name'];
+                        if(empty($filename)) $filename = $attachment['filename'];
+                        if(empty($filename)) $filename = time() . ".dat";
+                        $dst = '../storage/app/proforma.xls';
+                        $fp = fopen($dst, "w+");
+                        // $fp = fopen("./" . $email_number . "-" . $filename, "w+");
+                        fwrite($fp, $attachment['attachment']);
+                        fclose($fp);
+                    }
+                }
+            }
+
+        } 
+        imap_close($inbox);
+        /////////////////////////////////////////////////////////////////////
         $data = Excel::toCollection(null, 'proforma.xls', 'local');
 
         if(count((array)$data) > 0 ){
