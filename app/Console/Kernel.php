@@ -18,7 +18,8 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\GmailApi',
         'App\Console\Commands\UploadImages',
         'App\Console\Commands\UsaImport',
-        'App\Console\Commands\Proforma'
+        'App\Console\Commands\Proforma',
+        'App\Console\Commands\EbayOrdersItems'
     ];
 
     /**
@@ -41,6 +42,8 @@ class Kernel extends ConsoleKernel
                  ->daily();
         $schedule->command('parse:proforma')
                  ->hourly();
+        $schedule->command('check:EbayOrdersItems')
+                 ->everyFiveMinutes();
     }
 
     /**

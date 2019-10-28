@@ -31,5 +31,7 @@ class VerificationToken extends Migration
     public function down()
     {
         //
+        Schema::drop('verification_tokens');
+        Schema::drop('users');
     }
 }

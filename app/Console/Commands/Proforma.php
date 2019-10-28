@@ -53,7 +53,9 @@ class Proforma extends Command
             foreach($emails as $email_number) 
             {
                 $overview = imap_fetch_overview($inbox,$email_number,0);
-                array_push($dates, $overview[0]->date);
+                if($overview[0]->subject == "Proforma"){
+                    array_push($dates, $overview[0]->date);
+                }
             }
             foreach($dates as $key => $date){
                 if( strtotime($date) < strtotime('now') && strtotime($date) > strtotime($dates[$most_recent]) ){

@@ -18,6 +18,8 @@ use Illuminate\Support\Str;
 use App\Model\Part;
 use Excel;
 use Storage;
+use DB;
+use App\Model\Ebay_Orders_Items;
 
 class RegisterController extends BaseController
 {
@@ -59,7 +61,7 @@ class RegisterController extends BaseController
         );
 
         Mail::send("email.registration", $data , function ($mail) use ($user) {
-            $mail->from('support@gmail.com');
+            $mail->from('cruiseraddiction.web@gmail.com');
             $mail->to($user->email)
                  ->subject('Confirm registration');
         });
@@ -82,7 +84,7 @@ class RegisterController extends BaseController
         ]);
 
         Mail::send("email.registration_done", [""] , function ($mail) use ($foundToken) {
-            $mail->from('support@gmail.com');
+            $mail->from('cruiseraddiction.web@gmail.com');
             $mail->to($foundToken->user->email)
                     ->subject('Welcome to our site');
         });
@@ -129,109 +131,144 @@ class RegisterController extends BaseController
 
     public function test(){
 
-        $hostname = env("IMAP_HOSTNAME");
-        $username = env("IMAP_USERNAME");
-        $password = env("IMAP_PASSWORD");
-        $inbox = imap_open($hostname,$username,$password) or die('Cannot connect to Gmail: ' . imap_last_error());
-        $emails = imap_search($inbox,'ALL');
-        $dates = [];
-        $most_recent = 0;
-        if($emails) {
-            rsort($emails);
-            foreach($emails as $email_number) 
-            {
-                $overview = imap_fetch_overview($inbox,$email_number,0);
-                array_push($dates, $overview[0]->date);
+        $Ebay_Orders_Items_exsist = Ebay_Orders_Items::orderBy('CreatedDate', 'desc')->limit(1)->first();
+        if(!$Ebay_Orders_Items_exsist){
+            $Ebay_Orders_Items_exsist = new \stdClass();
+            $Ebay_Orders_Items_exsist->CreatedDate = null;
+        }
+        $Ebay_Orders_Items = DB::connection('sqlsrv')
+                                 ->select("SELECT * FROM Ebay_Orders_Items WHERE CreatedDate > '$Ebay_Orders_Items_exsist->CreatedDate' ");
+        // $Ebay_Orders_Items = DB::connection('sqlsrv')->select("SELECT * FROM Ebay_Orders_Items");
+        foreach($Ebay_Orders_Items as $ebay_order_item){
+            $create = Ebay_Orders_Items::create([
+                'Email' => $ebay_order_item->Email, 
+                'UserFirstName' => $ebay_order_item->UserFirstName, 
+                'UserLastName' => $ebay_order_item->UserLastName, 
+                'SellingManagerSalesRecordNumber' => $ebay_order_item->SellingManagerSalesRecordNumber, 
+                'CreatedDate' => $ebay_order_item->CreatedDate, 
+                'ItemID' => $ebay_order_item->ItemID, 
+                'Title' => $ebay_order_item->Title, 
+                'SKU' => $ebay_order_item->SKU, 
+                'ConditionDisplayName' => $ebay_order_item->ConditionDisplayName, 
+                'QuantityPurchased' => $ebay_order_item->QuantityPurchased,
+                'TransactionID'=> $ebay_order_item->TransactionID,
+                'TransactionPrice' => $ebay_order_item->TransactionPrice,
+                'TaxAmount' => $ebay_order_item->TaxAmount, 
+                'ActualShippingCost' => $ebay_order_item->ActualShippingCost,
+                'ActualHandlingCost' => $ebay_order_item->ActualHandlingCost,
+                'OrderLineItemID' => $ebay_order_item->OrderLineItemID,
+                'OrderId' => $ebay_order_item->OrderId
+            ]);
+            $find = Part::where('part_number', $ebay_order_item->SKU)->first();
+            if($find){
+                $find->update(['qty' => $find->qty - $ebay_order_item->QuantityPurchased ]);
             }
-            foreach($dates as $key => $date){
-                if( strtotime($date) < strtotime('now') && strtotime($date) > strtotime($dates[$most_recent]) ){
-                    $most_recent = $key;
-                }
-            }
-            $max = $dates[$most_recent];
+        }
 
-            foreach($emails as $email_number) 
-            {
-                $overview = imap_fetch_overview($inbox,$email_number,0);
+        return response()->json($Ebay_Orders_Items);
+        // $hostname = env("IMAP_HOSTNAME");
+        // $username = env("IMAP_USERNAME");
+        // $password = env("IMAP_PASSWORD");
+        // $inbox = imap_open($hostname,$username,$password) or die('Cannot connect to Gmail: ' . imap_last_error());
+        // $emails = imap_search($inbox,'ALL');
+        // $dates = [];
+        // $most_recent = 0;
+        // if($emails) {
+        //     rsort($emails);
+        //     foreach($emails as $email_number) 
+        //     {
+        //         $overview = imap_fetch_overview($inbox,$email_number,0);
+        //         array_push($dates, $overview[0]->date);
+        //     }
+        //     foreach($dates as $key => $date){
+        //         if( strtotime($date) < strtotime('now') && strtotime($date) > strtotime($dates[$most_recent]) ){
+        //             $most_recent = $key;
+        //         }
+        //     }
+        //     $max = $dates[$most_recent];
 
-                $message = imap_fetchbody($inbox,$email_number,2);
+        //     foreach($emails as $email_number) 
+        //     {
+        //         $overview = imap_fetch_overview($inbox,$email_number,0);
 
-                $structure = imap_fetchstructure($inbox, $email_number);
+        //         $message = imap_fetchbody($inbox,$email_number,2);
 
-                $attachments = array();
+        //         $structure = imap_fetchstructure($inbox, $email_number);
 
-                if(isset($structure->parts) && count($structure->parts)) 
-                {
-                    for($i = 0; $i < count($structure->parts); $i++) 
-                    {
-                        $attachments[$i] = array(
-                            'is_attachment' => false,
-                            'filename' => '',
-                            'name' => '',
-                            'attachment' => '',
-                            'date' => $overview[0]->date,
-                            'subject' => $overview[0]->subject
-                        );
+        //         $attachments = array();
 
-                        if($structure->parts[$i]->ifdparameters) 
-                        {
-                            foreach($structure->parts[$i]->dparameters as $object) 
-                            {
-                                if(strtolower($object->attribute) == 'filename') 
-                                {
-                                    $attachments[$i]['is_attachment'] = true;
-                                    $attachments[$i]['filename'] = $object->value;
-                                }
-                            }
-                        }
+        //         if(isset($structure->parts) && count($structure->parts)) 
+        //         {
+        //             for($i = 0; $i < count($structure->parts); $i++) 
+        //             {
+        //                 $attachments[$i] = array(
+        //                     'is_attachment' => false,
+        //                     'filename' => '',
+        //                     'name' => '',
+        //                     'attachment' => '',
+        //                     'date' => $overview[0]->date,
+        //                     'subject' => $overview[0]->subject
+        //                 );
 
-                        if($structure->parts[$i]->ifparameters) 
-                        {
-                            foreach($structure->parts[$i]->parameters as $object) 
-                            {
-                                if(strtolower($object->attribute) == 'name') 
-                                {
-                                    $attachments[$i]['is_attachment'] = true;
-                                    $attachments[$i]['name'] = $object->value;
-                                }
-                            }
-                        }
+        //                 if($structure->parts[$i]->ifdparameters) 
+        //                 {
+        //                     foreach($structure->parts[$i]->dparameters as $object) 
+        //                     {
+        //                         if(strtolower($object->attribute) == 'filename') 
+        //                         {
+        //                             $attachments[$i]['is_attachment'] = true;
+        //                             $attachments[$i]['filename'] = $object->value;
+        //                         }
+        //                     }
+        //                 }
 
-                        if($attachments[$i]['is_attachment']) 
-                        {
-                            $attachments[$i]['attachment'] = imap_fetchbody($inbox, $email_number, $i+1);
+        //                 if($structure->parts[$i]->ifparameters) 
+        //                 {
+        //                     foreach($structure->parts[$i]->parameters as $object) 
+        //                     {
+        //                         if(strtolower($object->attribute) == 'name') 
+        //                         {
+        //                             $attachments[$i]['is_attachment'] = true;
+        //                             $attachments[$i]['name'] = $object->value;
+        //                         }
+        //                     }
+        //                 }
 
-                            if($structure->parts[$i]->encoding == 3) 
-                            { 
-                                $attachments[$i]['attachment'] = base64_decode($attachments[$i]['attachment']);
-                            }
-                            elseif($structure->parts[$i]->encoding == 4) 
-                            { 
-                                $attachments[$i]['attachment'] = quoted_printable_decode($attachments[$i]['attachment']);
-                            }
-                        }
-                    }
-                }
+        //                 if($attachments[$i]['is_attachment']) 
+        //                 {
+        //                     $attachments[$i]['attachment'] = imap_fetchbody($inbox, $email_number, $i+1);
 
-                foreach($attachments as $attachment)
-                {
-                    if($attachment["date"] == $max && $attachment["subject"] == "Proforma"){
-                        $filename = $attachment['name'];
-                        if(empty($filename)) $filename = $attachment['filename'];
-                        if(empty($filename)) $filename = time() . ".dat";
-                        $dst = '../storage/app/test.xls';
-                        $fp = fopen($dst, "w+");
-                        // $fp = fopen("./" . $email_number . "-" . $filename, "w+");
-                        fwrite($fp, $attachment['attachment']);
-                        fclose($fp);
-                    }
-                }
-            }
+        //                     if($structure->parts[$i]->encoding == 3) 
+        //                     { 
+        //                         $attachments[$i]['attachment'] = base64_decode($attachments[$i]['attachment']);
+        //                     }
+        //                     elseif($structure->parts[$i]->encoding == 4) 
+        //                     { 
+        //                         $attachments[$i]['attachment'] = quoted_printable_decode($attachments[$i]['attachment']);
+        //                     }
+        //                 }
+        //             }
+        //         }
 
-        } 
-        imap_close($inbox);
+        //         foreach($attachments as $attachment)
+        //         {
+        //             if($attachment["date"] == $max && $attachment["subject"] == "Proforma"){
+        //                 $filename = $attachment['name'];
+        //                 if(empty($filename)) $filename = $attachment['filename'];
+        //                 if(empty($filename)) $filename = time() . ".dat";
+        //                 $dst = '../storage/app/test.xls';
+        //                 $fp = fopen($dst, "w+");
+        //                 // $fp = fopen("./" . $email_number . "-" . $filename, "w+");
+        //                 fwrite($fp, $attachment['attachment']);
+        //                 fclose($fp);
+        //             }
+        //         }
+        //     }
 
-        echo "Done";
+        // } 
+        // imap_close($inbox);
+
+        // echo "Done";
 
         
         // return response()->json($structure);
