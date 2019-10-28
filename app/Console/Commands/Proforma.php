@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Model\Part;
 use Excel;
+use Storage;
 
 class Proforma extends Command
 {
@@ -60,6 +61,10 @@ class Proforma extends Command
                 }
             }
             $max = $dates[$most_recent];
+            $exists = Storage::disk('local')->exists('ProformaTime.txt');
+            if(!$exists){
+                Storage::disk('local')->put('ProformaTime.txt', 'Contents');
+            }
             $writedTime = Storage::get('ProformaTime.txt');
             if($max == $writedTime){
                 return;
@@ -134,7 +139,7 @@ class Proforma extends Command
                         $filename = $attachment['name'];
                         if(empty($filename)) $filename = $attachment['filename'];
                         if(empty($filename)) $filename = time() . ".dat";
-                        $dst = '../storage/app/proforma.xls';
+                        $dst = './storage/app/proforma.xls';
                         $fp = fopen($dst, "w+");
                         // $fp = fopen("./" . $email_number . "-" . $filename, "w+");
                         fwrite($fp, $attachment['attachment']);

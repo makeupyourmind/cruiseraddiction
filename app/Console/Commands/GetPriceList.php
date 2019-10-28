@@ -48,6 +48,12 @@ class GetPriceList extends Command
         $file = 'CANLON+CPT+Emirates+USD+Cashless payment+Delivery not included in prices+MULTIBRAND.txt';
         $contents = Storage::disk('ftp')->get($file);
         $time = Storage::disk('ftp')->lastModified($file);
+
+        $exists = Storage::disk('local')->exists('GetPriceList.txt');
+        if(!$exists){
+            Storage::disk('local')->put('GetPriceList.txt', 'Contents');
+        }
+
         $writedTime = Storage::get('GetPriceList.txt');
         if($time == $writedTime){
             return;
