@@ -38,7 +38,7 @@ class ForgotPasswordController extends BaseController
         ]);
         
         $content = [
-    		'url'=> "http://localhost:8000/api/forgot/$token", 
+    		'url'=> env('APP_URL_LOCAL')."/api/forgot/$token", 
     		'button' => 'Click Here'
         ];
         

@@ -55,7 +55,7 @@ class RegisterController extends BaseController
             'token' => $token 
         ]);
 
-        $url = "http://localhost:8000/api/verifyRegistration?token=".$token;
+        $url = env('APP_URL_LOCAL')."/api/verifyRegistration?token=".$token;
         $data = array(
             'url'=> $url,
         );
