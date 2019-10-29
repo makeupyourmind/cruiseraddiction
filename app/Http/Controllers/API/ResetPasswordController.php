@@ -27,7 +27,7 @@ class ResetPasswordController extends BaseController
         $user_exist = PasswordResets::where('token', $request->token)->first();
 
         if(!$user_exist){
-            return $this->sendError("Hash aren't available");
+            return $this->sendError("Hash is not available");
         }
 
         User::where('email', $user_exist->email)->update(['password' => Hash::make($request->newPassword)]);

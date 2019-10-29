@@ -68,7 +68,7 @@ class EbayOrdersItems extends Command
                 'OrderLineItemID' => $ebay_order_item->OrderLineItemID,
                 'OrderId' => $ebay_order_item->OrderId
             ]);
-            $find = Part::where('part_number', $ebay_order_item->SKU)->first();
+            $find = Part::where('part_number', str_replace("-", "",$ebay_order_item->SKU))->first();
             if($find){
                 $find->update(['qty' => $find->qty - $ebay_order_item->QuantityPurchased ]);
             }
