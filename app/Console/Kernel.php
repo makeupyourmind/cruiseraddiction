@@ -43,7 +43,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('parse:proforma')
                  ->hourly();
         $schedule->command('check:EbayOrdersItems')
-                 ->everyFiveMinutes();
+                 ->everyMinute();
     }
 
     /**
