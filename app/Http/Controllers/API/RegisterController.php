@@ -55,13 +55,13 @@ class RegisterController extends BaseController
             'token' => $token 
         ]);
 
-        $url = env('APP_URL_LOCAL')."/api/verifyRegistration?token=".$token;
+        $url = env('APP_URL')."/api/verifyRegistration?token=".$token;
         $data = array(
             'url'=> $url,
         );
 
         Mail::send("email.registration", $data , function ($mail) use ($user) {
-            $mail->from('cruiseraddiction.web@gmail.com');
+            // $mail->from('cruiseraddiction.web@gmail.com');
             $mail->to($user->email)
                  ->subject('Confirm registration');
         });
@@ -84,7 +84,7 @@ class RegisterController extends BaseController
         ]);
 
         Mail::send("email.registration_done", [""] , function ($mail) use ($foundToken) {
-            $mail->from('cruiseraddiction.web@gmail.com');
+            // $mail->from('cruiseraddiction.web@gmail.com');
             $mail->to($foundToken->user->email)
                     ->subject('Welcome to our site');
         });
