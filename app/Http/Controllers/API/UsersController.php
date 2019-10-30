@@ -53,7 +53,7 @@ class UsersController extends BaseController
 
         if(count($diff) > 0){
             Mail::send("email.changesInAccount", $data , function ($mail) use ($user) {
-                $mail->from('support@gmail.com');
+                // $mail->from('support@gmail.com');
                 $mail->to($user->email)
                         ->subject('Changes In Account');
             });
