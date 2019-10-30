@@ -131,41 +131,74 @@ class RegisterController extends BaseController
 
     public function test(){
 
-        $Ebay_Orders_Items_exsist = Ebay_Orders_Items::orderBy('CreatedDate', 'desc')->limit(1)->first();
-        if(!$Ebay_Orders_Items_exsist){
-            $Ebay_Orders_Items_exsist = new \stdClass();
-            $Ebay_Orders_Items_exsist->CreatedDate = null;
-        }
-        $Ebay_Orders_Items = DB::connection('sqlsrv')
-                                 ->select("SELECT * FROM Ebay_Orders_Items WHERE CreatedDate > '$Ebay_Orders_Items_exsist->CreatedDate' ");
-        // $Ebay_Orders_Items = DB::connection('sqlsrv')->select("SELECT * FROM Ebay_Orders_Items");
-        foreach($Ebay_Orders_Items as $ebay_order_item){
-            $create = Ebay_Orders_Items::create([
-                'Email' => $ebay_order_item->Email, 
-                'UserFirstName' => $ebay_order_item->UserFirstName, 
-                'UserLastName' => $ebay_order_item->UserLastName, 
-                'SellingManagerSalesRecordNumber' => $ebay_order_item->SellingManagerSalesRecordNumber, 
-                'CreatedDate' => $ebay_order_item->CreatedDate, 
-                'ItemID' => $ebay_order_item->ItemID, 
-                'Title' => $ebay_order_item->Title, 
-                'SKU' => $ebay_order_item->SKU, 
-                'ConditionDisplayName' => $ebay_order_item->ConditionDisplayName, 
-                'QuantityPurchased' => $ebay_order_item->QuantityPurchased,
-                'TransactionID'=> $ebay_order_item->TransactionID,
-                'TransactionPrice' => $ebay_order_item->TransactionPrice,
-                'TaxAmount' => $ebay_order_item->TaxAmount, 
-                'ActualShippingCost' => $ebay_order_item->ActualShippingCost,
-                'ActualHandlingCost' => $ebay_order_item->ActualHandlingCost,
-                'OrderLineItemID' => $ebay_order_item->OrderLineItemID,
-                'OrderId' => $ebay_order_item->OrderId
-            ]);
-            $find = Part::where('part_number', $ebay_order_item->SKU)->first();
-            if($find){
-                $find->update(['qty' => $find->qty - $ebay_order_item->QuantityPurchased ]);
+        $data = Excel::toCollection(null, 'CA_WAREHOUSE.xlsx', 'local');
+        Part::where('warehouse', 'canada')->delete();
+        if(count((array)$data) > 0 ){
+            foreach($data->toArray() as $key => $value){
+                foreach($value as $row){
+                    if($row[0] != "BRAND" ){
+                        $part_another_warehouse = Part::where('part_number', str_replace("-", "", $row[2]))->first();
+                        if($part_another_warehouse){
+                            $weight_physical = $part_another_warehouse->weight_physical;
+                            $weight_volumetric = $part_another_warehouse->weight_volumetric;
+                        }
+                        else{
+                            $weight_physical = null;
+                            $weight_volumetric = null;
+                        }
+                        $uniqueHash = md5(rand().$row[0].$row[2]."canada");
+                        Part::create([
+                            'brand_name' => $row[0],
+                            'description_full' => $row[1],
+                            'part_number' => str_replace("-", "", $row[2]),
+                            'full_part_number' => $row[2],
+                            'qty' => $row[3],
+                            'price' => $row[4],
+                            'warehouse' => 'canada',
+                            'unique_hash' => $uniqueHash,
+                            'weight_physical' => $weight_physical,
+                            'weight_volumetric' => $weight_volumetric
+                        ]);
+                    }
+                }
             }
         }
+        return 'ok';
+        // $Ebay_Orders_Items_exsist = Ebay_Orders_Items::orderBy('CreatedDate', 'desc')->limit(1)->first();
+        // if(!$Ebay_Orders_Items_exsist){
+        //     $Ebay_Orders_Items_exsist = new \stdClass();
+        //     $Ebay_Orders_Items_exsist->CreatedDate = null;
+        // }
+        // $Ebay_Orders_Items = DB::connection('sqlsrv')
+        //                          ->select("SELECT * FROM Ebay_Orders_Items WHERE CreatedDate > '$Ebay_Orders_Items_exsist->CreatedDate' ");
+        // // $Ebay_Orders_Items = DB::connection('sqlsrv')->select("SELECT * FROM Ebay_Orders_Items");
+        // foreach($Ebay_Orders_Items as $ebay_order_item){
+        //     $create = Ebay_Orders_Items::create([
+        //         'Email' => $ebay_order_item->Email, 
+        //         'UserFirstName' => $ebay_order_item->UserFirstName, 
+        //         'UserLastName' => $ebay_order_item->UserLastName, 
+        //         'SellingManagerSalesRecordNumber' => $ebay_order_item->SellingManagerSalesRecordNumber, 
+        //         'CreatedDate' => $ebay_order_item->CreatedDate, 
+        //         'ItemID' => $ebay_order_item->ItemID, 
+        //         'Title' => $ebay_order_item->Title, 
+        //         'SKU' => $ebay_order_item->SKU, 
+        //         'ConditionDisplayName' => $ebay_order_item->ConditionDisplayName, 
+        //         'QuantityPurchased' => $ebay_order_item->QuantityPurchased,
+        //         'TransactionID'=> $ebay_order_item->TransactionID,
+        //         'TransactionPrice' => $ebay_order_item->TransactionPrice,
+        //         'TaxAmount' => $ebay_order_item->TaxAmount, 
+        //         'ActualShippingCost' => $ebay_order_item->ActualShippingCost,
+        //         'ActualHandlingCost' => $ebay_order_item->ActualHandlingCost,
+        //         'OrderLineItemID' => $ebay_order_item->OrderLineItemID,
+        //         'OrderId' => $ebay_order_item->OrderId
+        //     ]);
+        //     $find = Part::where('part_number', $ebay_order_item->SKU)->first();
+        //     if($find){
+        //         $find->update(['qty' => $find->qty - $ebay_order_item->QuantityPurchased ]);
+        //     }
+        // }
 
-        return response()->json($Ebay_Orders_Items);
+        // return response()->json($Ebay_Orders_Items);
         // $hostname = env("IMAP_HOSTNAME");
         // $username = env("IMAP_USERNAME");
         // $password = env("IMAP_PASSWORD");
