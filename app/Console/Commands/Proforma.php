@@ -53,7 +53,8 @@ class Proforma extends Command
             foreach($emails as $email_number) 
             {
                 $overview = imap_fetch_overview($inbox,$email_number,0);
-                if($overview[0]->subject == "Proforma"){
+                $pos = strpos($overview[0]->subject, "Proforma");
+                if($pos !== false){
                     array_push($dates, $overview[0]->date);
                 }
             }
@@ -137,7 +138,8 @@ class Proforma extends Command
 
                 foreach($attachments as $attachment)
                 {
-                    if($attachment["date"] == $max && $attachment["subject"] == "Proforma"){
+                    $pos = strpos($attachment["subject"], "Proforma");
+                    if($attachment["date"] == $max && $pos !== false){
                         $filename = $attachment['name'];
                         if(empty($filename)) $filename = $attachment['filename'];
                         if(empty($filename)) $filename = time() . ".dat";

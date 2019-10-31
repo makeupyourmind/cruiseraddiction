@@ -58,15 +58,16 @@ Route::group([
     });
     Route::get('doc', 'DocumentationController@index');
 });
-
+// 'middleware' => 'auth:api'
 Route::group([
     'namespace' => 'API',
-    'middleware' => 'auth:api'], function () {
+    ], function () {
 
     Route::post('logout', 'RegisterController@logout');
     Route::post('add-parts', 'PartsController@store');
     Route::put('update-parts', 'PartsController@update');
     Route::delete('delete-parts', 'PartsController@destroy');
+    Route::post('filter', 'PartsController@filter');
 
     Route::get('user', 'UsersController@show');
     Route::put('user/{id}', 'UsersController@update');

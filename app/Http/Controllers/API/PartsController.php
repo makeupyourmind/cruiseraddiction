@@ -12,6 +12,9 @@ use App\Model\BundlePart;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Hash;
 use Excel;
+use Illuminate\Support\Facades\Input;
+use App\Http\Controllers\API\UserFilter;
+use DB;
 
 class PartsController extends BaseController
 {
@@ -365,5 +368,53 @@ class PartsController extends BaseController
                 'weight_physical', 'weight_volumetric', 'qty', 'warehouse', 'price', 'unique_hash']);
         }
         return response()->json($parts, 200);
+    }
+
+    public function filter(Request $request){
+
+        // $query = Part::select('*');
+        // $fields = ['qty', 'is_bundle', 'QtyAbove'];
+        // $arr = [];
+        // foreach($fields as $field){
+        //     if(!empty($request->$field) || $request->qty == "0"){
+        //         $temp = [$field, $request->$field];
+        //         array_push($arr, $temp);
+        //     }
+        // }
+        // $query->where($arr);
+        // return response()->json($query->get());
+        // return response()->json($query->get());
+        // return UserFilter::apply($request);
+        
+        $arr = [];
+        if($request->input('qty') == '0'){
+            $query = [
+                'qty', '=', '0'
+            ];
+            array_push($arr, $query);
+        }
+        if($request->BundelsOnly){
+            $query = [
+                'is_bundle', '1'
+            ];
+            array_push($arr, $query);
+        }
+        if($request->QtyAbove){
+            $query = [
+                'qty', '>', $request->QtyAbove
+            ];
+            array_push($arr, $query);
+        }
+        if($request->QtyBellowMinStock){
+            $query = [
+                "qty", "<", "min_stock"
+            ];
+            array_push($arr, $query);
+        }
+        // CAST(min_stock AS UNSIGNED )
+        $parts = Part::where("qty", "<", "min_stock")->get();
+        return DB::select("SELECT * FROM `parts` WHERE qty < min_stock");
+
+        return response()->json($parts);
     }
 }
