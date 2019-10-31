@@ -61,7 +61,7 @@ Route::group([
 // 'middleware' => 'auth:api'
 Route::group([
     'namespace' => 'API',
-    ], function () {
+    'middleware' => 'auth:api'], function () {
 
     Route::post('logout', 'RegisterController@logout');
     Route::post('add-parts', 'PartsController@store');
