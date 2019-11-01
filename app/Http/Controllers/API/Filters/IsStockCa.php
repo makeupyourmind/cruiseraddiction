@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API\Filters;
 use Illuminate\Database\Eloquent\Builder;
 use DB;
 
-class Qty implements Filter
+class IsStockCa implements Filter
 {
     /**
      * Apply a given search value to the builder instance.
@@ -15,6 +15,6 @@ class Qty implements Filter
      */
     public static function apply(Builder $builder, $value)
     {
-        return $builder->where('qty', $value);
+        return $builder->where('is_stock_ca', $value);
     }
 }

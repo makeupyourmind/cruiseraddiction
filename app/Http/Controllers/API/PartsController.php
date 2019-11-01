@@ -126,14 +126,19 @@ class PartsController extends BaseController
     }
 
     public function getStockCa(Request $request){
-	!$request->order_name ?? $request->order_name = 'brand_name';
-	!$request->oder_by ?? $request->order_by = 'asc';
-	$stockPart = Part::where('is_stock_ca', true)
-		    ->whereRaw("REPLACE(part_number, '-', '') LIKE '%".str_replace('-', '', $request->part_number)."%'")
-		    //->where('part_number_without_too_much', 'LIKE', '%' . $request->part_number . '%')
-		    ->where('brand_name', 'LIKE', '%' . $request->brand_name . '%')
-		    ->orderBy($request->order_name, $request->order_by)
-		    ->paginate(100);
+	// !$request->order_name ?? $request->order_name = 'brand_name';
+    // !$request->oder_by ?? $request->order_by = 'asc';
+    !isset($request->order_name) ? $request['order_name'] = 'brand_name' : $request->order_name;
+    !isset($request->order_by) ? $request['order_by'] = 'asc' : $request->order_by;
+    $stockPart = UserFilter::apply($request);
+    //////////////////////////////////////////////
+	// $stockPart = Part::where('is_stock_ca', true)
+	// 	    ->whereRaw("REPLACE(part_number, '-', '') LIKE '%".str_replace('-', '', $request->part_number)."%'")
+	// 	    //->where('part_number_without_too_much', 'LIKE', '%' . $request->part_number . '%')
+	// 	    ->where('brand_name', 'LIKE', '%' . $request->brand_name . '%')
+	// 	    ->orderBy($request->order_name, $request->order_by)
+    // 	    ->paginate(100);
+    //////////////////////////////////////////////////////////////////
 	if($stockPart->count() == 0) {
 	    $stockPartArr['data'] = array();
 	    return response()->json($stockPartArr, 200);

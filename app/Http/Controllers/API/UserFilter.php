@@ -13,7 +13,7 @@ class UserFilter
     public static function apply(Request $filters)
     {
         $query = static::applyDecoratorsFromRequest($filters, (new Part)->newQuery());
-        return static::getResults($query);
+        return static::getResults($query, $filters);
     }
 
     private static function applyDecoratorsFromRequest(Request $request, Builder $query)
@@ -43,8 +43,10 @@ class UserFilter
     /**
      * @return Builder 
      */
-    private static function getResults(Builder $query)
+    private static function getResults(Builder $query, Request $request)
     {
-        return $query->get();
+        // return $query->get();
+        return $query->orderBy($request->order_name, $request->order_by)
+                     ->paginate(100);
     }
 }

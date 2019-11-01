@@ -67,7 +67,7 @@ Route::group([
     Route::post('add-parts', 'PartsController@store');
     Route::put('update-parts', 'PartsController@update');
     Route::delete('delete-parts', 'PartsController@destroy');
-    Route::get('filter', 'PartsController@filter');
+    // Route::get('filter', 'PartsController@filter');
 
     Route::get('user', 'UsersController@show');
     Route::put('user/{id}', 'UsersController@update');

@@ -65,7 +65,8 @@ class Ca_warehouse extends Command
                             'warehouse' => 'canada',
                             'unique_hash' => $uniqueHash,
                             'weight_physical' => $weight_physical,
-                            'weight_volumetric' => $weight_volumetric
+                            'weight_volumetric' => $weight_volumetric,
+                            'is_stock_ca' => 1
                         ]);
                     }
                 }
