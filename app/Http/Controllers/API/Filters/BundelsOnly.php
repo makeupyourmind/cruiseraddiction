@@ -13,8 +13,8 @@ class BundelsOnly implements Filter
      * @param mixed $value
      * @return Builder $builder
      */
-    public static function apply($builder, $value)
+    public static function apply(Builder $builder, $value)
     {
-        return DB::select("SELECT * FROM `parts` WHERE is_bundle = 1");
+        return $builder->where('is_bundle', $value);
     }
 }

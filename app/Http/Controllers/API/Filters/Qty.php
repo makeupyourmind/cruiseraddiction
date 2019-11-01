@@ -13,9 +13,8 @@ class Qty implements Filter
      * @param mixed $value
      * @return Builder $builder
      */
-    public static function apply($builder, $value)
+    public static function apply(Builder $builder, $value)
     {
-        // return $builder->where('qty', '=', $value)->get();
-        return DB::select("SELECT * FROM `parts` WHERE qty = $value");
+        return $builder->where('qty', '=', $value);
     }
 }

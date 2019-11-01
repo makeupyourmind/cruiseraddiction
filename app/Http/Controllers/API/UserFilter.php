@@ -9,7 +9,7 @@ use DB;
 
 class UserFilter
 {
-    //
+
     public static function apply(Request $filters)
     {
         $query = static::applyDecoratorsFromRequest($filters, (new Part)->newQuery());
@@ -27,6 +27,9 @@ class UserFilter
         return $query;
     }
 
+    /**
+     * @return string 
+     */
     private static function createFilterDecorator($name)
     {
         return __NAMESPACE__ . "\\Filters\\" . studly_case($name);
@@ -37,8 +40,11 @@ class UserFilter
         return class_exists($decorator);
     }
 
-    private static function getResults($query)
+    /**
+     * @return Builder 
+     */
+    private static function getResults(Builder $query)
     {
-        return $query;
+        return $query->get();
     }
 }

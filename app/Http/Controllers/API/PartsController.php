@@ -372,49 +372,22 @@ class PartsController extends BaseController
 
     public function filter(Request $request){
 
-        // $query = Part::select('*');
-        // $fields = ['qty', 'is_bundle', 'QtyAbove'];
-        // $arr = [];
-        // foreach($fields as $field){
-        //     if(!empty($request->$field) || $request->qty == "0"){
-        //         $temp = [$field, $request->$field];
-        //         array_push($arr, $temp);
-        //     }
-        // }
-        // $query->where($arr);
-        // return response()->json($query->get());
-        // return response()->json($query->get());
-        // return UserFilter::apply($request);
-        
-        $arr = [];
-        if($request->input('qty') == '0'){
-            $query = [
-                'qty', '=', '0'
-            ];
-            array_push($arr, $query);
-        }
-        if($request->BundelsOnly){
-            $query = [
-                'is_bundle', '1'
-            ];
-            array_push($arr, $query);
-        }
-        if($request->QtyAbove){
-            $query = [
-                'qty', '>', $request->QtyAbove
-            ];
-            array_push($arr, $query);
-        }
-        if($request->QtyBellowMinStock){
-            $query = [
-                "qty", "<", "min_stock"
-            ];
-            array_push($arr, $query);
-        }
-        // CAST(min_stock AS UNSIGNED )
-        $parts = Part::where("qty", "<", "min_stock")->get();
-        return DB::select("SELECT * FROM `parts` WHERE qty < min_stock");
+        return UserFilter::apply($request);
 
-        return response()->json($parts);
+        // $parts = Part::where(function($query){
+        //     if(Input::get('qty') == '0'){
+        //         $query->where('qty', Input::get('qty'));
+        //     }
+        //     if(Input::get('bundlesOnly') == '1'){
+        //         $query->where('is_bundle', Input::get('bundlesOnly'));
+        //     }
+        //     if(Input::get('QtyAbove')){
+        //         $query->where('qty', '>', Input::get('QtyAbove'));
+        //     }
+        //     if(Input::get('qtybelowminstock') == '1'){
+        //         $query->whereColumn('qty', '<' ,'min_stock');
+        //     }
+        // })->get();
+        // return response()->json($parts);
     }
 }

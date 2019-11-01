@@ -13,9 +13,8 @@ class QtyBellowMinStock implements Filter
      * @param mixed $value
      * @return Builder $builder
      */
-    public static function apply($builder, $value)
+    public static function apply(Builder $builder, $value)
     {
-        return DB::select("SELECT * FROM `parts` WHERE qty < CAST(min_stock AS UNSIGNED )");
-        // return $builder;
+        return $builder->whereColumn('qty', '<' ,'min_stock');
     }
 }
