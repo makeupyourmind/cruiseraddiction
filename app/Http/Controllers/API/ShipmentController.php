@@ -76,7 +76,7 @@ class ShipmentController extends Controller
 	     $input = $request->user;
 	     $input['password'] = bcrypt($input['password']);
          $user = User::create($input);
-         Mail::send("email.registration", $data , function ($mail) use ($input) {
+         Mail::send("email.registration", [''] , function ($mail) use ($input) {
             $mail->to($input['email'])
                  ->subject('Confirm registration');
          });
