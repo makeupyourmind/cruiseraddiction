@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Auth;
 use Validator;
 use App\Model\oauthAccessToken;
 use Exception;
+use Mail;
+
 class ShipmentController extends Controller
 {
     public function rates(Request $request)
@@ -73,10 +75,14 @@ class ShipmentController extends Controller
 	     }
 	     $input = $request->user;
 	     $input['password'] = bcrypt($input['password']);
-	     $user = User::create($input);
-	     $success['token'] =  $user->createToken('MyApp')->accessToken;
-	    
-	     return response()->json(['shipping' => $postResponse, 'user' => $success], 201);
+         $user = User::create($input);
+         Mail::send("email.registration", $data , function ($mail) use ($input) {
+            $mail->to($input['email'])
+                 ->subject('Confirm registration');
+         });
+         //$success['token'] =  $user->createToken('MyApp')->accessToken;
+         
+	     return response()->json(['shipping' => $postResponse], 201);
 	}                                                                        
         return response()->json(['shipping' => $postResponse], 200);
     }
