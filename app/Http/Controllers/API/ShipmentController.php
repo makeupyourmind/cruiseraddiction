@@ -11,6 +11,8 @@ use Validator;
 use App\Model\oauthAccessToken;
 use Exception;
 use Mail;
+use App\VerificationToken;
+use Illuminate\Support\Str;
 
 class ShipmentController extends Controller
 {
@@ -76,7 +78,19 @@ class ShipmentController extends Controller
 	     $input = $request->user;
 	     $input['password'] = bcrypt($input['password']);
          $user = User::create($input);
-         Mail::send("email.registration", [''] , function ($mail) use ($input) {
+
+         $token = Str::random();
+         $verify = VerificationToken::create([
+            'user_id' => $user->id,
+            'token' => $token 
+         ]);
+         $url = env('APP_URL')."/api/verifyRegistration?token=".$token;
+         
+         $data = array(
+            'url'=> $url,
+         );
+
+         Mail::send("email.registration", $data , function ($mail) use ($input) {
             $mail->to($input['email'])
                  ->subject('Confirm registration');
          });
