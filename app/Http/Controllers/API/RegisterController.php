@@ -115,10 +115,13 @@ class RegisterController extends BaseController
 
                 return $this->sendResponse($success, 'User authorized successfully.');
             }
+            else{
+                return $this->sendError('You did not confirm mail.', '', 400);
+            }
             
         }
 
-            return $this->sendError('Authorization failed.', '', 401);
+            return $this->sendError('Authorization failed.', '', 400);
 
     }
 
