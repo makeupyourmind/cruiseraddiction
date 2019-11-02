@@ -77,7 +77,7 @@ class PayPalController extends Controller
         $payer->setPaymentMethod('paypal');
         $item_1 = new Item();
         $item_1->setName('Item 1') /** item name **/
-        ->setCurrency('USD')
+            ->setCurrency(Input::get('currency')) //was USD
             ->setQuantity(1)
             ->setPrice($request->get('amount')); /** unit price **/
             //->setPrice($this->price->value); /** unit price **/
@@ -85,7 +85,7 @@ class PayPalController extends Controller
         $item_list = new ItemList();
         $item_list->setItems(array($item_1));
         $amount = new Amount();
-        $amount->setCurrency('USD')
+        $amount->setCurrency(Input::get('currency')) //was USD
             ->setTotal($request->get('amount'));
             //->setTotal($this->price->value);
 
