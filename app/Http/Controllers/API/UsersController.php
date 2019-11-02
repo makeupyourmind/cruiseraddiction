@@ -59,8 +59,8 @@ class UsersController extends BaseController
             });
         }
 
-        // User::where('id', $id)
-        //     ->update($request->all());
+        User::where('id', $id)
+            ->update($request->all());
         // return $this->sendResponse('Success', 'User modified successfully.');
         return $this->sendResponse(array('user' => $user, 'changes' => $diff), 'User modified successfully.');
     }
