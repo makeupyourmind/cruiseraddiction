@@ -38,10 +38,10 @@ class Kernel extends ConsoleKernel
                  ->daily();
         $schedule->command("upload:images")
                  ->daily();
-        $schedule->command("import:usa")
-                 ->daily();
+        // $schedule->command("import:usa")
+        //          ->daily();
         $schedule->command('parse:proforma')
-                 ->hourly();
+                 ->daily();
         $schedule->command('check:EbayOrdersItems')
                  ->everyMinute();
     }
