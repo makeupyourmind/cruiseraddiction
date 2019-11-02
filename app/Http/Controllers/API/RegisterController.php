@@ -20,6 +20,7 @@ use Excel;
 use Storage;
 use DB;
 use App\Model\Ebay_Orders_Items;
+use App\Model\Role;
 
 class RegisterController extends BaseController
 {
@@ -45,7 +46,9 @@ class RegisterController extends BaseController
 
         $input = $request->all();
         $input['password'] = bcrypt($input['password']);
+        // $role = Role::where('name', $request->role)->first();
         $user = User::create($input);
+        // $user->roles()->attach($role);
         $success['token'] =  $user->createToken('MyApp')->accessToken;
         $success['first_name'] =  $user->name;
 
@@ -110,6 +113,9 @@ class RegisterController extends BaseController
         if (Auth::attempt($credentials)) {
 
             $user = User::where('email', $request->email)->first();
+            // $user = User::with('roles')->where('email', $request->email)->first();
+            // return $user;
+            // if($user->isVerified && $user->roles[0]->name == $request->role);
             if($user->isVerified){
                 $success['token'] =  $user->createToken('New token')->accessToken;
 

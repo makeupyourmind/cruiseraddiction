@@ -42,4 +42,10 @@ class User extends Authenticatable
     {
         return $this->hasOne('App\VerificationToken');
     }
+
+    public function roles()
+    {
+        return $this->belongsToMany('App\Model\Role');
+    }
+
 }
