@@ -56,6 +56,7 @@ class GetPriceList extends Command
 
         $writedTime = Storage::get('GetPriceList.txt');
         if($time == $writedTime){
+            echo "Get price is done. Files time is equal".date('Y/m/d H:i:s')."\n";
             return;
         }
         Storage::put('GetPriceList.txt', $time);   
@@ -211,6 +212,6 @@ class GetPriceList extends Command
                     parts.full_part_number = parts_tmp.part_fits");
 
         $req3 =  DB::connection()->getpdo()->exec("DELETE FROM parts WHERE LOWER(brand_name) NOT IN ('koyo', 'toyo', 'taiho', 'nsk', 'hkt', 'mitsuboshi', 'ntn', 'aisin', 'valeo', 'shimahide', '555', 'toyota')");
-
+        echo "Get price is done.Successfully".date('Y/m/d H:i:s')."\n";
     }
 }
