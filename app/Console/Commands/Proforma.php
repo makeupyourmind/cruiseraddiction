@@ -63,7 +63,13 @@ class Proforma extends Command
                     $most_recent = $key;
                 }
             }
-            $max = $dates[$most_recent];
+            if(!empty($dates)){
+                $max = $dates[$most_recent];
+            }
+            else{
+                echo "Parsing of Proforma is done. Email was not received";
+                return;
+            }
             $exists = Storage::disk('local')->exists('ProformaTime.txt');
             if(!$exists){
                 Storage::disk('local')->put('ProformaTime.txt', 'Contents');
@@ -227,6 +233,6 @@ class Proforma extends Command
                 }
             }
         }
-        echo "Parsing of Proforma done";
+        echo "Parsing of Proforma is done";
     }
 }
