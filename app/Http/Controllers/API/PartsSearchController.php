@@ -19,7 +19,7 @@ class PartsSearchController extends BaseController
             return $this->sendError('Validation Error.', $validator->errors());
         }
     
-        //$partNums = explode(',', str_replace(" ", '', $request->partNumber));
+    //     $partNums = explode(',', str_replace(" ", '', $request->partNumber));
     //     $partsList = array();
     //     for($i = 0; $i < count($partNums); $i++) {
 	//     ////$parts = Part::where('part_number', trim($partNums[$i]))->get()->toArray();
@@ -67,25 +67,18 @@ class PartsSearchController extends BaseController
         for($i = 0; $i < count($partNums); $i++) {
             $part_number = str_replace("-", '', str_replace('"', '', str_replace("'", '',$partNums[$i])));
             $parts = Part::where('part_number', $part_number)->get();
+            $partsList[$i]['brand_name'] = $parts[0]->brand_name;
+            $partsList[$i]['part_number'] = $parts[0]->part_number;
+            $partsList[$i]['description_english'] = $parts[0]->description_english;
+            $partsList[$i]['weight_physical'] = $parts[0]->weight_physical;
+            $partsList[$i]['images'] = $parts[0]->images;
             for($j = 0; $j < count($parts); $j++){
-                $object = new \stdClass();
-                $object->brand_name = $parts[$j]->brand_name;
-                $object->part_number = $parts[$j]->part_number;
-                $object->description_english = $parts[$j]->description_english;
-                $object->weight_physical = $parts[$j]->weight_physical;
-                $object->images = $parts[$j]->images;
-                $object->data = [];
-                $data = new \stdClass();
-                $data->warehouses = $parts[$j]->warehouse;
-                $data->available = $parts[$j]->qty;
-                $data->prices = $parts[$j]->price;
-                $data->unique_hashes = $parts[$j]->unique_hash;
-                array_push($object->data, $data);
-                array_push($partsList, $object);
+                $partsList[$i]['data'][$j]['warehouses'] = $parts[$j]->warehouse;
+                $partsList[$i]['data'][$j]['available'] = $parts[$j]->qty;
+                $partsList[$i]['data'][$j]['prices'] = $parts[$j]->price;
+                $partsList[$i]['data'][$j]['unique_hashes'] = $parts[$j]->unique_hash;
             }
         }
-// dd($partsList);
-	//}
         return response()->json($partsList, 200);
     }
 

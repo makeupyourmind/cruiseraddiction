@@ -23,7 +23,6 @@ Route::group([
     Route::post('resetPassword', 'ResetPasswordController@resetPassword');
 
     Route::post('parts-search', 'PartsSearchController@index');
-    Route::get('parts-search1', 'PartsSearchController@index');
 
     Route::post('parts', 'PartsController@show');
     Route::get('parts', 'PartsController@index');
