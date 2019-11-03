@@ -76,6 +76,7 @@ class Proforma extends Command
             }
             $writedTime = Storage::get('ProformaTime.txt');
             if($max == $writedTime){
+                echo "Parsing of Proforma is done. Files time is equal";
                 return;
             }
             Storage::put('ProformaTime.txt', $max); 
