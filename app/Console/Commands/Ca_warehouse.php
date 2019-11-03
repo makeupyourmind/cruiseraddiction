@@ -72,6 +72,6 @@ class Ca_warehouse extends Command
                 }
             }
         }
-        echo 'Done';
+        echo "Ok. Done".date('Y/m/d H:i:s')."\n";
     }
 }

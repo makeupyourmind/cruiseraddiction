@@ -73,6 +73,6 @@ class EbayOrdersItems extends Command
                 $find->update(['qty' => $find->qty - $ebay_order_item->QuantityPurchased ]);
             }
         }
-        echo 'Ebay Done';
+        echo "Ebay Done : ".date('Y/m/d H:i:s')."\n";
     }
 }
