@@ -67,7 +67,7 @@ class Proforma extends Command
                 $max = $dates[$most_recent];
             }
             else{
-                echo "Parsing of Proforma is done. Email was not received".date('Y/m/d H:i:s')."\n";
+                echo "Parsing of Proforma is done. Email was not received ".date('Y/m/d H:i:s')."\n";
                 return;
             }
             $exists = Storage::disk('local')->exists('ProformaTime.txt');
@@ -76,7 +76,7 @@ class Proforma extends Command
             }
             $writedTime = Storage::get('ProformaTime.txt');
             if($max == $writedTime){
-                echo "Parsing of Proforma is done. Files time is equal".date('Y/m/d H:i:s')."\n";
+                echo "Parsing of Proforma is done. Files time is equal ".date('Y/m/d H:i:s')."\n";
                 return;
             }
             Storage::put('ProformaTime.txt', $max); 
@@ -234,6 +234,6 @@ class Proforma extends Command
                 }
             }
         }
-        echo "Parsing of Proforma is done. Successfully".date('Y/m/d H:i:s')."\n";
+        echo "Parsing of Proforma is done. Successfully ".date('Y/m/d H:i:s')."\n";
     }
 }
