@@ -44,7 +44,7 @@ class GetPriceList extends Command
     public function handle()
     {
         //$files = Storage::disk('ftp')->files('CANLON+CPT+Emirates+USD+Cashless payment+Delivery not included in prices+MULTIBRAND.txt', true);
-        echo "Get price parser is started ".date('Y/m/d H:i:s')."\n";
+        date_default_timezone_set('Canada/Eastern');
         $file = 'CANLON+CPT+Emirates+USD+Cashless payment+Delivery not included in prices+MULTIBRAND.txt';
         $contents = Storage::disk('ftp')->get($file);
         $time = Storage::disk('ftp')->lastModified($file);

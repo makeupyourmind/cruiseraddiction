@@ -40,6 +40,7 @@ class GmailApi extends Command
      */
     public function handle()
     {
+	date_default_timezone_set('Canada/Eastern');
 	$client = new \GuzzleHttp\Client();
 
     	$tokenRequest = $client->get('http://91.228.236.253:32853/cruiser_gmail/quickstart.php');
@@ -98,6 +99,6 @@ class GmailApi extends Command
 	    }
 	    die();
 	}
-
+		echo "Gmail is done : ".date('Y/m/d H:i:s')."\n"; 
     }
 }

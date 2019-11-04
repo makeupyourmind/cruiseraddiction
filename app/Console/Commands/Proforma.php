@@ -40,7 +40,7 @@ class Proforma extends Command
      */
     public function handle()
     {
-
+        date_default_timezone_set('Canada/Eastern');
         $hostname = env("IMAP_HOSTNAME");
         $username = env("IMAP_USERNAME");
         $password = env("IMAP_PASSWORD");
