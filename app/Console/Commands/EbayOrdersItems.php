@@ -70,9 +70,18 @@ class EbayOrdersItems extends Command
                 'OrderLineItemID' => $ebay_order_item->OrderLineItemID,
                 'OrderId' => $ebay_order_item->OrderId
             ]);
+            $Order_details = DB::connection('sqlsrv')->select("SELECT BrandId FROM Parts WHERE PartNumber = '$ebay_order_item->SKU'");
+            if(count($Order_details) > 0){
+                $idBrand = $Order_details[0]->BrandId;
+                $brand = DB::connection('sqlsrv')->select("SELECT BrandName FROM Brands WHERE id = $idBrand");
+                $BrandName = $brand[0]->BrandName;
+            }else{
+                $BrandName = "TOYOTA";
+            }
             $find = Part::where([
                                     ['part_number', str_replace("-", "",$ebay_order_item->SKU)],
-                                    ['warehouse', 'canada']
+                                    ['warehouse', 'canada'],
+                                    ['brand_name', $BrandName]
                                 ])->first();
             if($find){
                 $find->update(['qty' => $find->qty - $ebay_order_item->QuantityPurchased ]);

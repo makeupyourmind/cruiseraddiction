@@ -140,7 +140,26 @@ class RegisterController extends BaseController
     }
 
     public function test(){
-
+        $Ebay_Orders_Items = DB::connection('sqlsrv')
+                ->select("SELECT * FROM Ebay_Orders_Items");
+        // $Ebay_Orders_Items = DB::connection('sqlsrv')->select("SELECT * FROM Ebay_Orders_Items");
+        foreach($Ebay_Orders_Items as $ebay_order_item){
+            $Order_details = DB::connection('sqlsrv')->select("SELECT BrandId FROM Parts WHERE PartNumber = '$ebay_order_item->SKU'");
+            if(count($Order_details) > 0){
+                $idBrand = $Order_details[0]->BrandId;
+                $brand = DB::connection('sqlsrv')->select("SELECT BrandName FROM Brands WHERE id = $idBrand");
+                $BrandName = $brand[0]->BrandName;
+            }else{
+                $BrandName = "TOYOTA";
+                print json_encode("TOYOTA");
+            }
+            // print json_encode($Order_details[0]->BrandId);
+            // $idBrand = $Order_details[0]->BrandId;
+            // $brand = DB::connection('sqlsrv')->select("SELECT BrandName FROM Brands WHERE id = $idBrand");
+            // print json_encode($brand[0]->BrandName);
+            die();
+        }
+        
         // $hostname = env("IMAP_HOSTNAME");
         // $username = env("IMAP_USERNAME");
         // $password = env("IMAP_PASSWORD");
