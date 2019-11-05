@@ -38,6 +38,8 @@ class UsaImport extends Command
      */
     public function handle()
     {
+        date_default_timezone_set('Canada/Eastern');
+        echo "UsaImport parser is started : ".date('Y/m/d H:i:s')."\n";
 	$path = base_path('resources/import_csv/TOYOTA_COMPLETE_tab.csv');
         $data   = array_map(function($datas) { return str_getcsv($datas,"\t"); }, file($path));
         foreach($data as $row) {
@@ -48,5 +50,6 @@ class UsaImport extends Command
             $inputs = ['part_number' => $txt ,'full_part_number' => $row[0], 'description_english' => $row[1], 'price' => $row[2], 'brand_name' => 'TOYOTA', 'qty' => 1, 'warehouse' => 'usa', 'unique_hash' => $uniqueHash];
             $part = Part::create($inputs);
         }
+        echo "Ebay parser is done. Successfully : ".date('Y/m/d H:i:s')."\n";
     }
 }

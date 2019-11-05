@@ -41,6 +41,7 @@ class Proforma extends Command
     public function handle()
     {
         date_default_timezone_set('Canada/Eastern');
+        echo "Parsing of Proforma is started. ".date('Y/m/d H:i:s')."\n";
         $hostname = env("IMAP_HOSTNAME");
         $username = env("IMAP_USERNAME");
         $password = env("IMAP_PASSWORD");
@@ -76,7 +77,7 @@ class Proforma extends Command
             }
             $writedTime = Storage::get('ProformaTime.txt');
             if($max == $writedTime){
-                echo "Parsing of Proforma is done. Files time is equal ".date('Y/m/d H:i:s')."\n";
+                echo "Parsing of Proforma is done. Files time is equal. New email was not received ".date('Y/m/d H:i:s')."\n";
                 return;
             }
             Storage::put('ProformaTime.txt', $max); 

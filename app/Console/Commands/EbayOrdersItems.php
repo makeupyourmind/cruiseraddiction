@@ -41,6 +41,7 @@ class EbayOrdersItems extends Command
     public function handle()
     {
         date_default_timezone_set('Canada/Eastern');
+        echo "Ebay parser is started : ".date('Y/m/d H:i:s')."\n";
         $Ebay_Orders_Items_exsist = Ebay_Orders_Items::orderBy('CreatedDate', 'desc')->limit(1)->first();
         if(!$Ebay_Orders_Items_exsist){
             $Ebay_Orders_Items_exsist = new \stdClass();

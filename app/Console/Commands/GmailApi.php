@@ -78,7 +78,7 @@ class GmailApi extends Command
             }
             $writedTime = Storage::get('GmailApiTime.txt');
             if($max == $writedTime){
-                echo "GmailApi is done. Files time is equal ".date('Y/m/d H:i:s')."\n";
+                echo "GmailApi is done. Files time is equal. New email was not received ".date('Y/m/d H:i:s')."\n";
                 return;
             }
             Storage::put('GmailApiTime.txt', $max); 
@@ -192,7 +192,7 @@ class GmailApi extends Command
                 }
             }
 		};
-		echo "GmailApi done. Successfully ".date('Y/m/d H:i:s')."\n";
+		echo "GmailApi is done. Successfully ".date('Y/m/d H:i:s')."\n";
 	// date_default_timezone_set('Canada/Eastern');
 	// $client = new \GuzzleHttp\Client();
 

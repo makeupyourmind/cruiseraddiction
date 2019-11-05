@@ -40,6 +40,7 @@ class Ca_warehouse extends Command
     public function handle()
     {
         date_default_timezone_set('Canada/Eastern');
+        echo "Ca_warehouse is started. ".date('Y/m/d H:i:s')."\n";
         $data = Excel::toCollection(null, 'CA_WAREHOUSE.xlsx', 'local');
         Part::where('warehouse', 'canada')->delete();
         if(count((array)$data) > 0 ){
