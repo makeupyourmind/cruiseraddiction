@@ -140,25 +140,23 @@ class RegisterController extends BaseController
     }
 
     public function test(){
-        $Ebay_Orders_Items = DB::connection('sqlsrv')
-                ->select("SELECT * FROM Ebay_Orders_Items");
-        // $Ebay_Orders_Items = DB::connection('sqlsrv')->select("SELECT * FROM Ebay_Orders_Items");
-        foreach($Ebay_Orders_Items as $ebay_order_item){
-            $Order_details = DB::connection('sqlsrv')->select("SELECT BrandId FROM Parts WHERE PartNumber = '$ebay_order_item->SKU'");
-            if(count($Order_details) > 0){
-                $idBrand = $Order_details[0]->BrandId;
-                $brand = DB::connection('sqlsrv')->select("SELECT BrandName FROM Brands WHERE id = $idBrand");
-                $BrandName = $brand[0]->BrandName;
-            }else{
-                $BrandName = "TOYOTA";
-                print json_encode("TOYOTA");
-            }
-            // print json_encode($Order_details[0]->BrandId);
-            // $idBrand = $Order_details[0]->BrandId;
-            // $brand = DB::connection('sqlsrv')->select("SELECT BrandName FROM Brands WHERE id = $idBrand");
-            // print json_encode($brand[0]->BrandName);
-            die();
+        $Ebay_Orders_Items_exsist = Ebay_Orders_Items::orderBy('CreatedDate', 'desc')->limit(1)->first();
+        if(!$Ebay_Orders_Items_exsist){
+            $Ebay_Orders_Items_exsist = new \stdClass();
+            $Ebay_Orders_Items_exsist->CreatedDate = null;
         }
+        $Ebay_Orders_Items = DB::connection('sqlsrv')
+                ->select("SELECT * FROM Ebay_Orders_Items WHERE CreatedDate = 5 ");
+        // $Ebay_Orders_Items = DB::connection('sqlsrv')->select("SELECT * FROM Ebay_Orders_Items");
+        if(count($Ebay_Orders_Items) > 0){
+            foreach($Ebay_Orders_Items as $ebay_order_item){
+                print json_encode($ebay_order_item);
+            }
+        }
+        else{
+            echo 'not found';
+        }
+        echo 'done';
         
         // $hostname = env("IMAP_HOSTNAME");
         // $username = env("IMAP_USERNAME");
@@ -282,39 +280,39 @@ class RegisterController extends BaseController
 
         // } 
         // imap_close($inbox);
-        $data = Excel::toCollection(null, 'GmailApi.xls', 'local');
-        if(count((array)$data) > 0 ){
-            Attachment::truncate();
-            foreach($data->toArray() as $key => $value){
-                foreach($value as $row){
-                    if($row[0] != "ДАТА ЗАКАЗА"){
-                        if(substr_count($row[19], 'ОТГРУЗИЛИ') > 0){
-                            $statusId = 3;
-                        }
-                        else if(substr_count($row[19], 'НЕТ') > 0){
-                            $statusId = 4;
-                        }
-                        else if(substr_count($row[19], 'ЗАКУПЛЕНО') > 0){
-                            $statusId = 2;
-                        }
-                        else if(substr_count($row[19], 'В_РАБОТЕ') > 0){
-                            $statusId = 1;
-                        }else{
-                            $statusId = 0;
-                        }
-                        $newAttachmentData = [
-                            'client_column_one' => $row[5],
-                            'client_column_two' => $row[6],
-                            'artikul'	        => $row[13],
-                            'status'		=> $row[19], 
-                            'order_date'	=> $row[0],
-                            'status_id'		=> $statusId
-                        ];
-                        Attachment::create($newAttachmentData);
-                    }
-                }
-            }
-        };
+        // $data = Excel::toCollection(null, 'GmailApi.xls', 'local');
+        // if(count((array)$data) > 0 ){
+        //     Attachment::truncate();
+        //     foreach($data->toArray() as $key => $value){
+        //         foreach($value as $row){
+        //             if($row[0] != "ДАТА ЗАКАЗА"){
+        //                 if(substr_count($row[19], 'ОТГРУЗИЛИ') > 0){
+        //                     $statusId = 3;
+        //                 }
+        //                 else if(substr_count($row[19], 'НЕТ') > 0){
+        //                     $statusId = 4;
+        //                 }
+        //                 else if(substr_count($row[19], 'ЗАКУПЛЕНО') > 0){
+        //                     $statusId = 2;
+        //                 }
+        //                 else if(substr_count($row[19], 'В_РАБОТЕ') > 0){
+        //                     $statusId = 1;
+        //                 }else{
+        //                     $statusId = 0;
+        //                 }
+        //                 $newAttachmentData = [
+        //                     'client_column_one' => $row[5],
+        //                     'client_column_two' => $row[6],
+        //                     'artikul'	        => $row[13],
+        //                     'status'		=> $row[19], 
+        //                     'order_date'	=> $row[0],
+        //                     'status_id'		=> $statusId
+        //                 ];
+        //                 Attachment::create($newAttachmentData);
+        //             }
+        //         }
+        //     }
+        // };
         // $data = Excel::toCollection(null, 'CA_WAREHOUSE.xlsx', 'local');
         // Part::where('warehouse', 'canada')->delete();
         // if(count((array)$data) > 0 ){
