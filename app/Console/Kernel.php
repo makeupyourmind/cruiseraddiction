@@ -33,11 +33,11 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')
         //          ->hourly();
         $schedule->command("get:pricelist")
-                 ->daily()->between('4:00', '12:00');
+                 ->daily()->hourly()->between('4:00', '12:00');
         $schedule->command("get:gmail")
                  ->daily();
-        $schedule->command("upload:images")
-                 ->daily();
+        // $schedule->command("upload:images")
+        //          ->daily();
         // $schedule->command("import:usa")
         //          ->daily();
         $schedule->command('parse:proforma')

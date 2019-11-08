@@ -40,7 +40,8 @@ class Proforma extends Command
      */
     public function handle()
     {
-
+        date_default_timezone_set('Canada/Eastern');
+        echo "Parsing of Proforma is started. ".date('Y/m/d H:i:s')."\n";
         $hostname = env("IMAP_HOSTNAME");
         $username = env("IMAP_USERNAME");
         $password = env("IMAP_PASSWORD");
@@ -63,13 +64,20 @@ class Proforma extends Command
                     $most_recent = $key;
                 }
             }
-            $max = $dates[$most_recent];
+            if(!empty($dates)){
+                $max = $dates[$most_recent];
+            }
+            else{
+                echo "Parsing of Proforma is done. Email was not received ".date('Y/m/d H:i:s')."\n";
+                return;
+            }
             $exists = Storage::disk('local')->exists('ProformaTime.txt');
             if(!$exists){
                 Storage::disk('local')->put('ProformaTime.txt', 'Contents');
             }
             $writedTime = Storage::get('ProformaTime.txt');
             if($max == $writedTime){
+                echo "Parsing of Proforma is done. Files time is equal. New email was not received ".date('Y/m/d H:i:s')."\n";
                 return;
             }
             Storage::put('ProformaTime.txt', $max); 
@@ -227,6 +235,6 @@ class Proforma extends Command
                 }
             }
         }
-        echo "Parsing of Proforma done";
+        echo "Parsing of Proforma is done. Successfully ".date('Y/m/d H:i:s')."\n";
     }
 }

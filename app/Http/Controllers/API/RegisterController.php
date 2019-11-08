@@ -20,6 +20,8 @@ use Excel;
 use Storage;
 use DB;
 use App\Model\Ebay_Orders_Items;
+use App\Model\Role;
+use App\Model\Attachment;
 
 class RegisterController extends BaseController
 {
@@ -45,7 +47,9 @@ class RegisterController extends BaseController
 
         $input = $request->all();
         $input['password'] = bcrypt($input['password']);
+        // $role = Role::where('name', $request->role)->first();
         $user = User::create($input);
+        // $user->roles()->attach($role);
         $success['token'] =  $user->createToken('MyApp')->accessToken;
         $success['first_name'] =  $user->name;
 
@@ -110,13 +114,16 @@ class RegisterController extends BaseController
         if (Auth::attempt($credentials)) {
 
             $user = User::where('email', $request->email)->first();
+            // $user = User::with('roles')->where('email', $request->email)->first();
+            // return $user;
+            // if($user->isVerified && $user->roles[0]->name == $request->role);
             if($user->isVerified){
                 $success['token'] =  $user->createToken('New token')->accessToken;
 
                 return $this->sendResponse($success, 'User authorized successfully.');
             }
             else{
-                return $this->sendError('You did not confirm mail.', '', 400);
+                return $this->sendError('You did not confirm email.', '', 400);
             }
             
         }
@@ -133,40 +140,212 @@ class RegisterController extends BaseController
     }
 
     public function test(){
-
-        $data = Excel::toCollection(null, 'CA_WAREHOUSE.xlsx', 'local');
-        Part::where('warehouse', 'canada')->delete();
-        if(count((array)$data) > 0 ){
-            foreach($data->toArray() as $key => $value){
-                foreach($value as $row){
-                    if($row[0] != "BRAND" ){
-                        $part_another_warehouse = Part::where('part_number', str_replace("-", "", $row[2]))->first();
-                        if($part_another_warehouse){
-                            $weight_physical = $part_another_warehouse->weight_physical;
-                            $weight_volumetric = $part_another_warehouse->weight_volumetric;
-                        }
-                        else{
-                            $weight_physical = null;
-                            $weight_volumetric = null;
-                        }
-                        $uniqueHash = md5(rand().$row[0].$row[2]."canada");
-                        Part::create([
-                            'brand_name' => $row[0],
-                            'description_full' => $row[1],
-                            'part_number' => str_replace("-", "", $row[2]),
-                            'full_part_number' => $row[2],
-                            'qty' => $row[3],
-                            'price' => $row[4],
-                            'warehouse' => 'canada',
-                            'unique_hash' => $uniqueHash,
-                            'weight_physical' => $weight_physical,
-                            'weight_volumetric' => $weight_volumetric
-                        ]);
-                    }
-                }
+        $Ebay_Orders_Items_exsist = Ebay_Orders_Items::orderBy('CreatedDate', 'desc')->limit(1)->first();
+        if(!$Ebay_Orders_Items_exsist){
+            $Ebay_Orders_Items_exsist = new \stdClass();
+            $Ebay_Orders_Items_exsist->CreatedDate = null;
+        }
+        $Ebay_Orders_Items = DB::connection('sqlsrv')
+                ->select("SELECT * FROM Ebay_Orders_Items WHERE CreatedDate = 5 ");
+        // $Ebay_Orders_Items = DB::connection('sqlsrv')->select("SELECT * FROM Ebay_Orders_Items");
+        if(count($Ebay_Orders_Items) > 0){
+            foreach($Ebay_Orders_Items as $ebay_order_item){
+                print json_encode($ebay_order_item);
             }
         }
-        return 'ok';
+        else{
+            echo 'not found';
+        }
+        echo 'done';
+        
+        // $hostname = env("IMAP_HOSTNAME");
+        // $username = env("IMAP_USERNAME");
+        // $password = env("IMAP_PASSWORD");
+        // $inbox = imap_open($hostname,$username,$password) or die('Cannot connect to Gmail: ' . imap_last_error());
+        // $emails = imap_search($inbox,'ALL');
+        // $dates = [];
+        // $most_recent = 0;
+        // if($emails) {
+        //     //rsort($emails);
+        //     foreach($emails as $email_number) 
+        //     {
+        //         $overview = imap_fetch_overview($inbox,$email_number,0);
+        //         // print_r(iconv_mime_decode($overview, "UTF-8"));
+        //         // $pos = strpos($overview[0]->subject, "Proforma");
+        //         // if($pos !== false){
+        //         //     array_push($dates, $overview[0]->date);
+        //         // }
+        //     }
+        //     // foreach($dates as $key => $date){
+        //     //     if( strtotime($date) < strtotime('now') && strtotime($date) > strtotime($dates[$most_recent]) ){
+        //     //         $most_recent = $key;
+        //     //     }
+        //     // }
+        //     // if(!empty($dates)){
+        //     //     $max = $dates[$most_recent];
+        //     // }
+        //     // else{
+        //     //     echo "Parsing of Proforma is done. Email was not received ".date('Y/m/d H:i:s')."\n";
+        //     //     return;
+        //     // }
+        //     // $exists = Storage::disk('local')->exists('ProformaTime.txt');
+        //     // if(!$exists){
+        //     //     Storage::disk('local')->put('ProformaTime.txt', 'Contents');
+        //     // }
+        //     // $writedTime = Storage::get('ProformaTime.txt');
+        //     // if($max == $writedTime){
+        //     //     echo "Parsing of Proforma is done. Files time is equal ".date('Y/m/d H:i:s')."\n";
+        //     //     return;
+        //     // }
+        //     // Storage::put('ProformaTime.txt', $max); 
+        //     foreach($emails as $email_number) 
+        //     {
+        //         $overview = imap_fetch_overview($inbox,$email_number,0);
+        //         // print json_encode(imap_mime_header_decode($overview[0]->subject));
+        //         // print_r($overview[0]->subject);
+        //         // print_r(iconv_mime_decode($overview[0]->subject,
+        //         // 0, "ISO-8859-1"));
+        //         $message = imap_fetchbody($inbox,$email_number,2);
+
+        //         $structure = imap_fetchstructure($inbox, $email_number);
+
+        //         $attachments = array();
+
+        //         if(isset($structure->parts) && count($structure->parts)) 
+        //         {
+        //             for($i = 0; $i < count($structure->parts); $i++) 
+        //             {
+        //                 $attachments[$i] = array(
+        //                     'is_attachment' => false,
+        //                     'filename' => '',
+        //                     'name' => '',
+        //                     'attachment' => '',
+        //                     'date' => $overview[0]->date,
+        //                     'subject' => $overview[0]->subject
+        //                 );
+
+        //                 if($structure->parts[$i]->ifdparameters) 
+        //                 {
+        //                     foreach($structure->parts[$i]->dparameters as $object) 
+        //                     {
+        //                         if(strtolower($object->attribute) == 'filename') 
+        //                         {
+        //                             $attachments[$i]['is_attachment'] = true;
+        //                             $attachments[$i]['filename'] = $object->value;
+        //                         }
+        //                     }
+        //                 }
+
+        //                 if($structure->parts[$i]->ifparameters) 
+        //                 {
+        //                     foreach($structure->parts[$i]->parameters as $object) 
+        //                     {
+        //                         if(strtolower($object->attribute) == 'name') 
+        //                         {
+        //                             $attachments[$i]['is_attachment'] = true;
+        //                             $attachments[$i]['name'] = $object->value;
+        //                         }
+        //                     }
+        //                 }
+
+        //                 if($attachments[$i]['is_attachment']) 
+        //                 {
+        //                     $attachments[$i]['attachment'] = imap_fetchbody($inbox, $email_number, $i+1);
+
+        //                     if($structure->parts[$i]->encoding == 3) 
+        //                     { 
+        //                         $attachments[$i]['attachment'] = base64_decode($attachments[$i]['attachment']);
+        //                     }
+        //                     elseif($structure->parts[$i]->encoding == 4) 
+        //                     { 
+        //                         $attachments[$i]['attachment'] = quoted_printable_decode($attachments[$i]['attachment']);
+        //                     }
+        //                 }
+        //             }
+        //         }
+
+        //         foreach($attachments as $attachment)
+        //         {
+        //             //print_r($attachment["subject"]);
+        //             $pos = strpos($attachment["subject"], "Orders");
+        //             if($pos === false){
+        //                 // print json_encode($attachment['attachment']);
+        //                 $dst = '../storage/app/GmailApi.xls';
+        //                 $fp = fopen($dst, "w+");
+        //                 fwrite($fp, $attachment['attachment']);
+        //                 fclose($fp);
+        //             }
+        //         }
+        //     }
+
+        // } 
+        // imap_close($inbox);
+        // $data = Excel::toCollection(null, 'GmailApi.xls', 'local');
+        // if(count((array)$data) > 0 ){
+        //     Attachment::truncate();
+        //     foreach($data->toArray() as $key => $value){
+        //         foreach($value as $row){
+        //             if($row[0] != "ДАТА ЗАКАЗА"){
+        //                 if(substr_count($row[19], 'ОТГРУЗИЛИ') > 0){
+        //                     $statusId = 3;
+        //                 }
+        //                 else if(substr_count($row[19], 'НЕТ') > 0){
+        //                     $statusId = 4;
+        //                 }
+        //                 else if(substr_count($row[19], 'ЗАКУПЛЕНО') > 0){
+        //                     $statusId = 2;
+        //                 }
+        //                 else if(substr_count($row[19], 'В_РАБОТЕ') > 0){
+        //                     $statusId = 1;
+        //                 }else{
+        //                     $statusId = 0;
+        //                 }
+        //                 $newAttachmentData = [
+        //                     'client_column_one' => $row[5],
+        //                     'client_column_two' => $row[6],
+        //                     'artikul'	        => $row[13],
+        //                     'status'		=> $row[19], 
+        //                     'order_date'	=> $row[0],
+        //                     'status_id'		=> $statusId
+        //                 ];
+        //                 Attachment::create($newAttachmentData);
+        //             }
+        //         }
+        //     }
+        // };
+        // $data = Excel::toCollection(null, 'CA_WAREHOUSE.xlsx', 'local');
+        // Part::where('warehouse', 'canada')->delete();
+        // if(count((array)$data) > 0 ){
+        //     foreach($data->toArray() as $key => $value){
+        //         foreach($value as $row){
+        //             if($row[0] != "BRAND" ){
+        //                 $part_another_warehouse = Part::where('part_number', str_replace("-", "", $row[2]))->first();
+        //                 if($part_another_warehouse){
+        //                     $weight_physical = $part_another_warehouse->weight_physical;
+        //                     $weight_volumetric = $part_another_warehouse->weight_volumetric;
+        //                 }
+        //                 else{
+        //                     $weight_physical = null;
+        //                     $weight_volumetric = null;
+        //                 }
+        //                 $uniqueHash = md5(rand().$row[0].$row[2]."canada");
+        //                 Part::create([
+        //                     'brand_name' => $row[0],
+        //                     'description_full' => $row[1],
+        //                     'part_number' => str_replace("-", "", $row[2]),
+        //                     'full_part_number' => $row[2],
+        //                     'qty' => $row[3],
+        //                     'price' => $row[4],
+        //                     'warehouse' => 'canada',
+        //                     'unique_hash' => $uniqueHash,
+        //                     'weight_physical' => $weight_physical,
+        //                     'weight_volumetric' => $weight_volumetric
+        //                 ]);
+        //             }
+        //         }
+        //     }
+        // }
+        // return 'ok';
         // $Ebay_Orders_Items_exsist = Ebay_Orders_Items::orderBy('CreatedDate', 'desc')->limit(1)->first();
         // if(!$Ebay_Orders_Items_exsist){
         //     $Ebay_Orders_Items_exsist = new \stdClass();

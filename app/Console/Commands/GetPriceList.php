@@ -44,7 +44,8 @@ class GetPriceList extends Command
     public function handle()
     {
         //$files = Storage::disk('ftp')->files('CANLON+CPT+Emirates+USD+Cashless payment+Delivery not included in prices+MULTIBRAND.txt', true);
-
+        date_default_timezone_set('Canada/Eastern');
+        echo "Get price parser is started ".date('Y/m/d H:i:s')."\n";
         $file = 'CANLON+CPT+Emirates+USD+Cashless payment+Delivery not included in prices+MULTIBRAND.txt';
         $contents = Storage::disk('ftp')->get($file);
         $time = Storage::disk('ftp')->lastModified($file);
@@ -56,6 +57,7 @@ class GetPriceList extends Command
 
         $writedTime = Storage::get('GetPriceList.txt');
         if($time == $writedTime){
+            echo "Get price is done. Files time is equal ".date('Y/m/d H:i:s')."\n";
             return;
         }
         Storage::put('GetPriceList.txt', $time);   
@@ -183,7 +185,7 @@ class GetPriceList extends Command
             $validCsv[] = $row;
 
         }
-        var_dump(count($validCsv));
+        //var_dump(count($validCsv));
         $fp = fopen(storage_path('app/pricelistNew.csv'), 'w');
         foreach($validCsv as $fields) {
             fputcsv($fp, $fields, ';');
@@ -211,6 +213,6 @@ class GetPriceList extends Command
                     parts.full_part_number = parts_tmp.part_fits");
 
         $req3 =  DB::connection()->getpdo()->exec("DELETE FROM parts WHERE LOWER(brand_name) NOT IN ('koyo', 'toyo', 'taiho', 'nsk', 'hkt', 'mitsuboshi', 'ntn', 'aisin', 'valeo', 'shimahide', '555', 'toyota')");
-
+        echo "Get price is done.Successfully ".date('Y/m/d H:i:s')."\n";
     }
 }
