@@ -110,6 +110,9 @@
         <br>
         <div class="master-detail-caption" style="font-weight: bold; color: blue;">Total info</div>
         <div class="total">
+            Order notes : {{user.order_notes}}
+        </div>
+        <div class="total">
             Subtotal : {{getSubtotal}}
         </div>
         <div class="total">

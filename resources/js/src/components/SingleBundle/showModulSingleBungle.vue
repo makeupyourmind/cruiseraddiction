@@ -142,6 +142,16 @@
                         class="w-full mb-6"
                         style="width:100%!important"
                     />
+                    <vs-textarea
+                            name="descriptionFull"
+                            label-placeholder="Part fits"
+                            v-model="moduleStock.fits"
+                            class="w-full mb-6" />
+                    <vs-textarea
+                            name="descriptionFull"
+                            label-placeholder="Important general information"
+                            v-model="moduleStock.important_general"
+                            class="w-full mb-6" />
                     <div class="w-full mb-6">
                         <div style="display: flex; justify-content: space-between; align-items: center">
                             <vs-input
@@ -287,10 +297,14 @@
                 if(this.errorPart) return;
                 const module =  JSON.parse(JSON.stringify(this.moduleStock));
                 this.$store.commit('isNoActive', true);
-                module.part_number ? module.part_number_without_too_much =  module.part_number.replace(/[- )(]/g,'') :null;
+
+                module.full_part_number = module.part_number;
+                module.part_number =  module.part_number.replace(/[- )(]/g,'');
+
                 const current = this.$store.getters['stockCaModule/GET_STOCK_DATA'];
                 const order = this.$store.getters['stockCaModule/GET_DATA_STOCK_ORDER'];
 
+            // .replace(/[\s()-]+/gi, '');
                 if(this.moduleStock.is_bundle) {
                     module.bundle_parts = module.bundle_parts.map(item => {
                         item.stock_qty = item.qty;
