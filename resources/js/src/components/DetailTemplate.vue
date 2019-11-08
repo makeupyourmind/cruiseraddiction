@@ -113,7 +113,7 @@
             Order notes : {{user.order_notes}}
         </div>
         <div class="total">
-            Subtotal : {{getSubtotal}}
+            Subtotal : {{getSubtotal}} {{user.currency}}
         </div>
         <div class="total">
             Shipping : {{shipping.value || 0}}
