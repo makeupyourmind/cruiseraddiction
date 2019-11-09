@@ -36,7 +36,7 @@
                 <dx-data-grid
                         id="grid-container"
                         :show-borders="true"
-                        :data-source="contacts"
+                        :data-source="getData"
                         @rowPrepared="prepered"
                         key-expr="ID"
                 >
@@ -85,7 +85,6 @@
 
             <vs-pagination
                     :total="totalPages"
-                    :max="maxPageNumbers"
                     v-model="currentPage" />
         </vx-card>
     </div>
@@ -139,26 +138,26 @@
                 searchPart:'',
                 searchEmail:'',
                 searchCountry:'',
+                dataPaginate: {}
             }
         },
         computed: {
-            paginationPageSize() {
-                if(this.gridApi) return this.gridApi.paginationGetPageSize();
-                else return 50
-            },
-            totalPages() {
-                if(this.gridApi) return this.gridApi.paginationGetTotalPages() | 0
-                else return 0
-            },
             currentPage: {
                 get() {
-                    if(this.gridApi) return this.gridApi.paginationGetCurrentPage() + 1
-                    else return 1
+                    return this.dataPaginate ? this.dataPaginate.current_page : 1
                 },
                 set(val) {
-                    // this.gridApi.paginationGoToPage(val - 1);TEST
+                    this.getOrders(val)
                 }
-            }
+            },
+
+            getData(){
+                return this.dataPaginate ? this.dataPaginate.data : []
+            },
+
+            totalPages() {
+                return this.dataPaginate ? this.dataPaginate.last_page : 1
+            },
         },
         methods: {
             updateSearchQuery(val) {
@@ -192,10 +191,11 @@
                 if (row.key%2) row.rowElement.style['background'] = 'white';
                 else row.rowElement.style['background'] = '#ebebeb';
             },
-            getOrders(){
-                Orders.getOrders(this.searchPart, this.searchEmail,this.searchCountry )
+            getOrders(page){
+                Orders.getOrders(this.searchPart, this.searchEmail,this.searchCountry,page )
                     .then(res => {
-                        this.contacts = res.body.map((item, index) => {
+                        this.dataPaginate = res.body;
+                        this.dataPaginate.data = this.dataPaginate.data.map((item, index) => {
                             item.order.ID = index;
                             item.order.id = item.id;
                             item.order.date = item.created_at;
@@ -207,7 +207,6 @@
             }
         },
         created() {
-           this.getOrders()
             this.gridApi = this.gridOptions.api;
             this.gridColumnApi = this.gridOptions.columnApi;
         }

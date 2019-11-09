@@ -22,6 +22,11 @@
                     <!--&lt;!&ndash;                    <vs-button class="mb-4 md:mb-0" @click="gridApi.exportDataAsCsv()">Export as CSV</vs-button>&ndash;&gt;-->
                 <!--</div>-->
             </div>
+            <vs-pagination
+                    style="margin-right: 20px"
+                    :total="totalPages"
+                    v-model="currentPage"
+            />
             <ag-grid-vue
                     ref="test"
                     :gridOptions="gridOptions"
@@ -29,7 +34,7 @@
                     style=""
                     :columnDefs="columnDefs"
                     :defaultColDef="defaultColDef"
-                    :rowData="data"
+                    :rowData="getData"
                     rowSelection="multiple"
                     colResizeDefault="shift"
                     :animateRows="true"
@@ -80,7 +85,8 @@
                 contacts: contacts,
                 context: null,
                 timeout:null,
-                data:[]
+                data:[],
+                dataPaginate: {}
             }
         },
 
@@ -137,24 +143,35 @@
         },
         computed: {
 
-            getData() {
-                const store = this.getDataStock;
-                return store ? store.data : []
+            currentPage: {
+                get() {
+                    return this.dataPaginate ? this.dataPaginate.current_page : 1
+                },
+                set(val) {
+                    this.getReviews(val)
+                }
+            },
+
+            getData(){
+                return this.dataPaginate ? this.dataPaginate.data : []
             },
 
             totalPages() {
-                const store = this.getDataStock;
-                return store ? store.last_page : 1
+                return this.dataPaginate ? this.dataPaginate.last_page : 1
             },
 
         },
         methods: {
-            getReviews(){
-                Feedback.get().then(res => this.data = res.body)
+            getReviews(page){
+                Feedback.get(page)
+                    .then(res => {
+                        this.dataPaginate = res.body
+                    })
             }
         },
         mounted() {
-            this.getReviews()
+            // this.currentPage = 1;
+            // this.getReviews()
         },
     }
 

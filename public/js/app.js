@@ -60542,7 +60542,8 @@ __webpack_require__.r(__webpack_exports__);
 
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].use(vue_resource__WEBPACK_IMPORTED_MODULE_2__["default"]);
 window.http = vue__WEBPACK_IMPORTED_MODULE_0__["default"].http;
-vue__WEBPACK_IMPORTED_MODULE_0__["default"].http.options.root = 'http://127.0.0.1:8000/'; // Vuesax Component Framework
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].http.options.root = 'https://back.cruiseraddiction.com/'; //http://127.0.0.1:8000/';
+// Vuesax Component Framework
 
 
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].use(vuesax__WEBPACK_IMPORTED_MODULE_3___default.a); // Theme Configurations
@@ -61474,9 +61475,9 @@ var themeConfig = {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! D:\WORK PROJECT\cruiser_backend\resources\js\app.js */"./resources/js/app.js");
-__webpack_require__(/*! D:\WORK PROJECT\cruiser_backend\resources\sass\app.scss */"./resources/sass/app.scss");
-module.exports = __webpack_require__(/*! D:\WORK PROJECT\cruiser_backend\resources\assets\css\main.css */"./resources/assets/css/main.css");
+__webpack_require__(/*! /home/yarik/cruiser_backend/resources/js/app.js */"./resources/js/app.js");
+__webpack_require__(/*! /home/yarik/cruiser_backend/resources/sass/app.scss */"./resources/sass/app.scss");
+module.exports = __webpack_require__(/*! /home/yarik/cruiser_backend/resources/assets/css/main.css */"./resources/assets/css/main.css");
 
 
 /***/ }),
