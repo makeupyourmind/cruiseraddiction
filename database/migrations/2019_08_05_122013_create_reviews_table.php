@@ -15,11 +15,11 @@ class CreateReviewsTable extends Migration
     {
         Schema::create('reviews', function (Blueprint $table) {
             $table->bigIncrements('id');
-	    $table->integer('order_id');
-	    $table->integer('rate')->default(0);
-	    $table->integer('understanding')->default(0);
-	    $table->integer('recommend')->default(0);
-	    $table->text('comment')->nullable();
+            $table->integer('order_id');
+            $table->integer('rate')->default(0);
+            $table->integer('understanding')->default(0);
+            $table->integer('recommend')->default(0);
+            $table->text('comment')->nullable();
             $table->timestamps();
         });
     }

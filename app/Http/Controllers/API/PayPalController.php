@@ -29,6 +29,7 @@ use App\Model\Customer;
 use App\Model\Price;
 use App\Model\Part;
 use App\Model\Order;
+use App\User;
 
 
 class PayPalController extends Controller
@@ -173,28 +174,70 @@ class PayPalController extends Controller
             $customersOrder = array();
             $customersOrder['user'] = $orderData['user'];
             $customersOrder['amount'] = $amount;
-	    $dataElem = 0;
+            $dataElem = 0;
+            $array = [];
             foreach($orderData['data'] as $partHash) {
                 $partCollection = Part::where('unique_hash', $partHash['unique_hash'])->get(['brand_name', 'part_number', 'warehouse', 'unique_hash', 'price', 'description_english']);
-		$part = $partCollection->firstWhere('unique_hash', $partHash['unique_hash']);
-                Part::where('unique_hash', $partHash['unique_hash'])->decrement('qty', $partHash['count']);
-                $customersOrder['data'][$dataElem]['count'] = $partHash['count'];
-                $customersOrder['data'][$dataElem]['brand_name'] = $part->brand_name;
-		$customersOrder['data'][$dataElem]['part_number_without_too_much']= str_replace(['-', '-'], '', $part->part_number);
-                $customersOrder['data'][$dataElem]['part_number'] = $part->part_number;
-                $customersOrder['data'][$dataElem]['warehouse'] = $part->warehouse;
-                $customersOrder['data'][$dataElem]['price'] = $part->price;
-                $customersOrder['data'][$dataElem]['description_english'] = $part->description_english;
-                $customersOrder['data'][$dataElem]['unique_hash'] = $part->unique_hash;
-		$customersOrder['data'][$dataElem]['client_column_two'] = time().$dataElem;
-		$dataElem++;
+		        $part = $partCollection->firstWhere('unique_hash', $partHash['unique_hash']);
+                // Part::where('unique_hash', $partHash['unique_hash'])->decrement('qty', $partHash['count']);
+                // $customersOrder['data'][$dataElem]['count'] = $partHash['count'];
+                // $customersOrder['data'][$dataElem]['brand_name'] = $part->brand_name;
+		        // $customersOrder['data'][$dataElem]['part_number_without_too_much']= str_replace(['-', '-'], '', $part->part_number);
+                // $customersOrder['data'][$dataElem]['part_number'] = $part->part_number;
+                // $customersOrder['data'][$dataElem]['warehouse'] = $part->warehouse;
+                // $customersOrder['data'][$dataElem]['price'] = $part->price;
+                // $customersOrder['data'][$dataElem]['description_english'] = $part->description_english;
+                // $customersOrder['data'][$dataElem]['unique_hash'] = $part->unique_hash;
+                // $customersOrder['data'][$dataElem]['client_column_two'] = time().$dataElem;
+                $object = new \stdClass();
+                $object->amount = $customersOrder['amount'];
+                $object->brand_name = $part->brand_name;
+                $object->client_column_two = time().$dataElem;
+                $object->count = $partHash['count'];
+                $object->description_english = $part->description_english;
+                $object->part_number = $part->part_number;
+                $object->part_number_without_too_much = str_replace(['-', '-'], '', $part->part_number);
+                $object->price = $part->price;
+                $object->unique_hash = $part->unique_hash;
+                $object->warehouse = $part->warehouse;
+                $object->user_id = $customersOrder['user']['id'];
+                array_push($array, $object);
+		        $dataElem++;
             }
-            $serializedOrder = serialize($customersOrder);
 
-            $newOrder = New Order;
-            $newOrder->order = $serializedOrder;
-            $newOrder->save();
-	    $insertedId = $newOrder->id;
+            $ship = new \stdClass();
+            $ship->create_ac = $customersOrder['user']['create_ac'];
+            $ship->same_address = $customersOrder['user']['same_address'];
+            $ship->shipping = $customersOrder['user']['shipping'];
+            $ship->currency = $customersOrder['user']['currency'];
+            $ship->order_notes = $customersOrder['user']['order_notes'];
+            $newOrder = Order::create([
+                'shipping' => $ship,
+                'amount' => $customersOrder['amount'],
+                'data' => $array,
+                'user_id' => $customersOrder['user']['id']
+            ]);
+            //$user = User::where('id', $customersOrder['user']['id'])->first();
+            // $newOrder = new Order;  
+            // $newOrder->order = 'ff';
+            // $newOrder->amount = $customersOrder['amount'];
+            // $newOrder->data = $array;
+            // $newOrder = [
+            //     'order' => 'fff',
+            //     'amount' => $customersOrder['amount'],
+            //     'data' => $array 
+            // ];
+
+            // $user->orders()->create($newOrder);
+            // $newOrder->users()->associate($user);
+            // $newOrder->save();
+            // $serializedOrder = serialize($customersOrder);
+
+            // $newOrder = New Order;
+            // $newOrder->order = $serializedOrder;
+            // $newOrder->save();
+        // $insertedId = $newOrder->id;
+        $insertedId = $newOrder->id;
 	    $customersOrder['order_id'] = $insertedId;
             return redirect('http://cruiseraddiction.com/final?result='.base64_encode(json_encode($customersOrder)));
         }

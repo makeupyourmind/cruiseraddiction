@@ -187,6 +187,9 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 //
 //
 //
+//
+//
+//
 
 
 
@@ -853,6 +856,12 @@ var render = function() {
         },
         [_vm._v("Total info")]
       ),
+      _vm._v(" "),
+      _c("div", { staticClass: "total" }, [
+        _vm._v(
+          "\n        Order notes : " + _vm._s(_vm.user.order_notes) + "\n    "
+        )
+      ]),
       _vm._v(" "),
       _c("div", { staticClass: "total" }, [
         _vm._v("\n        Subtotal : " + _vm._s(_vm.getSubtotal) + "\n    ")

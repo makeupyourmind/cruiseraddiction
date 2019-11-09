@@ -14,7 +14,7 @@ use Illuminate\Http\Request;
 */
 Route::group([
     'namespace' => 'API'], function () {
-    Route::get('test', 'RegisterController@test');    
+    Route::get('test', 'TestController@test');    
     Route::post('register', 'RegisterController@register');
     Route::get('verifyRegistration', 'RegisterController@verifyRegistration');
     Route::post('login', 'RegisterController@login');
@@ -42,19 +42,6 @@ Route::group([
 
     Route::post('check-email', 'UsersController@checkEmail');
 
-    Route::get('/oauth/gmail', function (){
-	return LaravelGmail::redirect();
-    });
-
-    Route::get('/oauth/gmail/callback', function (){
-	LaravelGmail::makeToken();
-	return redirect()->to('/');
-    });
-
-    Route::get('/oauth/gmail/logout', function (){
-	LaravelGmail::logout(); //It returns exception if fails
-	return redirect()->to('/');
-    });
     Route::get('doc', 'DocumentationController@index');
 });
 // 'middleware' => 'auth:api'
@@ -66,7 +53,6 @@ Route::group([
     Route::post('add-parts', 'PartsController@store');
     Route::put('update-parts', 'PartsController@update');
     Route::delete('delete-parts', 'PartsController@destroy');
-    // Route::get('filter', 'PartsController@filter');
 
     Route::get('user', 'UsersController@show');
     Route::put('user/{id}', 'UsersController@update');

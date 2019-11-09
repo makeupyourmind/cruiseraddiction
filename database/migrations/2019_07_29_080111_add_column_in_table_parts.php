@@ -22,6 +22,8 @@ class AddColumnInTableParts extends Migration
             $table->string('min_stock')->nullable();
             $table->boolean('is_stock_ca')->default(false);
             $table->string('location')->nullable();
+            $table->longText('fits')->nullable();
+            $table->longText('important_general')->nullable();
         });
     }
 

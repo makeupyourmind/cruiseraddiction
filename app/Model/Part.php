@@ -9,7 +9,7 @@ class Part extends Model
     protected $table = 'parts';
 
     protected $fillable = [
-        'part_number', 'description_english', 'weight_physical', 'weight_volumetric', 'brand_name', 'description_full',
+        'part_number','fits', 'important_general', 'description_english', 'weight_physical', 'weight_volumetric', 'brand_name', 'description_full',
         'color', 'is_bundle', 'subst_for', 'qty', 'changedAdministrator', 'price', 'part_fits', 'image', 'warehouse', 'modified_by', 'notes', 'bundle_id', 'bundle_qty',
         'unique_hash', 'is_stock_ca', 'categories', 'tags', 'min_price', 'max_price', 'min_stock', 'location', 'part_number_without_too_much', 'full_part_number'
     ];
@@ -37,4 +37,7 @@ class Part extends Model
         return $this->hasOne('App\Model\SameDataPartBundle', 'bundle_part_id', 'id');
     }
 
+    public function orders(){
+        return $this->belongsToMany('App\Model\Order');
+    }
 }
