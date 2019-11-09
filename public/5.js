@@ -187,6 +187,9 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 //
 //
 //
+//
+//
+//
 
 
 
@@ -360,7 +363,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 
 
  // import "ag-grid-enterprise";
@@ -400,22 +402,24 @@ __webpack_require__.r(__webpack_exports__);
       context: null,
       searchPart: '',
       searchEmail: '',
-      searchCountry: ''
+      searchCountry: '',
+      dataPaginate: {}
     };
   },
   computed: {
-    paginationPageSize: function paginationPageSize() {
-      if (this.gridApi) return this.gridApi.paginationGetPageSize();else return 50;
-    },
-    totalPages: function totalPages() {
-      if (this.gridApi) return this.gridApi.paginationGetTotalPages() | 0;else return 0;
-    },
     currentPage: {
       get: function get() {
-        if (this.gridApi) return this.gridApi.paginationGetCurrentPage() + 1;else return 1;
+        return this.dataPaginate ? this.dataPaginate.current_page : 1;
       },
-      set: function set(val) {// this.gridApi.paginationGoToPage(val - 1);TEST
+      set: function set(val) {
+        this.getOrders(val);
       }
+    },
+    getData: function getData() {
+      return this.dataPaginate ? this.dataPaginate.data : [];
+    },
+    totalPages: function totalPages() {
+      return this.dataPaginate ? this.dataPaginate.last_page : 1;
     }
   },
   methods: {
@@ -456,11 +460,12 @@ __webpack_require__.r(__webpack_exports__);
       if (typeof row.rowIndex == 'undefined') return;
       if (row.key % 2) row.rowElement.style['background'] = 'white';else row.rowElement.style['background'] = '#ebebeb';
     },
-    getOrders: function getOrders() {
+    getOrders: function getOrders(page) {
       var _this2 = this;
 
-      _api_orders__WEBPACK_IMPORTED_MODULE_2__["Orders"].getOrders(this.searchPart, this.searchEmail, this.searchCountry).then(function (res) {
-        _this2.contacts = res.body.map(function (item, index) {
+      _api_orders__WEBPACK_IMPORTED_MODULE_2__["Orders"].getOrders(this.searchPart, this.searchEmail, this.searchCountry, page).then(function (res) {
+        _this2.dataPaginate = res.body;
+        _this2.dataPaginate.data = _this2.dataPaginate.data.map(function (item, index) {
           item.order.ID = index;
           item.order.id = item.id;
           item.order.date = item.created_at;
@@ -472,7 +477,6 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   created: function created() {
-    this.getOrders();
     this.gridApi = this.gridOptions.api;
     this.gridColumnApi = this.gridOptions.columnApi;
   }
@@ -855,7 +859,19 @@ var render = function() {
       ),
       _vm._v(" "),
       _c("div", { staticClass: "total" }, [
-        _vm._v("\n        Subtotal : " + _vm._s(_vm.getSubtotal) + "\n    ")
+        _vm._v(
+          "\n        Order notes : " + _vm._s(_vm.user.order_notes) + "\n    "
+        )
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "total" }, [
+        _vm._v(
+          "\n        Subtotal : " +
+            _vm._s(_vm.getSubtotal) +
+            " " +
+            _vm._s(_vm.user.currency) +
+            "\n    "
+        )
       ]),
       _vm._v(" "),
       _c("div", { staticClass: "total" }, [
@@ -986,7 +1002,7 @@ var render = function() {
                   attrs: {
                     id: "grid-container",
                     "show-borders": true,
-                    "data-source": _vm.contacts,
+                    "data-source": _vm.getData,
                     "key-expr": "ID"
                   },
                   on: { rowPrepared: _vm.prepered },
@@ -1077,7 +1093,7 @@ var render = function() {
           ),
           _vm._v(" "),
           _c("vs-pagination", {
-            attrs: { total: _vm.totalPages, max: _vm.maxPageNumbers },
+            attrs: { total: _vm.totalPages },
             model: {
               value: _vm.currentPage,
               callback: function($$v) {
@@ -1136,8 +1152,8 @@ function () {
 
   _createClass(Orders, null, [{
     key: "getOrders",
-    value: function getOrders(part, email, country) {
-      return window.http.get("api/orders?part=".concat(part, "&email=").concat(email, "&country=").concat(country));
+    value: function getOrders(part, email, country, page) {
+      return window.http.get("api/orders?page=".concat(page, "&part=").concat(part, "&email=").concat(email, "&country=").concat(country));
     }
   }]);
 

@@ -307,8 +307,8 @@ var render = function() {
                               {
                                 name: "validate",
                                 rawName: "v-validate",
-                                value: "required|min:6|max:10",
-                                expression: "'required|min:6|max:10'"
+                                value: "required|min:6|max:20",
+                                expression: "'required|min:6|max:20'"
                               }
                             ],
                             ref: "password",

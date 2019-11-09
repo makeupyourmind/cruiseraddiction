@@ -60542,7 +60542,8 @@ __webpack_require__.r(__webpack_exports__);
 
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].use(vue_resource__WEBPACK_IMPORTED_MODULE_2__["default"]);
 window.http = vue__WEBPACK_IMPORTED_MODULE_0__["default"].http;
-vue__WEBPACK_IMPORTED_MODULE_0__["default"].http.options.root = 'http://127.0.0.1:8000/'; // Vuesax Component Framework
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].http.options.root = 'https://back.cruiseraddiction.com/'; //http://127.0.0.1:8000/';
+// Vuesax Component Framework
 
 
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].use(vuesax__WEBPACK_IMPORTED_MODULE_3___default.a); // Theme Configurations
@@ -60629,7 +60630,7 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
       path: '/',
       name: 'Stock management',
       component: function component() {
-        return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(18), __webpack_require__.e(4), __webpack_require__.e(19), __webpack_require__.e(6)]).then(__webpack_require__.bind(null, /*! ./views/stockManagement.vue */ "./resources/js/src/views/stockManagement.vue"));
+        return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(2), __webpack_require__.e(3), __webpack_require__.e(1), __webpack_require__.e(6)]).then(__webpack_require__.bind(null, /*! ./views/stockManagement.vue */ "./resources/js/src/views/stockManagement.vue"));
       },
       meta: {
         pageTitle: "Stock Management"
@@ -60650,7 +60651,7 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
       path: '/orders',
       name: 'orders',
       component: function component() {
-        return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(18), __webpack_require__.e(3), __webpack_require__.e(19), __webpack_require__.e(5)]).then(__webpack_require__.bind(null, /*! ./views/orders.vue */ "./resources/js/src/views/orders.vue"));
+        return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(2), __webpack_require__.e(4), __webpack_require__.e(1), __webpack_require__.e(5)]).then(__webpack_require__.bind(null, /*! ./views/orders.vue */ "./resources/js/src/views/orders.vue"));
       },
       meta: {
         breadcrumb: [{
@@ -60666,7 +60667,7 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
       path: '/reviews',
       name: 'reviews',
       component: function component() {
-        return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(18), __webpack_require__.e(4), __webpack_require__.e(19), __webpack_require__.e(9)]).then(__webpack_require__.bind(null, /*! ./views/reviews.vue */ "./resources/js/src/views/reviews.vue"));
+        return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(2), __webpack_require__.e(3), __webpack_require__.e(1), __webpack_require__.e(9)]).then(__webpack_require__.bind(null, /*! ./views/reviews.vue */ "./resources/js/src/views/reviews.vue"));
       },
       meta: {
         pageTitle: 'reviews'
@@ -60687,7 +60688,7 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
       path: '/',
       name: 'Stock management',
       component: function component() {
-        return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(18), __webpack_require__.e(4), __webpack_require__.e(19), __webpack_require__.e(6)]).then(__webpack_require__.bind(null, /*! ./views/stockManagement.vue */ "./resources/js/src/views/stockManagement.vue"));
+        return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(2), __webpack_require__.e(3), __webpack_require__.e(1), __webpack_require__.e(6)]).then(__webpack_require__.bind(null, /*! ./views/stockManagement.vue */ "./resources/js/src/views/stockManagement.vue"));
       },
       meta: {
         pageTitle: "Stock Management"
@@ -60708,7 +60709,7 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
       path: '/orders',
       name: 'orders',
       component: function component() {
-        return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(18), __webpack_require__.e(3), __webpack_require__.e(19), __webpack_require__.e(5)]).then(__webpack_require__.bind(null, /*! ./views/orders.vue */ "./resources/js/src/views/orders.vue"));
+        return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(2), __webpack_require__.e(4), __webpack_require__.e(1), __webpack_require__.e(5)]).then(__webpack_require__.bind(null, /*! ./views/orders.vue */ "./resources/js/src/views/orders.vue"));
       },
       meta: {
         breadcrumb: [{
@@ -61474,9 +61475,9 @@ var themeConfig = {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! D:\WORK PROJECT\cruiser_backend\resources\js\app.js */"./resources/js/app.js");
-__webpack_require__(/*! D:\WORK PROJECT\cruiser_backend\resources\sass\app.scss */"./resources/sass/app.scss");
-module.exports = __webpack_require__(/*! D:\WORK PROJECT\cruiser_backend\resources\assets\css\main.css */"./resources/assets/css/main.css");
+__webpack_require__(/*! /home/yarik/cruiser_backend/resources/js/app.js */"./resources/js/app.js");
+__webpack_require__(/*! /home/yarik/cruiser_backend/resources/sass/app.scss */"./resources/sass/app.scss");
+module.exports = __webpack_require__(/*! /home/yarik/cruiser_backend/resources/assets/css/main.css */"./resources/assets/css/main.css");
 
 
 /***/ }),

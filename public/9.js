@@ -87,6 +87,11 @@ var _data_json__WEBPACK_IMPORTED_MODULE_1___namespace = /*#__PURE__*/__webpack_r
 //
 //
 //
+//
+//
+//
+//
+//
 
 
 
@@ -117,7 +122,8 @@ var _data_json__WEBPACK_IMPORTED_MODULE_1___namespace = /*#__PURE__*/__webpack_r
       contacts: _data_json__WEBPACK_IMPORTED_MODULE_1__,
       context: null,
       timeout: null,
-      data: []
+      data: [],
+      dataPaginate: {}
     };
   },
   beforeMount: function beforeMount() {
@@ -164,26 +170,32 @@ var _data_json__WEBPACK_IMPORTED_MODULE_1___namespace = /*#__PURE__*/__webpack_r
     };
   },
   computed: {
+    currentPage: {
+      get: function get() {
+        return this.dataPaginate ? this.dataPaginate.current_page : 1;
+      },
+      set: function set(val) {
+        this.getReviews(val);
+      }
+    },
     getData: function getData() {
-      var store = this.getDataStock;
-      return store ? store.data : [];
+      return this.dataPaginate ? this.dataPaginate.data : [];
     },
     totalPages: function totalPages() {
-      var store = this.getDataStock;
-      return store ? store.last_page : 1;
+      return this.dataPaginate ? this.dataPaginate.last_page : 1;
     }
   },
   methods: {
-    getReviews: function getReviews() {
+    getReviews: function getReviews(page) {
       var _this = this;
 
-      _api_feedback__WEBPACK_IMPORTED_MODULE_6__["Feedback"].get().then(function (res) {
-        return _this.data = res.body;
+      _api_feedback__WEBPACK_IMPORTED_MODULE_6__["Feedback"].get(page).then(function (res) {
+        _this.dataPaginate = res.body;
       });
     }
   },
-  mounted: function mounted() {
-    this.getReviews();
+  mounted: function mounted() {// this.currentPage = 1;
+    // this.getReviews()
   }
 });
 
@@ -293,6 +305,18 @@ var render = function() {
         [
           _c("div"),
           _vm._v(" "),
+          _c("vs-pagination", {
+            staticStyle: { "margin-right": "20px" },
+            attrs: { total: _vm.totalPages },
+            model: {
+              value: _vm.currentPage,
+              callback: function($$v) {
+                _vm.currentPage = $$v
+              },
+              expression: "currentPage"
+            }
+          }),
+          _vm._v(" "),
           _c("ag-grid-vue", {
             ref: "test",
             staticClass: "ag-theme-material w-100 my-4 ag-grid-table",
@@ -300,7 +324,7 @@ var render = function() {
               gridOptions: _vm.gridOptions,
               columnDefs: _vm.columnDefs,
               defaultColDef: _vm.defaultColDef,
-              rowData: _vm.data,
+              rowData: _vm.getData,
               rowSelection: "multiple",
               colResizeDefault: "shift",
               animateRows: true,
@@ -358,8 +382,8 @@ function () {
 
   _createClass(Feedback, null, [{
     key: "get",
-    value: function get() {
-      return window.http.get('api/reviews');
+    value: function get(page) {
+      return window.http.get("api/reviews?page=".concat(page));
     }
   }]);
 
