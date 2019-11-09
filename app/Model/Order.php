@@ -9,12 +9,21 @@ class Order extends Model
     protected $table = 'orders';
 
     protected $fillable = [
-      'order'
+      'shipping', 'amount' ,'data', 'user_id'
+    ];
+
+    protected $casts = [
+      'shipping' => 'array',
+      'data' => 'array'
     ];
 
     protected $with = ['attachments'];
 
     public function attachments() {
-	return $this->hasMany('App\Model\Attachment', 'client_column_one', 'id');
+	    return $this->hasMany('App\Model\Attachment', 'client_column_one', 'id');
+    }
+
+    public function user(){
+      return $this->belongsTo('App\User');
     }
 }

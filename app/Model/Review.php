@@ -8,7 +8,9 @@ class Review extends Model
 {
     protected $table = 'reviews';
 
+    public $timestamps = true;
+
     protected $fillable = [
-	'order_id', 'rate', 'understanding', 'recommend', 'comment'
+	    'order_id', 'rate', 'understanding', 'recommend', 'comment'
     ];
 }

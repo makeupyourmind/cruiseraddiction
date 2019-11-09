@@ -12,10 +12,8 @@ use Mail;
 class UsersController extends BaseController
 {
     public function show() {
-	//return response()->json('lox', 404);
         $user = Auth::user();
         return response()->json($user, 200);
-
     }
 
     public function update(Request $request, $id) {
@@ -106,7 +104,7 @@ class UsersController extends BaseController
     public function checkEmail(Request $request) {
         $validator = Validator::make($request->all(), [
             'email' => 'required|email|unique:users,email',
-	]);
+	    ]);
 
         if($validator->fails()){
             return $this->sendError('Validation Error.', $validator->errors(), 202);

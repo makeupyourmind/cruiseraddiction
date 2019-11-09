@@ -31,7 +31,10 @@ class VerificationToken extends Migration
     public function down()
     {
         //
-        Schema::drop('verification_tokens');
-        Schema::drop('users');
+        // Schema::drop('verification_tokens');
+        // Schema::drop('users');
+        DB::statement('SET FOREIGN_KEY_CHECKS = 0');
+        Schema::dropIfExists('verification_tokens');
+        DB::statement('SET FOREIGN_KEY_CHECKS = 1');
     }
 }
