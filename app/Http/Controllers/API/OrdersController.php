@@ -55,9 +55,12 @@ class OrdersController
 		$page = Input::get('page', 1);
 		$perPage = 15;
 		$offset = ($page * $perPage) - $perPage;
-		//return response()->json($ordersArr);
+		$paginate = [];
+		foreach(array_slice($ordersArr, $offset, $perPage, true) as $item){
+			array_push($paginate, $item);
+		}
 		return new LengthAwarePaginator(
-			array_slice($ordersArr, $offset, $perPage, true), // Only grab the items we need
+			$paginate, // Only grab the items we need    //was array_slice($ordersArr, $offset, $perPage, true)
 			count($ordersArr), // Total items
 			$perPage, // Items per page
 			$page, // Current page
