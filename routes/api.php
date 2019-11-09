@@ -43,6 +43,8 @@ Route::group([
     Route::post('check-email', 'UsersController@checkEmail');
 
     Route::get('doc', 'DocumentationController@index');
+
+    Route::post('paypal', array('as' => 'addmoney.paypal','uses' => 'PayPalController@post'));
 });
 // 'middleware' => 'auth:api'
 Route::group([
@@ -62,4 +64,3 @@ Route::group([
     Route::post('bundles', 'BundlesController@store');
     Route::get('bundles/{id}', 'BundlesController@show');
 });
-

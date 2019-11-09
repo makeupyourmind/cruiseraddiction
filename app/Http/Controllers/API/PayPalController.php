@@ -30,7 +30,8 @@ use App\Model\Price;
 use App\Model\Part;
 use App\Model\Order;
 use App\User;
-
+use App\PayPalData;
+use Illuminate\Support\Str;
 
 class PayPalController extends Controller
 {
@@ -48,7 +49,7 @@ class PayPalController extends Controller
         $paypal_conf = \Config::get('paypal');
         $this->_api_context = new ApiContext(new OAuthTokenCredential($paypal_conf['client_id'], $paypal_conf['secret']));
         $this->_api_context->setConfig($paypal_conf['settings']);
-        $this->price = Input::get('amount');
+        // $this->price = Input::get('amount');
 
     }
     /**
@@ -67,27 +68,37 @@ class PayPalController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+
+    public function post(Request $request){
+        $hash = Str::random();
+        PayPalData::create([
+            'amount' => $request->amount,
+            'currency' => $request->currency,
+            'result' => $request->result,
+            'hash' => $hash
+        ]);
+        return response()->json($hash);
+    }
+
     public function postPaymentWithpaypal(Request $request)
     {
-        $amount = $this->price;
-        $result = Input::get('result');
-	//dd($result);
-	Session::put('result', $result);
-        Session::put('amount', $amount);
+        $payPalData = PayPalData::where('hash', $request->hash)->first();
+        Session::put('amount', $payPalData->amount);
+        Session::put('result', $payPalData->result);
         $payer = new Payer();
         $payer->setPaymentMethod('paypal');
         $item_1 = new Item();
         $item_1->setName('Item 1') /** item name **/
-            ->setCurrency(Input::get('currency')) //was USD
+            ->setCurrency($payPalData->currency) //was USD
             ->setQuantity(1)
-            ->setPrice($request->get('amount')); /** unit price **/
+            ->setPrice($payPalData->amount); /** unit price **/
             //->setPrice($this->price->value); /** unit price **/
 
         $item_list = new ItemList();
         $item_list->setItems(array($item_1));
         $amount = new Amount();
-        $amount->setCurrency(Input::get('currency')) //was USD
-            ->setTotal($request->get('amount'));
+        $amount->setCurrency($payPalData->currency) //was USD
+            ->setTotal($payPalData->amount);
             //->setTotal($this->price->value);
 
         $transaction = new Transaction();
@@ -97,7 +108,7 @@ class PayPalController extends Controller
         $redirect_urls = new RedirectUrls();
 //        $redirect_urls->setReturnUrl(URL::route('payment.status')) /** Specify return URL **/
 //          $redirect_urls->setReturnUrl('https://testback.cruiseraddiction.com/paypal/success') /** Specify return URL **/
-          $redirect_urls->setReturnUrl('https://back.cruiseraddiction.com/paypal/success') /** Specify return URL **/
+          $redirect_urls->setReturnUrl('http://localhost:8000/paypal/success') /** Specify return URL **/
 
                 ->setCancelUrl(URL::route('payment.status'));
         $payment = new Payment();
@@ -131,6 +142,7 @@ class PayPalController extends Controller
         Session::put('paypal_payment_id', $payment->getId());
         if(isset($redirect_url)) {
             /** redirect to paypal **/
+            PayPalData::where('hash', $request->hash)->delete();
             return Redirect::away($redirect_url);
         }
         \Session::put('error','Unknown error occurred');
