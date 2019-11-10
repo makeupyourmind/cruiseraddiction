@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 
-class TestController extends Controller
+class TestController
 {
     public function test(){
         echo 'test controller';

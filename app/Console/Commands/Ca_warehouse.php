@@ -47,7 +47,10 @@ class Ca_warehouse extends Command
             foreach($data->toArray() as $key => $value){
                 foreach($value as $row){
                     if($row[0] != "BRAND" ){
-                        $part_another_warehouse = Part::where('part_number', str_replace("-", "", $row[2]))->first();
+                        $part_another_warehouse = Part::where([
+                                                                ['part_number', str_replace("-", "", $row[2])],
+                                                                ['brand_name', $row[0]]
+                                                            ])->first();
                         if($part_another_warehouse){
                             $weight_physical = $part_another_warehouse->weight_physical;
                             $weight_volumetric = $part_another_warehouse->weight_volumetric;
