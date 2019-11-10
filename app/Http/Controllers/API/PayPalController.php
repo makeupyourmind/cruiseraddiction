@@ -148,7 +148,7 @@ class PayPalController extends Controller
         \Session::put('error','Unknown error occurred');
         return Redirect::route('addmoney.paywithpaypal');
     }
-    public function getPaymentStatus()
+     public function getPaymentStatus()
     {
         /** Get the payment ID before session clear **/
         //$payment_id = Session::get('paypal_payment_id');
@@ -223,6 +223,7 @@ class PayPalController extends Controller
             $ship->shipping = $customersOrder['user']['shipping'];
             $ship->currency = $customersOrder['user']['currency'];
             $ship->order_notes = $customersOrder['user']['order_notes'];
+            
             $newOrder = Order::create([
                 'shipping' => $ship,
                 'amount' => $customersOrder['amount'],
@@ -249,9 +250,18 @@ class PayPalController extends Controller
             // $newOrder->order = $serializedOrder;
             // $newOrder->save();
         // $insertedId = $newOrder->id;
+        try{
         $insertedId = $newOrder->id;
-	    $customersOrder['order_id'] = $insertedId;
-            return redirect('http://cruiseraddiction.com/final?result='.base64_encode(json_encode($customersOrder)));
+        $customersOrder['order_id'] = $insertedId;
+        $customersOrder['data'] = $newOrder->data;
+        $url = base64_encode(json_encode($customersOrder));
+//dd($customersOrder, $url);
+        return Redirect::away('http://test.cruiseraddiction.com/final?result='.$url);
+                    
+        } catch(Exception $e){
+    	    dd($e);
+        }
+
         }
         \Session::put('error','Payment failed');
         return Redirect::route('addmoney.paywithpaypal');
