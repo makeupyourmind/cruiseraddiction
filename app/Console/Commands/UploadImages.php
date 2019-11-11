@@ -43,9 +43,9 @@ class UploadImages extends Command
 	shell_exec('rm -r '.storage_path("images"));
 	shell_exec('rm -r '.storage_path().'/../public/images/parts/*');
 	$path = base_path('resources/import_img/parts_images.zip');
-        copy('http://cruiseraddiction.ddns.net:81/nextcloud/index.php/s/XfeA3YjsswfmTex/download', $path);
+		copy('https://cloud.cruiseraddiction.com/index.php/s/rL74M3nBgjiqQmS/download', $path);
 	shell_exec('unzip -d '.storage_path("images").' '.$path);
-
+	// http://cruiseraddiction.ddns.net:81/nextcloud/index.php/s/XfeA3YjsswfmTex/download was url
 	$directories = scandir(storage_path('images'));
 	foreach($directories as $directory){
     	    if($directory!='.' and $directory!='..' ){
