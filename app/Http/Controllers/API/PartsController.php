@@ -136,7 +136,7 @@ class PartsController extends BaseController
                 } else {
                     $serialImg = json_encode($collectNumbers);
                     Part::whereRaw("REPLACE(part_number, '-', '') LIKE '%".str_replace('-', '', trim($prev))."%'")
-                        ->update(['image' => $collectNumbers]);
+                        ->update(['image' => $serialImg]);
                     $collectNumbers = array();
                     $collectNumbers[] = $partImage;
                 }
@@ -144,7 +144,7 @@ class PartsController extends BaseController
                 if($partKey == (count($partsImages) - 1)) {
                     $serialImg = json_encode($collectNumbers);
                     Part::whereRaw("REPLACE(part_number, '-', '') LIKE '%".str_replace('-', '', trim($explPartNum[0]))."%'")
-                        ->update(['image' => $collectNumbers]);
+                        ->update(['image' => $serialImg]);
                     $collectNumbers = array();
                     $collectNumbers[] = $partImage;
                 }

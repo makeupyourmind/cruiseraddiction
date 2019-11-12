@@ -26,7 +26,7 @@ Route::group([
 
     Route::post('parts', 'PartsController@show');
     // Route::get('parts/{id}/get', 'PartsController@id');
-    Route::get('parts/images', 'PartsController@images');
+    // Route::get('parts/images', 'PartsController@images');
     Route::get('parts', 'PartsController@index');
     Route::get('stock-ca-parts', 'PartsController@getStockCa');
     Route::get('rand-parts', 'PartsController@randoms');
@@ -57,7 +57,7 @@ Route::group([
     Route::post('add-parts', 'PartsController@store');
     Route::put('update-parts', 'PartsController@update');
     Route::delete('delete-parts', 'PartsController@destroy');
-
+    Route::get('parts/images', 'PartsController@images');
     Route::get('user', 'UsersController@show');
     Route::put('user/{id}', 'UsersController@update');
     Route::patch('user/{id}', 'UsersController@updateSome');
