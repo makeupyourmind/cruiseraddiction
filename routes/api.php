@@ -25,8 +25,7 @@ Route::group([
     Route::post('parts-search', 'PartsSearchController@index');
 
     Route::post('parts', 'PartsController@show');
-    // Route::get('parts/{id}/get', 'PartsController@id');
-    // Route::get('parts/images', 'PartsController@images');
+
     Route::get('parts', 'PartsController@index');
     Route::get('stock-ca-parts', 'PartsController@getStockCa');
     Route::get('rand-parts', 'PartsController@randoms');

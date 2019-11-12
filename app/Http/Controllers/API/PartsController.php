@@ -89,11 +89,6 @@ class PartsController extends BaseController
         return response()->json($randomParts, 200);
     }
 
-    public function id($id){
-        $part = Part::where('id', $id)->first();
-        return response()->json($part);
-    }
-
     public function images(){
         shell_exec('rm -r '.storage_path("images")); //add /parts
         shell_exec('rm -r '.storage_path().'/../public/images/parts/*');
@@ -105,8 +100,8 @@ class PartsController extends BaseController
         foreach($directories as $directory){
             if($directory != '.' and $directory != '..' ){
                 $directoryPath = storage_path('images/').$directory;
-                shell_exec('copy -r "'.$directoryPath.'"/* '.storage_path('images'));
-                shell_exec('copy -r "'.$directoryPath.'"/* '.storage_path().'/../public/images/parts');
+                shell_exec('cp -r "'.$directoryPath.'"/* '.storage_path('images'));
+                shell_exec('cp -r "'.$directoryPath.'"/* '.storage_path().'/../public/images/parts');
                 shell_exec('rm -r "'.$directoryPath.'"');
             }
         }
