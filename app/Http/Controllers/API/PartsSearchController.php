@@ -71,7 +71,7 @@ class PartsSearchController extends BaseController
             $partsList[$i]['part_number'] = $parts[0]->part_number;
             $partsList[$i]['description_english'] = $parts[0]->description_english;
             $partsList[$i]['weight_physical'] = $parts[0]->weight_physical;
-            $partsList[$i]['images'] = $parts[0]->images;
+            $partsList[$i]['images'] = $parts[0]->image;
             for($j = 0; $j < count($parts); $j++){
                 $partsList[$i]['data'][$j]['warehouses'] = $parts[$j]->warehouse;
                 $partsList[$i]['data'][$j]['available'] = $parts[$j]->qty;
