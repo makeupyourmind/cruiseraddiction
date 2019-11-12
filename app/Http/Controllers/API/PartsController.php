@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\API\BaseController as BaseController;
 use Validator;
 use App\Model\Part;
+use App\Model\PartImage;
 use App\Model\BundlePart;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Hash;
@@ -86,6 +87,66 @@ class PartsController extends BaseController
     public function randoms() {
         $randomParts = Part::take(10000)->get()->random(12);
         return response()->json($randomParts, 200);
+    }
+
+    public function images(){
+        shell_exec('rm -r '.storage_path("images")); //add /parts
+        shell_exec('rm -r '.storage_path().'/../public/images/parts/*');
+	    $path = base_path('resources/import_img/parts_images.zip');
+	    copy('https://cloud.cruiseraddiction.com/index.php/s/rL74M3nBgjiqQmS/download', $path);
+	    shell_exec('unzip -d '.storage_path("images").' '.$path);
+        $directories = scandir(storage_path('images'));
+
+        foreach($directories as $directory){
+            if($directory != '.' and $directory != '..' ){
+                $directoryPath = storage_path('images/').$directory;
+                shell_exec('cp -r "'.$directoryPath.'"/* '.storage_path('images'));
+                shell_exec('cp -r "'.$directoryPath.'"/* '.storage_path().'/../public/images/parts');
+                shell_exec('rm -r "'.$directoryPath.'"');
+            }
+        }
+
+        $partsImages = scandir(storage_path('images'));
+        PartImage::truncate();
+        Part::where('image', '!=', '')
+              ->where('image', '!=', 'NULL')		
+              ->update(['image' => '']);
+        $prev = '';
+        $collectNumbers = array();
+
+        foreach($partsImages as $partKey => $partImage ){
+            if($partImage != '.' and $partImage != '..' ){
+                $insertImage = [
+                    'image' => $partImage
+                ];
+                PartImage::create($insertImage);
+
+                $cutJpg = explode('-', $partImage);
+
+                unset($cutJpg[(count($cutJpg) - 1)]);
+
+                $explPartNum[0] = implode('-', $cutJpg);
+                if($prev == '' || $prev == $explPartNum[0]) {
+                    $collectNumbers[] = $partImage;
+                } else {
+                    $serialImg = json_encode($collectNumbers);
+                    Part::whereRaw("REPLACE(part_number, '-', '') LIKE '%".str_replace('-', '', trim($prev))."%'")
+                        ->update(['image' => $serialImg]);
+                    $collectNumbers = array();
+                    $collectNumbers[] = $partImage;
+                }
+
+                if($partKey == (count($partsImages) - 1)) {
+                    $serialImg = json_encode($collectNumbers);
+                    Part::whereRaw("REPLACE(part_number, '-', '') LIKE '%".str_replace('-', '', trim($explPartNum[0]))."%'")
+                        ->update(['image' => $serialImg]);
+                    $collectNumbers = array();
+                    $collectNumbers[] = $partImage;
+                }
+                $prev = $explPartNum[0];
+            }
+        }
+        return $this->sendResponse('', 'Images was uploaded successfully.');
     }
 
     public function show (Request $request) {
