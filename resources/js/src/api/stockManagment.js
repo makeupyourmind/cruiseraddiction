@@ -28,5 +28,8 @@ export class StockManagment{
     static reload () {
         return window.http.get(`api/stock-ca`)
     }
+    static getImage () {
+        return window.http.get(`api/parts/images`)
+    }
 
 }

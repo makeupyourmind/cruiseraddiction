@@ -29,12 +29,12 @@
                     </vs-dropdown>
                     <singlebundle :select="select"></singlebundle>
                     <vs-button
-                            @click="RELOAD()"
+                            @click="getImage()"
                             color="success"
                             type="relief"
                             icon="icon-plus"
                             icon-pack="feather">
-                        RELOAD
+                        RELOAD IMAGE
                     </vs-button>
                 </div>
                 <!-- TABLE ACTION COL-2: SEARCH & EXPORT AS CSV -->
@@ -383,10 +383,9 @@
 
             },
 
-            RELOAD() {
+            getImage() {
                 this.$store.commit('isNoActive', true);
-                StockManagment.reload()
-                    .then(() => this.getDataStockCa(1))
+                StockManagment.getImage()
                     .then(()=> this.$store.commit('isNoActive', false))
             }
         },
