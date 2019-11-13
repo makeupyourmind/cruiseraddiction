@@ -94,17 +94,18 @@ class PartsController extends BaseController
         shell_exec('rm -r '.storage_path().'/../public/images/parts/*');
 	    $path = base_path('resources/import_img/parts_images.zip');
 	    copy('https://cloud.cruiseraddiction.com/index.php/s/rL74M3nBgjiqQmS/download', $path);
-	    shell_exec('unzip -d '.storage_path("images").' '.$path);
+        shell_exec('unzip -d '.storage_path("images").' '.$path);
+        shell_exec('unzip -d '.public_path("images/parts").' '.$path);
         $directories = scandir(storage_path('images'));
 
-        foreach($directories as $directory){
-            if($directory != '.' and $directory != '..' ){
-                $directoryPath = storage_path('images/').$directory;
-                shell_exec('cp -r "'.$directoryPath.'"/* '.storage_path('images'));
-                shell_exec('cp -r "'.$directoryPath.'"/* '.storage_path().'/../public/images/parts');
-                shell_exec('rm -r "'.$directoryPath.'"');
-            }
-        }
+        // foreach($directories as $directory){
+        //     if($directory != '.' and $directory != '..' ){
+        //         $directoryPath = storage_path('images/').$directory;
+        //         shell_exec('cp -r "'.$directoryPath.'"/* '.storage_path('images'));
+        //         shell_exec('cp -r "'.$directoryPath.'"/* '.storage_path().'/../public/images/parts');
+        //         shell_exec('rm -r "'.$directoryPath.'"');
+        //     }
+        // }
 
         $partsImages = scandir(storage_path('images'));
         PartImage::truncate();
@@ -113,7 +114,7 @@ class PartsController extends BaseController
               ->update(['image' => '']);
         $prev = '';
         $collectNumbers = array();
-
+        // return $partsImages;
         foreach($partsImages as $partKey => $partImage ){
             if($partImage != '.' and $partImage != '..' ){
                 $insertImage = [
@@ -121,32 +122,61 @@ class PartsController extends BaseController
                 ];
                 PartImage::create($insertImage);
 
-                $cutJpg = explode('-', $partImage);
-
-                unset($cutJpg[(count($cutJpg) - 1)]);
-
-                $explPartNum[0] = implode('-', $cutJpg);
-                if($prev == '' || $prev == $explPartNum[0]) {
+                $pos = strripos($partImage, '-');
+                if($pos == true){
+                    $cutJpg = explode('-', $partImage);
+                    unset($cutJpg[(count($cutJpg) - 1)]);
+                    $explPartNum[0] = implode('-', $cutJpg);
+                }else{
+                    $cutJpgWithout = $partImage;
+                    // $explPartNum[0] = $partImage;
+                    // $collectNumbers[] = $partImage;
+                }
+                // print json_encode($cutJpg);
+                // if(count($cutJpg) != 0){
+                //     unset($cutJpg[(count($cutJpg) - 1)]);
+                // }
+                //print_r((count($cutJpg)));
+                // print_r($cutJpg);
+                // $explPartNum[0] = $cutJpg;
+                // $explPartNum[0] = implode('-', $cutJpg);
+                // print json_encode(trim($prev));
+                if($prev == '' || $prev == $explPartNum[0] ) {
+                    // if($prev == $cutJpgWithout){
+                    //     array_unshift($collectNumbers, $partImage);
+                    // }
+                    // if (strpos($prev, '-') === false) {
+                    //     // $collectNumbers[] = $partImage;
+                    //     // $collectNumbers[0] = $partImage;
+                    // }
                     $collectNumbers[] = $partImage;
+                    // print json_encode($collectNumbers);
                 } else {
+                    //print json_encode($partImage);
                     $serialImg = json_encode($collectNumbers);
-                    Part::whereRaw("REPLACE(part_number, '-', '') LIKE '%".str_replace('-', '', trim($prev))."%'")
-                        ->update(['image' => $serialImg]);
+                    //print_r (trim($prev));
+                    //print json_encode($serialImg);
+                    // Part::whereRaw("REPLACE(part_number, '-', '') LIKE '%".str_replace('-', '', trim($prev))."%'")
+                    //     ->update(['image' => $serialImg]);
+                    Part::where('part_number', str_replace('-','', $prev))->update(['image' => $serialImg]);
                     $collectNumbers = array();
                     $collectNumbers[] = $partImage;
                 }
 
                 if($partKey == (count($partsImages) - 1)) {
                     $serialImg = json_encode($collectNumbers);
-                    Part::whereRaw("REPLACE(part_number, '-', '') LIKE '%".str_replace('-', '', trim($explPartNum[0]))."%'")
-                        ->update(['image' => $serialImg]);
+                    // Part::whereRaw("REPLACE(part_number, '-', '') LIKE '%".str_replace('-', '', trim($explPartNum[0]))."%'")
+                    //     ->update(['image' => $serialImg]);
+                    Part::where('part_number', str_replace('-','', $explPartNum[0]))->update(['image' => $serialImg]);
                     $collectNumbers = array();
                     $collectNumbers[] = $partImage;
+                    // print json_encode($partImage);
                 }
                 $prev = $explPartNum[0];
             }
         }
-        return $this->sendResponse('', 'Images was uploaded successfully.');
+        //return $collectNumbers;
+        // return $this->sendResponse('', 'Images was uploaded successfully.');
     }
 
     public function show (Request $request) {
