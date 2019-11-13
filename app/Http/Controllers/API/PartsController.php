@@ -176,7 +176,7 @@ class PartsController extends BaseController
             }
         }
         //return $collectNumbers;
-        // return $this->sendResponse('', 'Images was uploaded successfully.');
+        return $this->sendResponse('', 'Images was uploaded successfully.');
     }
 
     public function show (Request $request) {
