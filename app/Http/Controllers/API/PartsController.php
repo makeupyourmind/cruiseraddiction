@@ -90,13 +90,14 @@ class PartsController extends BaseController
     }
 
     public function images(){
-        shell_exec('rm -r '.storage_path("images")); //add /parts
-        shell_exec('rm -r '.storage_path().'/../public/images/parts/*');
+        //shell_exec('rm -r '.storage_path("images")); //add /parts
+        //shell_exec('rm -r '.storage_path().'/../public/images/parts/*');
 	    $path = base_path('resources/import_img/parts_images.zip');
 	    copy('https://cloud.cruiseraddiction.com/index.php/s/rL74M3nBgjiqQmS/download', $path);
-        shell_exec('unzip -d '.storage_path("images").' '.$path);
-        shell_exec('unzip -d '.public_path("images/parts").' '.$path);
-        $directories = scandir(storage_path('images'));
+        //shell_exec('unzip -d '.storage_path("images").' '.$path);
+        //shell_exec('unzip -d '.public_path("images/parts").' '.$path);
+        shell_exec('unzip -d '.storage_path("images/temp").' '.$path);
+        //$directories = scandir(storage_path('images'));
 
         // foreach($directories as $directory){
         //     if($directory != '.' and $directory != '..' ){
@@ -106,7 +107,54 @@ class PartsController extends BaseController
         //         shell_exec('rm -r "'.$directoryPath.'"');
         //     }
         // }
-
+	$tempPartsImages = scandir(storage_path('images/temp'));
+	$exsistImagesOverrited = 0;
+	$uploadedImages = 0;
+	$arrayUploaded = [];
+	$arrayOverrited = [];
+	$object = new \stdClass;
+	foreach($tempPartsImages as $key => $temp){
+	    if($temp != '.' and $temp != '..'){
+	        $filename = storage_path('images/').$temp;
+	        if (file_exists($filename)) {
+	            //echo "Файл $filename существует ";
+	            $filename = storage_path('images/temp/').$temp;
+	            shell_exec('\cp "'.$filename.'" '.storage_path('images'));
+	            shell_exec('cp -r "'.$filename.'" '.public_path("images/parts"));
+	            $exsistImagesOverrited++;
+	            $find = strripos($temp, '-');
+	            if($find == true){
+	               $cut = explode('-', $temp);
+	            }
+	            array_push($arrayOverrited, $cut[0]);
+	        } else {
+	            //echo "Файл $filename не существует ";
+	            $filename = storage_path('images/temp/').$temp;
+	            shell_exec('cp -r "'.$filename.'" '.storage_path('images'));
+	            shell_exec('cp -r "'.$filename.'" '.public_path("images/parts"));
+	            $uploadedImages++;
+	            $find = strripos($temp, '-');
+	            if($find == true){
+	               $cut = explode('-', $temp);
+	            }
+	            array_push($arrayUploaded, $cut[0]);
+	        }
+	        $object->numberOfNewPictures = count($tempPartsImages) - 2;
+	    }
+	}
+	$valsOverrited = array_count_values($arrayOverrited);
+	$valsOverrited["all"] = $exsistImagesOverrited;
+	$arrayOverrited = [];
+	$valsUploaded = array_count_values($arrayUploaded);
+	$valsUploaded["all"] = $uploadedImages;
+	$arrayUploaded = [];
+	array_push($arrayOverrited, $valsOverrited);
+        array_push($arrayUploaded, $valsUploaded);
+	$object->exsistImagesOwerrited = $arrayOverrited;
+	$object->uploadedImages = $arrayUploaded;
+	shell_exec('rm '.storage_path('images/temp/*'));
+	
+	//return response()->json($object);
         $partsImages = scandir(storage_path('images'));
         PartImage::truncate();
         Part::where('image', '!=', '')
@@ -176,7 +224,7 @@ class PartsController extends BaseController
             }
         }
         //return $collectNumbers;
-        return $this->sendResponse('', 'Images was uploaded successfully.');
+        return $this->sendResponse($object, 'Images was uploaded successfully.');
     }
 
     public function show (Request $request) {
