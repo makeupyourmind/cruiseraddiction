@@ -77,6 +77,8 @@ class PartsSearchController extends BaseController
                 $partsList[$i]['data'][$j]['available'] = $parts[$j]->qty;
                 $partsList[$i]['data'][$j]['prices'] = $parts[$j]->price;
                 $partsList[$i]['data'][$j]['unique_hashes'] = $parts[$j]->unique_hash;
+                $partsList[$i]['data'][$j]['weight_physical'] = $parts[$j]->weight_physical;
+                $partsList[$i]['data'][$j]['description_english'] = $parts[$j]->description_english;
             }
         }
         return response()->json($partsList, 200);
