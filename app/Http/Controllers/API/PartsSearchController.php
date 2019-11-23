@@ -39,8 +39,8 @@ class PartsSearchController extends BaseController
 	        //$usedParts[] = $partUniq;
                 $partsList[$i]['brand_name'] = $parts[0]['brand_name'];
                 $partsList[$i]['part_number'] = $parts[0]['part_number'];
-                $partsList[$i]['description_english'] = $parts[0]['description_english'];
-                $partsList[$i]['weight_physical'] = $parts[0]['weight_physical'];
+               // $partsList[$i]['description_english'] = $parts[0]['description_english'];
+                //$partsList[$i]['weight_physical'] = $parts[0]['weight_physical'];
 		$partsList[$i]['images'] = $parts[0]['image'];
 		//$partData = Part::where('brand_name', $part['brand_name'])->whereRaw("REPLACE(part_number, '-', '') LIKE '%".str_replace('-', '', trim($part['part_number']))."%'")->get()->toArray();
         //        $partData = Part::where('brand_name', $part['brand_name'])->where('part_number', $part['part_number'])->get()->toArray();
@@ -53,6 +53,8 @@ class PartsSearchController extends BaseController
                     $partsList[$i]['data'][$j]['available'] = $parts[$j]['qty'];
                     $partsList[$i]['data'][$j]['prices'] = $parts[$j]['price'];
                     $partsList[$i]['data'][$j]['unique_hashes'] = $parts[$j]['unique_hash'];
+                    $partsList[$i]['data'][$j]['weight_physical'] = $parts[$j]['weight_physical'];
+                    $partsList[$i]['data'][$j]['description_english'] = $parts[$j]['description_english'];
                 }
 		$k++;
 		//}
