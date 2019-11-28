@@ -105,6 +105,8 @@ class PartsController extends BaseController
             $partsList['description_english'] = $part['description_english'];
             $partsList['weight_physical'] = $part['weight_physical'];
 	    $partsList['images'] = $part['image'];
+		$partsList['fits'] = $part['fits'];
+        $partsList['important_general'] = $part['important_general'];
 
             $partData = Part::where('brand_name', $part['brand_name'])
                         ->where('part_number', $part['part_number'])
