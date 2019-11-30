@@ -260,6 +260,11 @@ class PartsController extends BaseController
                 $partsList['data'][$j]['available'] = $partData[$j]['qty'];
                 $partsList['data'][$j]['prices'] = $partData[$j]['price'];
                 $partsList['data'][$j]['unique_hashes'] = $partData[$j]['unique_hash'];
+				$partsList['data'][$j]['weight_physical'] = $partData[$j]['weight_physical'];
+                $partsList['data'][$j]['description_english'] = $partData[$j]['description_english'];
+				 $partsList['data'][$j]['fits'] = $partData[$j]['fits'];
+				 $partsList['data'][$j]['important_general'] = $partData[$j]['important_general'];
+				 $partsList['data'][$j]['image'] = $partData[$j]['image'];
             }
         }
 
