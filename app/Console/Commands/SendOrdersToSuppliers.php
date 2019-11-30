@@ -49,6 +49,7 @@ class SendOrdersToSuppliers extends Command
             $store = Excel::store(new OrdersExport(), 'orders.xls', 'local');
             Mail::send([], [] ,function($message) use ($pathToFile) {
                 $message->to('order@vivat-uae.net') //order@vivat-uae.net
+                        ->cc('Info@cruiseraddiction.com')
                         ->subject('Orders');           
                 $message->attach($pathToFile);
             });           
