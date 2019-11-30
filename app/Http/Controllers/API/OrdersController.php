@@ -41,7 +41,30 @@ class OrdersController
 				$o->order = new \stdClass;
 				$o->order->amount = $o->amount;
 				$o->order->data = $o->data;
-				$o->order->user = $o->user;	
+				$o->order->user = new \stdClass; //$o->user
+				//////////////////////
+				$o->order->user->id = $o->user->id;
+				$o->order->user->email = $o->user->email;
+				$o->order->user->isVerified = $o->user->isVerified;
+				$o->order->user->email_verified_at = $o->user->email_verified_at;
+				$o->order->user->created_at = $o->user->created_at;
+				$o->order->user->updated_at = $o->user->updated_at;
+				$o->order->user->first_name = $o->user->first_name;
+				$o->order->user->last_name = $o->user->last_name;
+				$o->order->user->ihmud_username = $o->user->ihmud_username;
+				$o->order->user->street_adress = $o->user->street_adress;
+				$o->order->user->street_adress_two = $o->user->street_adress_two;
+				$o->order->user->city = $o->user->city;
+				$o->order->user->state = $o->user->state;
+				$o->order->user->postal_code = $o->user->postal_code;
+				$o->order->user->country = $o->user->country;
+				$o->order->user->phone = $o->user->phone;
+				$o->order->user->frame_number = $o->user->frame_number;
+				$o->order->user->date_of_production = $o->user->date_of_production;
+				$o->order->user->original_country = $o->user->original_country;
+				$o->order->user->search_history = $o->user->search_history;
+				$o->order->user->subscribed_for_news = $o->user->subscribed_for_news;
+				///////////////////////////
 				$o->order->user->create_ac = $o->shipping["create_ac"];
 				$o->order->user->same_adress = $o->shipping["same_address"];
 				$o->order->user->shipping = $o->shipping["shipping"];
@@ -67,55 +90,9 @@ class OrdersController
 			['path' => url('/').'/orders', 'query' => $request->query()] // We need this so we can keep all old query parameters from the url
 		);
 		////////////////////////////////////////////////////////////////////////
-
-		// return response()->json($ordersArr);
-		/////////////////////////////////////////////////ОТКРЫТЬ НАХУЙ ЭТО ЕСЛИ ПИЗДЕЦ
-		//print json_encode($orders);
-// 	global $request;
-// 	$serializedOrders = Order::all();
-// 	$orders = $serializedOrders->each(function($item, $key) {
-//     	    $item['order'] = unserialize($item['order']);
-// 	});
-// 	return $orders->toJson();
-// 	$filter_orders = collect($orders->toArray())->filter(function ($value, $key){
-//     	    $data_search = ''.collect($value['order']['data'])->search(function ($search_value, $search_key){
-// 		global $request;
-// 		if(!$request->part){
-// 		    return true;
-// 		}
-// 		return $search_value['part_number'] == $request->part;
-//     	    }).'';
-        
-//     	    return $data_search != '';
-// 	})->filter(function ($value) {
-//     	    global $request;
-// 	    if(!$request->email){
-// 		 return true;
-// 	    }
-// 	    return ''.strpos($value['order']['user']['email'], $request->email) .'' != '';
-//         })
-//          ->filter(function ($value) {
-// 	    global $request;
-// 	    if(!$request->country){
-// 		return true;
-// 	    }
-// 	    return ''. strpos($value['order']['user']['country'], $request->country).'' !='';		
-//         });
- 
-// //dd($filter_orders);
-// //dd(is_array($filter_orders->all()));
-// 	return array_values($filter_orders->all());
     }
 
     public function userOrders($id) {
-	// $email = Auth::user()->email;
-	// $serializedOrders = Order::where('order', 'like', '%"'.$email.'"%')->get();
-	// $orders = $serializedOrders->each(function($item, $key) {
-    // 	    $item['order'] = unserialize($item['order']);
-	// });
-	// return $orders->toJson();
-		// $email = "nikitosnov@gmail.com";
-		// $user = User::where('id', $id)->first();
 		$user = Auth::user();
 		$orders = Order::with(['user' => function($query) use ($user){
 			$query->where('id', $user->id);

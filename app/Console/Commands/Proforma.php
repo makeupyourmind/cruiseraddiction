@@ -148,14 +148,17 @@ class Proforma extends Command
                 {
                     $pos = strpos($attachment["subject"], "Proforma");
                     if($attachment["date"] == $max && $pos !== false){
-                        $filename = $attachment['name'];
-                        if(empty($filename)) $filename = $attachment['filename'];
-                        if(empty($filename)) $filename = time() . ".dat";
-                        $dst = './storage/app/proforma.xls';
-                        $fp = fopen($dst, "w+");
-                        // $fp = fopen("./" . $email_number . "-" . $filename, "w+");
-                        fwrite($fp, $attachment['attachment']);
-                        fclose($fp);
+                        $proformaName = strpos($attachment["name"], "Proforma");
+                        if($proformaName){
+                            $filename = $attachment['name'];
+                            if(empty($filename)) $filename = $attachment['filename'];
+                            if(empty($filename)) $filename = time() . ".dat";
+                            $dst = './storage/app/proforma.xls';
+                            $fp = fopen($dst, "w+");
+                            // $fp = fopen("./" . $email_number . "-" . $filename, "w+");
+                            fwrite($fp, $attachment['attachment']);
+                            fclose($fp);
+                        }
                     }
                 }
             }
@@ -205,8 +208,8 @@ class Proforma extends Command
                     $part->update(['price' => $part->price, 'qty' => $part->qty + $data["QTY"] ]);
                 }
                 else if($part && $part->changedAdministrator == false){
-                    $weight = $part->weight_physical;
-                    $cost = $data["UNIT PRICE"];
+                    $weight = (float)str_replace(',' , '.', $part->weight_physical);
+                    $cost = (float)str_replace(',' , '.', $data["UNIT PRICE"]);
                     $price = ((($weight * 6.0) + $cost * 0.061 + $cost) * 1.3) * 1.037;
                     $part->update(['price' => $price, 'qty' => $part->qty + $data["QTY"] ]);
                 }
@@ -216,8 +219,8 @@ class Proforma extends Command
                         ['part_number', str_replace( "-", "", $data["PART NUMBER"]) ]
                     ])->first();
                     if($part){
-                        $weight = $part->weight_physical;
-                        $cost = $data["UNIT PRICE"];
+                        $weight = (float)str_replace(',' , '.', $part->weight_physical);
+                        $cost = (float)str_replace(',' , '.', $data["UNIT PRICE"]);
                         $price = ((($weight * 6.0) + $cost * 0.061 + $cost) * 1.3) * 1.037;
                         $uniqueHash = md5($data["BRAND"].$data["PART NUMBER"]."canada");
                         Part::create([

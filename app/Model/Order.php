@@ -9,7 +9,7 @@ class Order extends Model
     protected $table = 'orders';
 
     protected $fillable = [
-      'shipping', 'amount' ,'data', 'user_id'
+      'shipping', 'amount' ,'data', 'user_id', 'isCheckedParser'
     ];
 
     protected $casts = [

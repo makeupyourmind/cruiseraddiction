@@ -47,10 +47,10 @@ Route::group([
 
     Route::post('paypal', array('as' => 'addmoney.paypal','uses' => 'PayPalController@post'));
 });
-// 'middleware' => 'auth:api'
+// 'middleware' => ['auth:api','checkRoles:User,Admin']
 Route::group([
     'namespace' => 'API',
-    'middleware' => 'auth:api'], function () {
+    'middleware' => 'auth:api'], function () { //, 'checkRoles:User,Admin' - add then
 
     Route::post('logout', 'RegisterController@logout');
     Route::post('add-parts', 'PartsController@store');
@@ -64,4 +64,16 @@ Route::group([
 
     Route::post('bundles', 'BundlesController@store');
     Route::get('bundles/{id}', 'BundlesController@show');
+});
+
+Route::group([
+    'namespace' => 'API',
+    'middleware' => ['auth:api', 'checkRoles:SuperAdmin'],
+    'prefix' => 'superadmin'], function () {
+
+    Route::get('/', 'SuperAdminContoller@index');
+    Route::post('/', 'SuperAdminContoller@store');
+    Route::get('/{id}', 'SuperAdminContoller@show');
+    Route::put('/{id}', 'SuperAdminContoller@update');
+    Route::delete('/{id}', 'SuperAdminContoller@destroy');
 });

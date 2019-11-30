@@ -248,7 +248,9 @@ class PartsController extends BaseController
             $partsList['part_number'] = $part['part_number'];
             $partsList['description_english'] = $part['description_english'];
             $partsList['weight_physical'] = $part['weight_physical'];
-	    $partsList['images'] = $part['image'];
+        $partsList['images'] = $part['image'];
+        $partsList['fits'] = $part['fits'];
+        $partsList['important_general'] = $part['important_general'];
 
             $partData = Part::where('brand_name', $part['brand_name'])
                         ->where('part_number', $part['part_number'])
@@ -369,7 +371,7 @@ class PartsController extends BaseController
         }
 
     $part = Part::where('brand_name', $request->brand_name)
-        ->where('part_number', $request->part_number)->first();
+        ->where('part_number', $request->part_number)->where('warehouse', 'canada')->first();
     
     if($part && $request->price == "0"){
         $insert_data = self::trigger();
@@ -386,6 +388,7 @@ class PartsController extends BaseController
             // dd("here");
     	    Part::where('brand_name', $request->brand_name)
             ->where('part_number', $request->part_number)
+            ->where('warehouse', 'canada')
             ->update($request->except(['bundle_part_data', 'changedAdministrator']));
             // ->update($request->all());
             if((float) $part->price != (float) $request->price){
@@ -398,12 +401,14 @@ class PartsController extends BaseController
         }
 
 	    $bundle = Part::where('brand_name', $request->brand_name)
-        	->where('part_number', $request->part_number)
+            ->where('part_number', $request->part_number)
+            ->where('warehouse', 'canada')
         	->update(['part_number' => $request->part_number, 'brand_name' => $request->brand_name, 'description_english' => $request->description_english,
 		    'description_full' => $request->description_full, 'min_stock' => $request->min_stock, 'price' => $request->price,
 		    'min_price' => $request->min_price, 'max_price' => $request->max_price, 'location' => $request->location, 'categories' => $request->categories]);
 	    $bundleId =  Part::where('brand_name', $request->brand_name)
-        		->where('part_number', $request->part_number)
+                ->where('part_number', $request->part_number)
+                ->where('warehouse', 'canada')
             ->first();
 
         $arr = array();

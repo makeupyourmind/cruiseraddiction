@@ -104,10 +104,9 @@ class RegisterController extends BaseController
 
         if (Auth::attempt($credentials)) {
 
-            $user = User::where('email', $request->email)->first();
-            // $user = User::with('roles')->where('email', $request->email)->first();
-            // return $user;
-            // if($user->isVerified && $user->roles[0]->name == $request->role);
+            $user = Auth::user();
+            $user_role = $user->roles[0]->name;
+
             if($user->isVerified){
                 $success['token'] =  $user->createToken('New token')->accessToken;
 
@@ -116,11 +115,20 @@ class RegisterController extends BaseController
             else{
                 return $this->sendError('You did not confirm email.', '', 400);
             }
+            // if($user->isSuperAdmin || ($user->isVerified && $user_role == $request->role)){
+            //     $success['token'] =  $user->createToken('New token')->accessToken;
+            //     return $this->sendResponse($success, "$user_role authorized successfully.");
+            // }
+            // else if(!$user->isVerified){
+            //     return $this->sendError('You did not confirm email.', '', 400);
+            // }
+            // else{
+            //     return $this->sendError("You don't have permission.", '', 403);
+            // }
             
         }
 
             return $this->sendError('Authorization failed.', '', 400);
-
     }
 
     public function logout() {
