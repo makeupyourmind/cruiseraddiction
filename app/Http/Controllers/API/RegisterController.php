@@ -105,7 +105,7 @@ class RegisterController extends BaseController
         if (Auth::attempt($credentials)) {
 
             $user = Auth::user();
-            $user_role = $user->roles[0]->name;
+            //$user_role = $user->roles[0]->name;
 
             if($user->isVerified){
                 $success['token'] =  $user->createToken('New token')->accessToken;
