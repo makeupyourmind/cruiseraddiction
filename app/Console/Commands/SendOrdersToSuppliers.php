@@ -46,17 +46,17 @@ class SendOrdersToSuppliers extends Command
         $orders = Order::with(['user'])->where('isCheckedParser', 0)->get();
         $pathToFile = storage_path('app/orders.xls');
         if(count($orders) > 0){
-            $store = Excel::store(new OrdersExport(), 'orders.xls', 'local');
+            $store = Excel::store(new OrdersExport($orders), 'orders.xls', 'local');
             Mail::send([], [] ,function($message) use ($pathToFile) {
                 $message->to('order@vivat-uae.net') //order@vivat-uae.net
                         ->cc('Info@cruiseraddiction.com')
                         ->subject('Orders');           
                 $message->attach($pathToFile);
             });           
-            echo 'Order parse is done. Successfully!';
+            echo "Order parse is done. Successfully!\n";
         }
         else{
-            echo 'Order parse is done. No new orders';
+            echo "Order parse is done. No new orders\n";
         }
     }
 }

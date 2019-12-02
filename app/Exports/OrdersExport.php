@@ -25,13 +25,16 @@ class OrdersExport implements FromCollection, WithHeadings, ShouldAutoSize, With
     */
     use Exportable, RegistersEventListeners;
 
+    public function __construct($orders)
+    {
+        $this->orders = $orders;
+    }
 
     public function collection()
     {
-        $orders = Order::with(['user'])->where('isCheckedParser', 0)->get();
         Order::where('isCheckedParser', 0)->update(['isCheckedParser' => 1]);
         $collect = [];
-        foreach ($orders as $order){
+        foreach ($this->orders as $order){
             foreach($order->data as $data){
                 if($data['warehouse'] != 'canada' || $data['warehouse'] != 'usa'){
                     $temp =  [
@@ -164,9 +167,9 @@ class OrdersExport implements FromCollection, WithHeadings, ShouldAutoSize, With
         $event->sheet->mergeCells('D15:D17');
         $event->sheet->mergeCells('E15:E17');
         $event->sheet->mergeCells('F15:F17');
-        $event->sheet->mergeCells('G15:H17');
+        $event->sheet->mergeCells('G15:G17');
 
-        $event->sheet->mergeCells('H16:H17');
+        $event->sheet->mergeCells('H15:H17');
         $event->sheet->mergeCells('I16:I17');
         $event->sheet->mergeCells('J16:J17');
         $event->sheet->mergeCells('K16:K17');
