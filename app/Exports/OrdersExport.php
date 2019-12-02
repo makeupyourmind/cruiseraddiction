@@ -36,7 +36,7 @@ class OrdersExport implements FromCollection, WithHeadings, ShouldAutoSize, With
         $collect = [];
         foreach ($this->orders as $order){
             foreach($order->data as $data){
-                if($data['warehouse'] != 'canada' || $data['warehouse'] != 'usa'){
+                if($data['warehouse'] != 'canada' && $data['warehouse'] != 'usa'){
                     $temp =  [
                         'BrandName' => $data["brand_name"],
                         'PartNumber' => $data["part_number"],
