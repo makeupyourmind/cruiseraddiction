@@ -25,41 +25,13 @@ class OrdersExport implements FromCollection, WithHeadings, ShouldAutoSize, With
     */
     use Exportable, RegistersEventListeners;
 
-    public function __construct($orders)
+    public function __construct($collect)
     {
-        $this->orders = $orders;
+        $this->collect = $collect;
     }
 
     public function collection()
     {
-        Order::where('isCheckedParser', 0)->update(['isCheckedParser' => 1]);
-        $collect = [];
-        foreach ($this->orders as $order){
-            foreach($order->data as $data){
-                if($data['warehouse'] != 'canada' && $data['warehouse'] != 'usa'){
-                    $temp =  [
-                        'BrandName' => $data["brand_name"],
-                        'PartNumber' => $data["part_number"],
-                        'qty' => $data["count"],
-                        'price' => $data["price"],
-                        'price tolerance' => '15',
-                        'replaces' => 'ONLY THIS #',
-                        'warehouse' => 'JA',
-                        'note' => '',
-                        'DescriptionEnglish' => $data["description_english"],
-                        'DescriptionRussian' => '',
-                        'Column 1' => $order['id'],
-                        'Column 2' => $data["unique_hash"],
-                        'Column 3' => '',
-                        'Column 4' => '',
-                        'Barcode' => '',
-                        'Information 1' => $order['id'],
-                        'Information 2' => '',
-                    ];
-                    array_push($collect, $temp);
-                }
-            }
-        }
         $empties = [
             [
                 'BrandName' => '',
@@ -102,10 +74,10 @@ class OrdersExport implements FromCollection, WithHeadings, ShouldAutoSize, With
         ];
 
         foreach($empties as $empty){
-            array_unshift($collect, $empty);
+            array_unshift($this->collect, $empty);
         }
 
-        return collect($collect);
+        return collect($this->collect);
     }
 
     public function headings(): array
