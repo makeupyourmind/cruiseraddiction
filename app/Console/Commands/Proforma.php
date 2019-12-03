@@ -197,7 +197,9 @@ class Proforma extends Command
                 }
             }
 
-            foreach($insert_data as $data){
+            $insert_data_unique = self::unique_key($insert_data, 'PART NUMBER');
+
+            foreach($insert_data_unique as $data){
                 // $data["PART NUMBER"] = str_replace( "-", "", $data["PART NUMBER"]);
                 $part = Part::where([ 
                             ['brand_name', $data["BRAND"]],
@@ -240,4 +242,18 @@ class Proforma extends Command
         }
         echo "Parsing of Proforma is done. Successfully ".date('Y/m/d H:i:s')."\n";
     }
+
+    private function unique_key($array, $keyname){
+        $new_array = array();
+
+        foreach($array as $key => $value){
+
+          if(!isset($new_array[$value[$keyname]])){
+             $new_array[$value[$keyname]] = $value;
+          }
+
+        }
+        $new_array = array_values($new_array);
+        return $new_array;
+    } 
 }
