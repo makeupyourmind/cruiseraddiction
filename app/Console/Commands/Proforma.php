@@ -197,10 +197,11 @@ class Proforma extends Command
                 }
             }
 
-            $insert_data_unique = self::unique_key($insert_data, 'PART NUMBER');
+            [$insert_data_unique, $dublicates] = self::unique_key($insert_data, 'PART NUMBER');
+
+            $insert_data_unique = array_merge($insert_data_unique, $dublicates);
 
             foreach($insert_data_unique as $data){
-                // $data["PART NUMBER"] = str_replace( "-", "", $data["PART NUMBER"]);
                 $part = Part::where([ 
                             ['brand_name', $data["BRAND"]],
                             ['part_number', str_replace( "-", "", $data["PART NUMBER"]) ],
@@ -244,16 +245,34 @@ class Proforma extends Command
     }
 
     private function unique_key($array, $keyname){
-        $new_array = array();
+        $temp = array();
+        $dublicates = array();
+        $dublicates_valid = array();
+    
+        foreach($array as $key => $value){
+            if(!isset($temp[$value[$keyname]])){
+                $temp[$value[$keyname]] = $value;
+            }
+            else{
+                $dublicates[$value[$keyname]] = $value;
+            }
+        }
 
         foreach($array as $key => $value){
-
-          if(!isset($new_array[$value[$keyname]])){
-             $new_array[$value[$keyname]] = $value;
-          }
-
+            if(isset($dublicates[$value[$keyname]])){
+                unset($array[$key]);
+                if(isset($dublicates_valid[$value[$keyname]])){
+                    $dublicates_valid[$value[$keyname]]["QTY"] += $value["QTY"];
+                    if($dublicates_valid[$value[$keyname]]["UNIT PRICE"] <= $value["UNIT PRICE"] ){
+                        $dublicates_valid[$value[$keyname]]["UNIT PRICE"] = $value["UNIT PRICE"];
+                    }
+                }
+                else{
+                    $dublicates_valid[$value[$keyname]] = $value;
+                }
+            }
         }
-        $new_array = array_values($new_array);
-        return $new_array;
-    } 
+        $dublicates_valid = array_values($dublicates_valid);
+        return [$array, $dublicates_valid];
+    }
 }
