@@ -95,8 +95,11 @@ class OrdersController
     public function userOrders($id) {
 		$user = Auth::user();
 		$orders = Order::with(['user' => function($query) use ($user){
-			$query->where('id', $user->id);
-		}])->where('user_id', $user->id)->get();
+									$query->where('id', $user->id);
+								}])
+									->where('user_id', $user->id)
+									->orderBy('id', 'desc')
+									->get();
 
 		$ordersArr = [];
 		foreach($orders as $order){
