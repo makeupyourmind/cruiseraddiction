@@ -83,14 +83,14 @@ class SendOrdersToSuppliers extends Command
                             ->subject('Orders');           
                     $message->attach($pathToFile);
                 }); 
-                echo "Order parse is done. Successfully!\n";
+                echo "Order parser is done. Successfully! ".date('Y/m/d H:i:s')."\n";
             }
             else{
-                echo "Order parse is done. File contains no orders!\n";
+                echo "Order parser is done. File contains no orders that belongs to Canada warehouse or USA! ".date('Y/m/d H:i:s')."\n";
             }
         }
         else{
-            echo "Order parse is done. No new orders\n";
+            echo "Order parser is done. No new orders ".date('Y/m/d H:i:s')."\n";
         }
     }
 }
