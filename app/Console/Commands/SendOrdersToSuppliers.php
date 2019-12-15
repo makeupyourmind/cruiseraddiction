@@ -7,6 +7,7 @@ use App\Model\Order;
 use Excel;
 use App\Exports\OrdersExport;
 use Mail;
+use App\Model\OrderNumber;
 use Storage;
 
 class SendOrdersToSuppliers extends Command
@@ -46,7 +47,6 @@ class SendOrdersToSuppliers extends Command
         echo "Order parser is started : ".date('Y/m/d H:i:s')."\n";
         $orders = Order::where('isCheckedParser', 0)->get();
         Order::where('isCheckedParser', 0)->update(['isCheckedParser' => 1]);
-        $pathToFile = storage_path('app/orders.xls');
         $collect = [];
         if(count($orders) > 0){
             foreach ($orders as $order){
@@ -76,13 +76,17 @@ class SendOrdersToSuppliers extends Command
                 }
             }
             if(count($collect) > 0){
-                $store = Excel::store(new OrdersExport($collect), 'orders.xls', 'local');
-                Mail::send([], [] ,function($message) use ($pathToFile) {
+                $OrderNumber = OrderNumber::first();
+                $orderNumber = $OrderNumber->number;
+                $store = Excel::store(new OrdersExport($collect), "orders/order_$orderNumber.xls", 'local');
+                $pathToFile = storage_path("app/orders/order_$orderNumber.xls");
+                Mail::send([], [] ,function($message) use ($pathToFile, $orderNumber) {
                     $message->to('Info@cruiseraddiction.com') //order@vivat-uae.net
                             // ->cc('Info@cruiseraddiction.com')
-                            ->subject('Orders');           
+                            ->subject("Cruiser Addiction: Order # $orderNumber");           
                     $message->attach($pathToFile);
-                }); 
+                });
+                $OrderNumber->increment('number', 1);
                 echo "Order parser is done. Successfully! ".date('Y/m/d H:i:s')."\n";
             }
             else{

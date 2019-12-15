@@ -115,7 +115,6 @@ class OrdersExport implements FromCollection, WithHeadings, ShouldAutoSize, With
             array('Комментарий:','' , ''),
             array(' ','' , ''),
         ), $event);
-        $OrderNumber->increment('number', 1);
     }
 
     public function rules(): array
