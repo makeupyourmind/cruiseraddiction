@@ -85,17 +85,21 @@ class PayPalController extends Controller
         $payPalData = PayPalData::where('hash', $request->hash)->first();
         Session::put('amount', $payPalData->amount);
         Session::put('result', $payPalData->result);
+	$orderData = json_decode(base64_decode($payPalData->result), true);
         $payer = new Payer();
         $payer->setPaymentMethod('paypal');
-        $item_1 = new Item();
-        $item_1->setName('Item 1') /** item name **/
-            ->setCurrency($payPalData->currency) //was USD
-            ->setQuantity(1)
-            ->setPrice($payPalData->amount); /** unit price **/
-            //->setPrice($this->price->value); /** unit price **/
-
         $item_list = new ItemList();
-        $item_list->setItems(array($item_1));
+        foreach($orderData['data'] as $partHash) {
+    	    $partCollection = Part::where('unique_hash', $partHash['unique_hash'])->get(['brand_name', 'part_number', 'warehouse', 'unique_hash', 'price', 'description_english']);
+    	    $part = $partCollection->firstWhere('unique_hash', $partHash['unique_hash']);
+	    $item_ = new Item();
+	    $item_->setName('you will pay '.$part->part_number) /** item name **/
+		->setCurrency($payPalData->currency) //was USD
+	        ->setQuantity(1)
+	        ->setPrice($orderData['exchange'] ? $part->price * $orderData['exchange'] : $part->price); 
+	    $item_list->setItems(array($item_1));
+        }
+        
         $amount = new Amount();
         $amount->setCurrency($payPalData->currency) //was USD
             ->setTotal($payPalData->amount);
@@ -188,6 +192,7 @@ class PayPalController extends Controller
             $customersOrder['amount'] = $amount;
             $dataElem = 0;
             $array = [];
+            dd($customersOrder);
             foreach($orderData['data'] as $partHash) {
                 $partCollection = Part::where('unique_hash', $partHash['unique_hash'])->get(['brand_name', 'part_number', 'warehouse', 'unique_hash', 'price', 'description_english']);
 		        $part = $partCollection->firstWhere('unique_hash', $partHash['unique_hash']);
@@ -256,7 +261,7 @@ class PayPalController extends Controller
         $customersOrder['data'] = $newOrder->data;
         $url = base64_encode(json_encode($customersOrder));
 //dd($customersOrder, $url);
-        return Redirect::away('http://test.cruiseraddiction.com/final?result='.$url);
+        return Redirect::away('http://cruiseraddiction.com/final?result='.$url);
                     
         } catch(Exception $e){
     	    dd($e);
