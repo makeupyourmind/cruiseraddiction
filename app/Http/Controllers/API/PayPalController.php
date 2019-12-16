@@ -217,7 +217,8 @@ class PayPalController extends Controller
                 $object->price = $part->price;
                 $object->unique_hash = $part->unique_hash;
                 $object->warehouse = $part->warehouse;
-                $object->user_id = $customersOrder['user']['id'];
+                $user = User::where('email', $customersOrder['user']['email'])->first();
+                $object->user_id = $user->id;
                 array_push($array, $object);
 		        $dataElem++;
             }
