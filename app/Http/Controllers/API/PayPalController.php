@@ -125,6 +125,7 @@ class PayPalController extends Controller
                        ->setQuantity(1)
                        ->setPrice($orderData['taxes']['total_price']);
             array_push($tempArr, $item_taxes);
+            $total_full += $orderData['taxes']['total_price'];
         }
         $item_list->setItems($tempArr);        
         
