@@ -99,12 +99,12 @@ class PayPalController extends Controller
     	    $price_total = $orderData['exchange'] ? $part->price * $orderData['exchange'] : $part->price;
 
     	    $rounded = round($price_total, 2);
-    	    $total_full += $rounded;
+    	    $total_full += $rounded * $partHash['count'];
 
             $item_ = new Item();
             $item_->setName($part->part_number." ".$part->brand_name) /** item name **/
                   ->setCurrency($payPalData->currency) //was USD
-                  ->setQuantity(1)
+                  ->setQuantity($partHash['count'])
                   ->setPrice($rounded);
 
             array_push($tempArr, $item_);
