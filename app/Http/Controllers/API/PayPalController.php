@@ -82,74 +82,70 @@ class PayPalController extends Controller
 
     public function postPaymentWithpaypal(Request $request)
     {
-        $payPalData = PayPalData::where('hash', $request->hash)->first();
+        $payPalData = PayPalData::where('hash', $request->hash)
+                                ->first();
         Session::put('amount', $payPalData->amount);
         Session::put('result', $payPalData->result);
-	$orderData = json_decode(base64_decode($payPalData->result), true);
+	    $orderData = json_decode(base64_decode($payPalData->result), true);
         $payer = new Payer();
         $payer->setPaymentMethod('paypal');
         $item_list = new ItemList();
         $tempArr = [];
         $total_full = 0;
         foreach($orderData['data'] as $partHash) {
-    	    $partCollection = Part::where('unique_hash', $partHash['unique_hash'])->get(['brand_name', 'part_number', 'warehouse', 'unique_hash', 'price', 'description_english']);
+            $partCollection = Part::where('unique_hash', $partHash['unique_hash'])
+                                  ->get(['brand_name', 'part_number', 'warehouse', 'unique_hash', 'price', 'description_english']);
     	    $part = $partCollection->firstWhere('unique_hash', $partHash['unique_hash']);
     	    $price_total = $orderData['exchange'] ? $part->price * $orderData['exchange'] : $part->price;
-    	    //dd($orderData['user']['shipping']['total_price'], $orderData['user']['shipping']);
-    	    $rounded = round($price_total,2);
+
+    	    $rounded = round($price_total, 2);
     	    $total_full += $rounded;
-    	    //$rounded = round($price_total,2);
-	    $item_ = new Item();
-	    $item_->setName($part->part_number." ".$part->brand_name) /** item name **/
-		 ->setCurrency($payPalData->currency) //was USD
-	         ->setQuantity(1)
-	         ->setPrice($rounded); 
-	    //$item_list->setItems(array($item_));
-	    array_push($tempArr, $item_);
+
+            $item_ = new Item();
+            $item_->setName($part->part_number." ".$part->brand_name) /** item name **/
+                  ->setCurrency($payPalData->currency) //was USD
+                  ->setQuantity(1)
+                  ->setPrice($rounded);
+
+            array_push($tempArr, $item_);
         }
         
-        //$item_list->setItems($tempArr);
-        //dd($price_total, Session::get('amount'));
-        //dd("here");
-        //foreach($shipping as $ship)
         $total_full += $orderData['user']['shipping']['total_price'];
-        $item_1 = new Item();
-        $item_1->setName('Item shipping '. $orderData['user']['shipping']['service_name']) /** item name **/
-               ->setCurrency($payPalData->currency) //was USD
-               ->setQuantity(1)
-                ->setPrice($orderData['user']['shipping']['total_price']); /** unit price **/
-                                                                //->setPrice($this->price->value); /** unit price **/
-                                                                
-        //$item_list1 = new ItemList();
-        //$item_list1->setItems(array($item_1));
-         array_push($tempArr, $item_1);
-         $item_list->setItems($tempArr);
-         //dd($item_list, $payPalData->amount, $total_full);
-        
+        $item_shipping = new Item();
+        $item_shipping->setName('Item shipping '. $orderData['user']['shipping']['service_name']) /** item name **/
+                      ->setCurrency($payPalData->currency) //was USD
+                      ->setQuantity(1)
+                      ->setPrice($orderData['user']['shipping']['total_price']); /** unit price **/
+
+        array_push($tempArr, $item_shipping);
+        if($orderData['taxes']['active']){
+            $item_taxes = new Item();
+            $item_taxes->setName('Item taxes')
+                       ->setCurrency($payPalData->currency)
+                       ->setQuantity(1)
+                       ->setPrice($orderData['taxes']['total_price']);
+            array_push($tempArr, $item_taxes);
+        }
+        $item_list->setItems($tempArr);        
         
         $amount = new Amount();
         $amount->setCurrency($payPalData->currency) //was USD
-            ->setTotal($total_full);
-            //->setTotal($this->price->value);
-	//dd($item_list);
-	//dd($item_list1, $price_total, Session::get('amount'), $payPalData->amount, $item_list);
+               ->setTotal($total_full);
+
         $transaction = new Transaction();
         $transaction->setAmount($amount)
-            ->setItemList($item_list)
-            ->setDescription('Your transaction description');
+                    ->setItemList($item_list)
+                    ->setDescription('Your transaction description');
         $redirect_urls = new RedirectUrls();
-//        $redirect_urls->setReturnUrl(URL::route('payment.status')) /** Specify return URL **/
-//          $redirect_urls->setReturnUrl('https://testback.cruiseraddiction.com/paypal/success') /** Specify return URL **/
-          $redirect_urls->setReturnUrl('https://testback.cruiseraddiction.com/paypal/success') /** Specify return URL **/
 
-                ->setCancelUrl(URL::route('payment.status'));
+        $redirect_urls->setReturnUrl('https://testback.cruiseraddiction.com/paypal/success') /** Specify return URL **/
+                      ->setCancelUrl(URL::route('payment.status'));
         $payment = new Payment();
         $payment->setIntent('Sale')
-            ->setPayer($payer)
-            ->setRedirectUrls($redirect_urls)
-            ->setTransactions(array($transaction));
-        /** dd($payment->create($this->_api_context));exit; **/
-        //dd("here");
+                ->setPayer($payer)
+                ->setRedirectUrls($redirect_urls)
+                ->setTransactions(array($transaction));
+
         try {
             $payment->create($this->_api_context);
         } catch (\PayPal\Exception\PayPalConnectionException $ex) {
@@ -166,7 +162,7 @@ class PayPalController extends Controller
                 /** die('Some error occur, sorry for inconvenient'); **/
             }
         }
-        //dd("here");
+
         foreach($payment->getLinks() as $link) {
             if($link->getRel() == 'approval_url') {
                 $redirect_url = $link->getHref();
@@ -183,7 +179,8 @@ class PayPalController extends Controller
         \Session::put('error','Unknown error occurred');
         return Redirect::route('addmoney.paywithpaypal');
     }
-     public function getPaymentStatus()
+
+    public function getPaymentStatus()
     {
         /** Get the payment ID before session clear **/
         //$payment_id = Session::get('paypal_payment_id');
@@ -226,17 +223,8 @@ class PayPalController extends Controller
             //dd($customersOrder);
             foreach($orderData['data'] as $partHash) {
                 $partCollection = Part::where('unique_hash', $partHash['unique_hash'])->get(['brand_name', 'part_number', 'warehouse', 'unique_hash', 'price', 'description_english']);
-		        $part = $partCollection->firstWhere('unique_hash', $partHash['unique_hash']);
-                // Part::where('unique_hash', $partHash['unique_hash'])->decrement('qty', $partHash['count']);
-                // $customersOrder['data'][$dataElem]['count'] = $partHash['count'];
-                // $customersOrder['data'][$dataElem]['brand_name'] = $part->brand_name;
-		        // $customersOrder['data'][$dataElem]['part_number_without_too_much']= str_replace(['-', '-'], '', $part->part_number);
-                // $customersOrder['data'][$dataElem]['part_number'] = $part->part_number;
-                // $customersOrder['data'][$dataElem]['warehouse'] = $part->warehouse;
-                // $customersOrder['data'][$dataElem]['price'] = $part->price;
-                // $customersOrder['data'][$dataElem]['description_english'] = $part->description_english;
-                // $customersOrder['data'][$dataElem]['unique_hash'] = $part->unique_hash;
-                // $customersOrder['data'][$dataElem]['client_column_two'] = time().$dataElem;
+                $part = $partCollection->firstWhere('unique_hash', $partHash['unique_hash']);
+
                 $object = new \stdClass();
                 $object->amount = $customersOrder['amount'];
                 $object->brand_name = $part->brand_name;
@@ -267,38 +255,17 @@ class PayPalController extends Controller
                 'data' => $array,
                 'user_id' => $customersOrder['user']['id']
             ]);
-            //$user = User::where('id', $customersOrder['user']['id'])->first();
-            // $newOrder = new Order;  
-            // $newOrder->order = 'ff';
-            // $newOrder->amount = $customersOrder['amount'];
-            // $newOrder->data = $array;
-            // $newOrder = [
-            //     'order' => 'fff',
-            //     'amount' => $customersOrder['amount'],
-            //     'data' => $array 
-            // ];
 
-            // $user->orders()->create($newOrder);
-            // $newOrder->users()->associate($user);
-            // $newOrder->save();
-            // $serializedOrder = serialize($customersOrder);
-
-            // $newOrder = New Order;
-            // $newOrder->order = $serializedOrder;
-            // $newOrder->save();
-        // $insertedId = $newOrder->id;
-        try{
-        $insertedId = $newOrder->id;
-        $customersOrder['order_id'] = $insertedId;
-        $customersOrder['data'] = $newOrder->data;
-        $url = base64_encode(json_encode($customersOrder));
-//dd($customersOrder, $url);
-        return Redirect::away('http://test.cruiseraddiction.com/final?result='.$url);
-                    
-        } catch(Exception $e){
-    	    dd($e);
-        }
-
+            try{
+                $insertedId = $newOrder->id;
+                $customersOrder['order_id'] = $insertedId;
+                $customersOrder['data'] = $newOrder->data;
+                $url = base64_encode(json_encode($customersOrder));
+                return Redirect::away('http://test.cruiseraddiction.com/final?result='.$url);
+                        
+            } catch(Exception $e){
+                dd($e);
+            }
         }
         \Session::put('error','Payment failed');
         return Redirect::route('addmoney.paywithpaypal');
