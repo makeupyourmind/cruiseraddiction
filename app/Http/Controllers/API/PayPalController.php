@@ -100,7 +100,7 @@ class PayPalController extends Controller
     	    $total_full += $rounded;
     	    //$rounded = round($price_total,2);
 	    $item_ = new Item();
-	    $item_->setName('you will pay '.$part->part_number) /** item name **/
+	    $item_->setName($part->part_number." ".$part->brand_name) /** item name **/
 		 ->setCurrency($payPalData->currency) //was USD
 	         ->setQuantity(1)
 	         ->setPrice($rounded); 
