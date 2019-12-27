@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 // use App\Http\Controllers\Controller;
+use Illuminate\Database\Eloquent\Builder;
 use App\Model\Country;
 use App\Model\Order;
 use App\User;
@@ -93,11 +94,10 @@ class OrdersController
     }
 
     public function userOrders($id) {
-		$user = Auth::user();
-		$orders = Order::with(['user' => function($query) use ($user){
-									$query->where('id', $user->id);
-								}])
-									->where('user_id', $user->id)
+		$user_id = Auth::id();
+		$orders = Order::with('user')->whereHas('user', function(Builder $query) use ($user_id){
+										     		$query->where('id', '=', $user_id);
+									  })
 									->orderBy('id', 'desc')
 									->get();
 

@@ -14,7 +14,7 @@ use Illuminate\Http\Request;
 */
 Route::group([
     'namespace' => 'API'], function () {
-    Route::get('test', 'TestController@test');    
+    Route::get('test', 'TestController@test');
     Route::post('register', 'RegisterController@register');
     Route::get('verifyRegistration', 'RegisterController@verifyRegistration');
     Route::post('login', 'RegisterController@login');
@@ -47,10 +47,10 @@ Route::group([
 
     Route::post('paypal', array('as' => 'addmoney.paypal','uses' => 'PayPalController@post'));
 });
-// 'middleware' => ['auth:api','checkRoles:User,Admin']
+// 'middleware' => ['auth:api','role:User,Admin']
 Route::group([
     'namespace' => 'API',
-    'middleware' => 'auth:api'], function () { //, 'checkRoles:User,Admin' - add then
+    'middleware' => 'auth:api'], function () { //, 'role:User,Admin' - add then
 
     Route::post('logout', 'RegisterController@logout');
     Route::post('add-parts', 'PartsController@store');
@@ -59,8 +59,10 @@ Route::group([
     Route::get('parts/images', 'PartsController@images');
     Route::get('user', 'UsersController@show');
     Route::put('user/{id}', 'UsersController@update');
-    Route::patch('user/{id}', 'UsersController@updateSome');
     Route::get('user-orders/{id}', 'OrdersController@userOrders');
+    Route::get('user-files', 'PaymentHistoryFileController@getUserPaymentFiles');
+    Route::get('user-files/{id}', 'PaymentHistoryFileController@downloadUserPaymentFile');
+    Route::delete('user-files/{id}', 'PaymentHistoryFileController@destroyUserPaymentFiles');
 
     Route::post('bundles', 'BundlesController@store');
     Route::get('bundles/{id}', 'BundlesController@show');
@@ -68,7 +70,7 @@ Route::group([
 
 Route::group([
     'namespace' => 'API',
-    'middleware' => ['auth:api', 'checkRoles:SuperAdmin'],
+    'middleware' => ['auth:api', 'role:SuperAdmin'],
     'prefix' => 'superadmin'], function () {
 
     Route::get('/', 'SuperAdminContoller@index');

@@ -41,8 +41,6 @@ class RegisterController extends BaseController
         // $role = Role::where('name', $request->role)->first();
         $user = User::create($input);
         // $user->roles()->attach($role);
-        $success['token'] =  $user->createToken('MyApp')->accessToken;
-        $success['first_name'] =  $user->name;
 
         $token = Str::random();
         $verify = VerificationToken::create([
@@ -56,11 +54,10 @@ class RegisterController extends BaseController
         );
 
         Mail::send("email.registration", $data , function ($mail) use ($user) {
-            // $mail->from('cruiseraddiction.web@gmail.com');
-            $mail->to($user->email)
-                 ->subject('Confirm registration');
+                $mail->to($user->email)
+                     ->subject('Confirm registration');
         });
-        // return $this->sendResponse($success, 'User register successfully.');
+
         return $this->sendResponse("", 'Check your email');
     }
 
@@ -79,9 +76,8 @@ class RegisterController extends BaseController
         ]);
 
         Mail::send("email.registration_done", [""] , function ($mail) use ($foundToken) {
-            // $mail->from('cruiseraddiction.web@gmail.com');
-            $mail->to($foundToken->user->email)
-                    ->subject('Welcome to our site');
+                $mail->to($foundToken->user->email)
+                     ->subject('Welcome to our site');
         });
 
         return Redirect::to("https://www.cruiseraddiction.com/chack-register");
@@ -125,7 +121,6 @@ class RegisterController extends BaseController
             // else{
             //     return $this->sendError("You don't have permission.", '', 403);
             // }
-            
         }
 
             return $this->sendError('Authorization failed.', '', 400);

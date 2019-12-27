@@ -9,6 +9,6 @@ use File;
 class DocumentationController extends Controller
 {
     public function index() {
-	return File::get(public_path('docs').'/index.html');
+	    return File::get(public_path('docs').'/index.html');
     }
 }

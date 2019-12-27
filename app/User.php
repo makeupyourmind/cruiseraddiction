@@ -52,4 +52,8 @@ class User extends Authenticatable
         return $this->hasMany('App\Model\Order');
     }
 
+    public function payment_history_files(){
+        return $this->hasMany('App\Model\Order', 'user_id');
+    }
+
 }

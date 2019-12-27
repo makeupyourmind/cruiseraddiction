@@ -62,42 +62,40 @@ class ShipmentController extends Controller
         $postResponse = $postRequest->getBody();
         //return $postResponse;
         $postResponse = json_decode($postResponse);
-	if($request->create_ac){
-	
-	     $validator = Validator::make($request->user, [
-	        'first_name' => 'required',
-	        'last_name' => 'required',
-	        'email' => 'required|email|unique:users,email',
-	        'password' => 'required',
-	        'c_password' => 'required|same:password',
-	    ]);
-	    
-	     if($validator->fails()){
-	        return  response()->json(  $validator->errors(), 402) ;
-	     }
-	     $input = $request->user;
-	     $input['password'] = bcrypt($input['password']);
-         $user = User::create($input);
+        if($request->create_ac){
+        
+            $validator = Validator::make($request->user, [
+                'first_name' => 'required',
+                'last_name' => 'required',
+                'email' => 'required|email|unique:users,email',
+                'password' => 'required',
+                'c_password' => 'required|same:password',
+            ]);
+            
+            if($validator->fails()){
+                return  response()->json(  $validator->errors(), 402) ;
+            }
+            $input = $request->user;
+            $input['password'] = bcrypt($input['password']);
+            $user = User::create($input);
 
-         $token = Str::random();
-         $verify = VerificationToken::create([
-            'user_id' => $user->id,
-            'token' => $token 
-         ]);
-         $url = env('APP_URL')."/api/verifyRegistration?token=".$token;
-         
-         $data = array(
-            'url'=> $url,
-         );
+            $token = Str::random();
+            $verify = VerificationToken::create([
+                'user_id' => $user->id,
+                'token' => $token 
+            ]);
+            $url = env('APP_URL')."/api/verifyRegistration?token=".$token;
+            
+            $data = array(
+                'url'=> $url,
+            );
 
-         Mail::send("email.registration", $data , function ($mail) use ($input) {
-            $mail->to($input['email'])
-                 ->subject('Confirm registration');
-         });
-         //$success['token'] =  $user->createToken('MyApp')->accessToken;
-         
-	     return response()->json(['shipping' => $postResponse], 201);
-	}                                                                        
+            Mail::send("email.registration", $data , function ($mail) use ($input) {
+                $mail->to($input['email'])
+                    ->subject('Confirm registration');
+            });
+            return response()->json(['shipping' => $postResponse], 201);
+        }                                                                        
         return response()->json(['shipping' => $postResponse], 200);
     }
 }

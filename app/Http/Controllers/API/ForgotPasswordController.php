@@ -53,7 +53,7 @@ class ForgotPasswordController extends BaseController
         if(!count($user_exist)){
             return $this->sendError('Hash is wrong');
         }
-        // return Redirect::to("http://".$user_exist[0]->url);
+
         return Redirect::to($user_exist[0]->url);
     }
 }

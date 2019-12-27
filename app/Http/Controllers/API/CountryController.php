@@ -14,7 +14,7 @@ class CountryController extends BaseController
 {
 
     public function get_countries() {
-	$get = Country::all();
-	return response()->json($get, 200);
+        $get = Country::all();
+        return response()->json($get, 200);
     }
 }
