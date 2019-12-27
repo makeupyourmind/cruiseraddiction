@@ -228,8 +228,8 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
 	'LaravelGmail' => Dacastro4\LaravelGmail\Facade\LaravelGmail::class,
 	'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+        'PDF' => Barryvdh\DomPDF\Facade::class
 
-	
 
 
     ],
