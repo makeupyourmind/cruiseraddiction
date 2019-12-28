@@ -101,9 +101,8 @@ class PartsController extends BaseController
             if($temp != '.' and $temp != '..'){
                 $filename = storage_path('images/').$temp;
                 if (file_exists($filename)) {
-
                     $filename = storage_path('images/temp/').$temp;
-                    shell_exec('cp "'.$filename.'" '.storage_path('images'));// \cp
+                    shell_exec('cp -r "'.$filename.'" '.storage_path('images'));// \cp
                     shell_exec('cp -r "'.$filename.'" '.public_path("images/parts"));
                     $overwrittenExistingImagesCounter++;
                     $find = strripos($temp, '-');
@@ -112,7 +111,6 @@ class PartsController extends BaseController
                     }
                     array_push($arrayOverwritten, $cut[0]);
                 } else {
-
                     $filename = storage_path('images/temp/').$temp;
                     shell_exec('cp -r "'.$filename.'" '.storage_path('images'));
                     shell_exec('cp -r "'.$filename.'" '.public_path("images/parts"));
