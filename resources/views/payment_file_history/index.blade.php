@@ -106,7 +106,7 @@
     <tr>
         <td style="border-bottom: 1px solid white"><span style="color:white">tt</span></td>
         <td style="border-bottom: 1px solid white"><span style="color:white">tt</span></td>
-        <td  style="border-left:1px solid black;">ON-HST (13%)</td>
+        <td  style="border-left:1px solid black;">ON-HST ({{$tax_rate}}%)</td>
         <td ></td>
         <td ></td>
         <td >${{ $taxe_price }}</td>
