@@ -90,10 +90,12 @@ class PartsController extends BaseController
         shell_exec('unzip -d '.storage_path("images/temp").' '.$path);
 
         $tempPartsImages = scandir(storage_path('images/temp'));
-        $exsistImagesOverrited = 0;
-        $uploadedImages = 0;
+        $overwrittenExistingImagesCounter = 0;
+        $uploadedImagesCounter = 0;
         $arrayUploaded = [];
-        $arrayOverrited = [];
+        $arrayOverwritten = [];
+        $arrayOverwrittenImages = [];
+        $arrayUploadedImages = [];
         $object = new \stdClass;
         foreach($tempPartsImages as $key => $temp){
             if($temp != '.' and $temp != '..'){
@@ -101,41 +103,40 @@ class PartsController extends BaseController
                 if (file_exists($filename)) {
 
                     $filename = storage_path('images/temp/').$temp;
-                    shell_exec('\cp "'.$filename.'" '.storage_path('images'));
+                    shell_exec('cp "'.$filename.'" '.storage_path('images'));// \cp
                     shell_exec('cp -r "'.$filename.'" '.public_path("images/parts"));
-                    $exsistImagesOverrited++;
+                    $overwrittenExistingImagesCounter++;
                     $find = strripos($temp, '-');
                     if($find == true){
-                    $cut = explode('-', $temp);
+                        $cut = explode('-', $temp);
                     }
-                    array_push($arrayOverrited, $cut[0]);
+                    array_push($arrayOverwritten, $cut[0]);
                 } else {
 
                     $filename = storage_path('images/temp/').$temp;
                     shell_exec('cp -r "'.$filename.'" '.storage_path('images'));
                     shell_exec('cp -r "'.$filename.'" '.public_path("images/parts"));
-                    $uploadedImages++;
+                    $uploadedImagesCounter++;
                     $find = strripos($temp, '-');
                     if($find == true){
-                    $cut = explode('-', $temp);
+                        $cut = explode('-', $temp);
                     }
                     array_push($arrayUploaded, $cut[0]);
                 }
-                $object->numberOfNewPictures = count($tempPartsImages) - 2;
+                $object->numberOfImagesInFolder = count($tempPartsImages) - 2;
             }
         }
-        $valsOverrited = array_count_values($arrayOverrited);
-        $valsOverrited["all"] = $exsistImagesOverrited;
-        $arrayOverrited = [];
+        $valsOverwritten = array_count_values($arrayOverwritten);
         $valsUploaded = array_count_values($arrayUploaded);
-        $valsUploaded["all"] = $uploadedImages;
-        $arrayUploaded = [];
 
-        array_push($arrayOverrited, $valsOverrited);
-        array_push($arrayUploaded, $valsUploaded);
+        array_push($arrayOverwrittenImages, $valsOverwritten);
+        array_push($arrayUploadedImages, $valsUploaded);
 
-        $object->exsistImagesOwerrited = $arrayOverrited;
-        $object->uploadedImages = $arrayUploaded;
+        $object->overwrittenExistingImages = $arrayOverwrittenImages;
+        $object->totalOverwritten = $overwrittenExistingImagesCounter;
+
+        $object->uploadedImages = $arrayUploadedImages;
+        $object->totalUploaded = $uploadedImagesCounter;
         shell_exec('rm '.storage_path('images/temp/*'));
 	
         $partsImages = scandir(storage_path('images'));
@@ -165,7 +166,6 @@ class PartsController extends BaseController
                     $collectNumbers[] = $partImage;
                 } else {
                     $serialImg = json_encode($collectNumbers);
-
                     Part::where('part_number', str_replace('-','', $prev))->update(['image' => $serialImg]);
                     $collectNumbers = array();
                     $collectNumbers[] = $partImage;
@@ -189,13 +189,14 @@ class PartsController extends BaseController
         ]);
 
         if($validator->fails()){
-
             return $this->sendError('Validation Error.', $validator->errors());
         }
 
-        $parts = Part::where('brand_name', $request->brand)
-                    ->where('part_number', $request->part_number)
-                    ->get()->toArray();
+        $parts = Part::where([
+                                ['brand_name', $request->brand],
+                                ['part_number', $request->part_number]
+                            ])
+                              ->get();
         $partsList = array();
 
         foreach($parts as $part) {
@@ -207,20 +208,16 @@ class PartsController extends BaseController
             $partsList['fits'] = $part['fits'];
             $partsList['important_general'] = $part['important_general'];
 
-            $partData = Part::where('brand_name', $part['brand_name'])
-                            ->where('part_number', $part['part_number'])
-                            ->get()
-                            ->toArray();
-            for($j = 0; $j < count($partData); $j++) {
-                $partsList['data'][$j]['warehouses'] = $partData[$j]['warehouse'];
-                $partsList['data'][$j]['available'] = $partData[$j]['qty'];
-                $partsList['data'][$j]['prices'] = $partData[$j]['price'];
-                $partsList['data'][$j]['unique_hashes'] = $partData[$j]['unique_hash'];
-				$partsList['data'][$j]['weight_physical'] = $partData[$j]['weight_physical'];
-                $partsList['data'][$j]['description_english'] = $partData[$j]['description_english'];
-				$partsList['data'][$j]['fits'] = $partData[$j]['fits'];
-				$partsList['data'][$j]['important_general'] = $partData[$j]['important_general'];
-				$partsList['data'][$j]['image'] = $partData[$j]['image'];
+            foreach($parts as $index => $data) {
+                $partsList['data'][$index]['warehouses'] = $data['warehouse'];
+                $partsList['data'][$index]['available'] = $data['qty'];
+                $partsList['data'][$index]['prices'] = $data['price'];
+                $partsList['data'][$index]['unique_hashes'] = $data['unique_hash'];
+				$partsList['data'][$index]['weight_physical'] = $data['weight_physical'];
+                $partsList['data'][$index]['description_english'] = $data['description_english'];
+				$partsList['data'][$index]['fits'] = $data['fits'];
+				$partsList['data'][$index]['important_general'] = $data['important_general'];
+				$partsList['data'][$index]['image'] = $data['image'];
             }
         }
 

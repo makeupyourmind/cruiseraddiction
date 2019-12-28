@@ -53,19 +53,29 @@ Route::group([
     'middleware' => 'auth:api'], function () { //, 'role:User,Admin' - add then
 
     Route::post('logout', 'RegisterController@logout');
+    Route::get('user', 'UsersController@show');
+    Route::put('user/{id}', 'UsersController@update');
+    Route::get('user-orders/{id}', 'OrdersController@userOrders');
+
+    Route::group(['prefix' => 'user-files'], function(){
+        Route::get('/', 'PaymentHistoryFileController@getUserPaymentFiles');
+        Route::get('/{id}', 'PaymentHistoryFileController@downloadUserPaymentFile');
+        Route::delete('/{id}', 'PaymentHistoryFileController@destroyUserPaymentFiles');
+    });
+    
+    Route::get('bundles/{id}', 'BundlesController@show');
+});
+
+Route::group([
+    'namespace' => 'API',
+    'middleware' => 'auth:api'], function () { //, 'role:Admin' - add then
+
     Route::post('add-parts', 'PartsController@store');
     Route::put('update-parts', 'PartsController@update');
     Route::delete('delete-parts', 'PartsController@destroy');
     Route::get('parts/images', 'PartsController@images');
-    Route::get('user', 'UsersController@show');
-    Route::put('user/{id}', 'UsersController@update');
-    Route::get('user-orders/{id}', 'OrdersController@userOrders');
-    Route::get('user-files', 'PaymentHistoryFileController@getUserPaymentFiles');
-    Route::get('user-files/{id}', 'PaymentHistoryFileController@downloadUserPaymentFile');
-    Route::delete('user-files/{id}', 'PaymentHistoryFileController@destroyUserPaymentFiles');
-
+    
     Route::post('bundles', 'BundlesController@store');
-    Route::get('bundles/{id}', 'BundlesController@show');
 });
 
 Route::group([
