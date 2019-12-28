@@ -274,6 +274,7 @@ class PayPalController extends Controller
 
             $currency = $customersOrder['user']['currency'];
             $order_tax_price = $orderData['taxes']['active'] ? $orderData['taxes']['total_price'] : 0; 
+            $order_tax_rate = $orderData['taxes']['active'] ? $orderData['taxes']['tax_rate'] : 0; 
             $user_email = $customersOrder['user']['email'];
             $user_phone_number = json_decode($customersOrder['user']['phone'], true);
             $user_city = $customersOrder['user']['city'];
@@ -313,6 +314,7 @@ class PayPalController extends Controller
                 'shipping_total_price' => $shipping_total_price,
                 'subtotal' => $subtotal,
                 'taxe_price' => $order_tax_price,
+                'tax_rate' => $order_tax_rate,
                 "orderInfo" => $encoded
             ];
 
