@@ -71,7 +71,7 @@
         <td style="border-bottom: 1px solid black">{{ $order["qty"] }}</td>
         <td style="border-bottom: 1px solid black">${{ $order["price"] }}</td>
         <td style="border-bottom: 1px solid black">${{ $order["total_price"] }}</td>
-        <td style="border-bottom: 1px solid black"> W {{ $order["warehouse"] }}</td>
+        <td style="border-bottom: 1px solid black"> W{{ $order["warehouse"] }}</td>
     </tr>
 @endforeach
 
@@ -87,7 +87,7 @@
     <tr>
         <td style="border-bottom: 1px solid white"><span style="color:white">tt</span></td>
         <td style="border-bottom: 1px solid white"><span style="color:white">tt</span></td>
-        <td style="border-left:1px solid black;">Shipping W1</td>
+        <td style="border-left:1px solid black;">Shipping W{{ $order["warehouse"] }}</td>
         <td></td>
         <td></td>
         <td >${{ $shipping_total_price }}</td>

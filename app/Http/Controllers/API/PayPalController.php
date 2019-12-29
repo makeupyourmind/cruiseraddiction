@@ -247,6 +247,13 @@ class PayPalController extends Controller
                 array_push($array, $object);
                 $dataElem++;
                 $total_quantity_ordered += $partHash['count'];
+                $warehouse = $part->warehouse;
+                if(strpos($warehouse, "O") !== false){
+                    $warehouse = 1;
+                }
+                if(strpos($warehouse, "E") !== false){
+                    $warehouse = 2;
+                }
                 $data_pdf_orderInfo[] = [
                     'brand_name' => $part->brand_name,
                     'part_number' => $part->full_part_number,
@@ -254,7 +261,7 @@ class PayPalController extends Controller
                     'qty' => $partHash['count'],
                     'price' => round($part->price, 2),
                     'description' => $part->description_english,
-                    'warehouse' => $part->warehouse
+                    'warehouse' => $warehouse
                 ];
             }
 
