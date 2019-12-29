@@ -93,15 +93,15 @@
         <td >${{ $shipping_total_price }}</td>
         <td  style="border-right:1px solid black"></td>
     </tr>
-    <tr>
-        <td style="border-bottom: 1px solid white"><span style="color:white">tt</span></td>
-        <td style="border-bottom: 1px solid white"><span style="color:white">tt</span></td>
-        <td  style="border-left:1px solid black;">Shipping W2</td>
-        <td ></td>
-        <td ></td>
-        <td >$79.99</td>
-        <td  style="border-right:1px solid black"></td>
-    </tr>
+{{--    <tr>--}}
+{{--        <td style="border-bottom: 1px solid white"><span style="color:white">tt</span></td>--}}
+{{--        <td style="border-bottom: 1px solid white"><span style="color:white">tt</span></td>--}}
+{{--        <td  style="border-left:1px solid black;">Shipping W2</td>--}}
+{{--        <td ></td>--}}
+{{--        <td ></td>--}}
+{{--        <td >$79.99</td>--}}
+{{--        <td  style="border-right:1px solid black"></td>--}}
+{{--    </tr>--}}
     @if($show_13_percent)
     <tr>
         <td style="border-bottom: 1px solid white"><span style="color:white">tt</span></td>
