@@ -307,7 +307,7 @@ class PayPalController extends Controller
                 'user_first_name' => $customersOrder['user']['first_name'],
                 'user_last_name' => $customersOrder['user']['last_name'],
                 'user_email' => $user_email,
-                'user_phone_number' => $user_phone_number['formattedNumber'] || $user_phone_number['phoneNumber'],
+                'user_phone_number' => $user_phone_number['formattedNumber'] ? $user_phone_number['formattedNumber'] : $user_phone_number['phoneNumber'],
                 'user_phone_countryCode' => $user_phone_number['countryCode'],
                 'user_city' => $user_city,
                 'user_state' => $user_state,
