@@ -20,7 +20,9 @@
     <div>info@cruiseraddiction.com</div>
     <div>www.cruiseraddiction.com</div>
     <br>
-    <div style="margin-bottom: 20px;">GST/HST: 821538303RT0001</div>
+    @if($show_information_company)
+        <div style="margin-bottom: 20px;">GST/HST: 821538303RT0001</div>
+    @endif
 </div>
 <div style="float: right;width: 250px;">
     <h1 style="color: #a6a6a6;margin-bottom: 5px;text-align: right;">INVOICE</h1>
@@ -28,8 +30,8 @@
     <br>
     <br>
     <br>
-    <div style="text-align: right; font-size: 20px">Invoice #: 2023</div>
-    <div style="text-align: right; font-size: 20px">Invoice Date: Dec 10, 2019</div>
+    <div style="text-align: right; font-size: 20px">Invoice #: {{ $order_id }}</div>
+    <div style="text-align: right; font-size: 20px">Invoice Date: {{ $invoice_date }}</div>
 </div>
 
 <div style="clear: both;"></div>
@@ -42,12 +44,12 @@
 	background: white;">
 <div>
     <div>Bill to:</div>
-    <div>Wayne Smith</div>
-    <div>100 King street</div>
-    <div>Dobbinton ON N0H 1L0</div>
-    <div>Canada</div>
-    <div>+1 (222) 123-1234</div>
-    <div>wayne@gmail.com</div>
+    <div>{{$user_first_name}} {{$user_last_name}}</div>
+    <div>{{ $user_street_address }}</div>
+    <div>{{ $user_city }} {{ $user_postal_code }}</div>
+    <div>{{ $user_state }}</div>
+    <div>{{ $user_phone_number }}</div>
+    <div>{{ $user_email }}</div>
 </div>
 <br>
 <table style="width: 100%;border-collapse: collapse">
@@ -61,25 +63,25 @@
         <td style="background: lightgray;border-bottom: 1px solid black;border-top: 1px solid black;border-right: 1px solid black; width: 20px"><span style="color:lightgray">tt</span></td>
     </tr>
 
-{{--    // по циклу--}}
+@foreach(json_decode($orderInfo, true) as $order)
     <tr>
-        <td style="border-bottom: 1px solid black">TOYOTA</td>
-        <td style="border-bottom: 1px solid black;">12345-12345-12</td>
-        <td style="border-bottom: 1px solid black">POWER STEERING HOSE</td>
-        <td style="border-bottom: 1px solid black">100</td>
-        <td style="border-bottom: 1px solid black">$1,999.99$</td>
-        <td style="border-bottom: 1px solid black">1,999.99</td>
-        <td style="border-bottom: 1px solid black"> W</td>
+        <td style="border-bottom: 1px solid black">{{ $order["brand_name"] }}</td>
+        <td style="border-bottom: 1px solid black;">{{ $order["part_number"] }}</td>
+        <td style="border-bottom: 1px solid black">{{ $order["description"] }}</td>
+        <td style="border-bottom: 1px solid black">{{ $order["qty"] }}</td>
+        <td style="border-bottom: 1px solid black">${{ $order["price"] }}</td>
+        <td style="border-bottom: 1px solid black">${{ $order["total_price"] }}</td>
+        <td style="border-bottom: 1px solid black"> W {{ $order["warehouse"] }}</td>
     </tr>
-{{----}}
+@endforeach
 
     <tr>
         <td style="border-bottom: 1px solid white;border-top:1px solid black"><span style="color:white">tt</span></td>
         <td style="border-bottom: 1px solid white;border-top:1px solid black"><span style="color:white">tt</span></td>
         <td style="border-bottom: 1px solid white;border-left:1px solid black;border-top:1px solid black">Subtotal</td>
-        <td style="border-bottom: 1px solid white;border-top:1px solid black">10000</td>
+        <td style="border-bottom: 1px solid white;border-top:1px solid black">{{ $total_quantity_ordered }}</td>
         <td style="border-bottom: 1px solid white;border-top:1px solid black"></td>
-        <td style="border-bottom: 1px solid white;border-top:1px solid black">$19,999.99</td>
+        <td style="border-bottom: 1px solid white;border-top:1px solid black">${{ $subtotal }}</td>
         <td style="border-bottom: 1px solid white;border-top:1px solid black;border-right:1px solid black"></td>
     </tr>
     <tr>
@@ -88,7 +90,7 @@
         <td style="border-left:1px solid black;">Shipping W1</td>
         <td></td>
         <td></td>
-        <td >$199.99</td>
+        <td >${{ $shipping_total_price }}</td>
         <td  style="border-right:1px solid black"></td>
     </tr>
     <tr>
@@ -100,23 +102,25 @@
         <td >$79.99</td>
         <td  style="border-right:1px solid black"></td>
     </tr>
+    @if($show_13_percent)
     <tr>
         <td style="border-bottom: 1px solid white"><span style="color:white">tt</span></td>
         <td style="border-bottom: 1px solid white"><span style="color:white">tt</span></td>
-        <td  style="border-left:1px solid black;">ON-HST (13%)</td>
+        <td  style="border-left:1px solid black;">ON-HST ({{$tax_rate}}%)</td>
         <td ></td>
         <td ></td>
-        <td >$2,600.00</td>
+        <td >${{ $taxe_price }}</td>
         <td  style="border-right:1px solid black"></td>
     </tr>
+    @endif
     <tr>
         <td style="border-bottom: 1px solid white"><span style="color:white">tt</span></td>
         <td style="border-bottom: 1px solid white"><span style="color:white">tt</span></td>
         <th style="border-bottom: 1px solid black;border-left:1px solid black;">TOTAL</th>
         <th style="border-bottom: 1px solid black"></th>
         <th style="border-bottom: 1px solid black"></th>
-        <th style="border-bottom: 1px solid black">$22,879.97</th>
-        <th style="border-bottom: 1px solid black;border-right:1px solid black">CAD</th>
+        <th style="border-bottom: 1px solid black">${{ $total_price_order }}</th>
+        <th style="border-bottom: 1px solid black;border-right:1px solid black">{{ $currency }}</th>
     </tr>
 </table>
 <br>
@@ -173,13 +177,13 @@
 
 <script type="text/php">
     if (isset($pdf)) {
-        $text = "Page {PAGE_NUM} / {PAGE_COUNT}";
+        $text = "Page: {PAGE_NUM} / {PAGE_COUNT}";
         $size = 10;
         $font = $fontMetrics->getFont("Verdana");
         $width = $fontMetrics->get_text_width($text, $font, $size) / 2;
         $x = ($pdf->get_width() - $width);
         $y = $pdf->get_height() - 60;
-		$color = array(211 / 255, 211 / 255, 211 / 255);
+		$color = array(169 / 255, 169 / 255, 169 / 255);
         $pdf->page_text($x, $y, $text, $font, $size, $color);
     }
 

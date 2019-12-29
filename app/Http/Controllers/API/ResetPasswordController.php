@@ -32,12 +32,12 @@ class ResetPasswordController extends BaseController
 
         User::where('email', $user_exist->email)->update(['password' => Hash::make($request->newPassword)]);
         
-        PasswordResets::where('token', $request->token)->delete();
+        // PasswordResets::where('token', $request->token)->delete();
+        $user_exist->delete();
 
         Mail::send("email.resetPassword", ['user' => $user_exist], function ($mail) use ($user_exist) {
-            // $mail->from('cruiseraddiction.web@gmail.com');
-            $mail->to( $user_exist->email)
-                 ->subject('Reset password');
+                $mail->to( $user_exist->email)
+                     ->subject('Reset password');
         });
 
         return $this->sendResponse("Ok",'Your password was changed successfully');

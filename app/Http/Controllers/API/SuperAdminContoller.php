@@ -15,12 +15,11 @@ class SuperAdminContoller extends BaseController
      */
     
     public function index(){
-        $admins = User::with(['roles' => function ($query) {
-            $query->where('name', 'Admin');
-        }])
-        ->whereHas('roles', function($q){
-            $q->where('roles.name', '=', 'Admin');
-        })->paginate(10);
+        $admins = User::with(['roles'])
+                                        ->whereHas('roles', function($q){
+                                            $q->where('roles.name', '=', 'Admin');
+                                        })
+                                        ->paginate(10);
         return $this->sendResponse($admins, 'ok');
     }
 
@@ -34,7 +33,7 @@ class SuperAdminContoller extends BaseController
         ]);
 
         if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors());       
+            return $this->sendError('Validation Error.', $validator->errors(), 422);       
         }
 
         $input = $request->all();
@@ -74,7 +73,7 @@ class SuperAdminContoller extends BaseController
         ]);
 
         if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors(), 202);
+            return $this->sendError('Validation Error.', $validator->errors(), 422);
         }
 
         User::where('id', $id)
@@ -83,7 +82,11 @@ class SuperAdminContoller extends BaseController
     }
 
     public function destroy($id){
-        User::find($id)->delete();
+        $user = User::find($id);
+        if(!$user){
+            return $this->sendError('Not found.', 404);
+        }
+        $user->delete();
         return $this->sendResponse('', 'Deleted successfully');
     }
 }

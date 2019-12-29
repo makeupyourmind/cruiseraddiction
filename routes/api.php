@@ -14,7 +14,7 @@ use Illuminate\Http\Request;
 */
 Route::group([
     'namespace' => 'API'], function () {
-    Route::get('test', 'TestController@test');    
+    Route::get('test', 'TestController@test');
     Route::post('register', 'RegisterController@register');
     Route::get('verifyRegistration', 'RegisterController@verifyRegistration');
     Route::post('login', 'RegisterController@login');
@@ -47,28 +47,40 @@ Route::group([
 
     Route::post('paypal', array('as' => 'addmoney.paypal','uses' => 'PayPalController@post'));
 });
-// 'middleware' => ['auth:api','checkRoles:User,Admin']
+// 'middleware' => ['auth:api','role:User,Admin']
 Route::group([
     'namespace' => 'API',
-    'middleware' => 'auth:api'], function () { //, 'checkRoles:User,Admin' - add then
+    'middleware' => 'auth:api'], function () { //, 'role:User,Admin' - add then
 
     Route::post('logout', 'RegisterController@logout');
-    Route::post('add-parts', 'PartsController@store');
-    Route::put('update-parts', 'PartsController@update');
-    Route::delete('delete-parts', 'PartsController@destroy');
-    Route::get('parts/images', 'PartsController@images');
     Route::get('user', 'UsersController@show');
     Route::put('user/{id}', 'UsersController@update');
-    Route::patch('user/{id}', 'UsersController@updateSome');
     Route::get('user-orders/{id}', 'OrdersController@userOrders');
 
-    Route::post('bundles', 'BundlesController@store');
+    Route::group(['prefix' => 'user-files'], function(){
+        Route::get('/', 'PaymentHistoryFileController@getUserPaymentFiles');
+        Route::get('/{id}', 'PaymentHistoryFileController@downloadUserPaymentFile');
+        Route::delete('/{id}', 'PaymentHistoryFileController@destroyUserPaymentFiles');
+    });
+    
     Route::get('bundles/{id}', 'BundlesController@show');
 });
 
 Route::group([
     'namespace' => 'API',
-    'middleware' => ['auth:api', 'checkRoles:SuperAdmin'],
+    'middleware' => 'auth:api'], function () { //, 'role:Admin' - add then
+
+    Route::post('add-parts', 'PartsController@store');
+    Route::put('update-parts', 'PartsController@update');
+    Route::delete('delete-parts', 'PartsController@destroy');
+    Route::get('parts/images', 'PartsController@images');
+    
+    Route::post('bundles', 'BundlesController@store');
+});
+
+Route::group([
+    'namespace' => 'API',
+    'middleware' => ['auth:api', 'role:SuperAdmin'],
     'prefix' => 'superadmin'], function () {
 
     Route::get('/', 'SuperAdminContoller@index');

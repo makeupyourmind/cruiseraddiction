@@ -45,8 +45,8 @@ class UserFilter
      */
     private static function getResults(Builder $query, Request $request)
     {
-        // return $query->get();
-        return $query->where('is_stock_ca', true)->orderBy($request->order_name, $request->order_by)
+        return $query->where('is_stock_ca', true)
+                     ->orderBy($request->order_name, $request->order_by)
                      ->paginate(100);
     }
 }

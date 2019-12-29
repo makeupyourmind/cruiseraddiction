@@ -1,11 +1,11 @@
 <?php
 
 namespace App\Http\Middleware;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\API\BaseController as BaseController;
+use Illuminate\Http\Request;
 use Closure;
 
-class CheckRoles extends BaseController
+class Role extends BaseController
 {
     /**
      * Handle an incoming request.
@@ -14,9 +14,9 @@ class CheckRoles extends BaseController
      * @param  \Closure  $next
      * @return mixed
      */
-    public function handle($request, Closure $next, ...$roles)
+    public function handle(Request $request, Closure $next, ...$roles)
     {
-        $user = Auth::user();
+        $user = $request->user();
         return in_array($user->roles[0]->name, $roles) ? $next($request) : $this->sendError('Authorization failed.', 'You do not have access', 403);
     }
 }

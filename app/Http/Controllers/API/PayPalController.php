@@ -32,6 +32,10 @@ use App\Model\Order;
 use App\User;
 use App\PayPalData;
 use Illuminate\Support\Str;
+use PDF;
+use Storage;
+use App\Model\PaymentHistoryFile;
+use Mail;
 
 class PayPalController extends Controller
 {
@@ -221,9 +225,10 @@ class PayPalController extends Controller
             $customersOrder['amount'] = $amount;
             $dataElem = 0;
             $array = [];
-            //dd($customersOrder);
+            //dd($customersOrder, $orderData);
+            $total_quantity_ordered = 0;
             foreach($orderData['data'] as $partHash) {
-                $partCollection = Part::where('unique_hash', $partHash['unique_hash'])->get(['brand_name', 'part_number', 'warehouse', 'unique_hash', 'price', 'description_english']);
+                $partCollection = Part::where('unique_hash', $partHash['unique_hash'])->get(['brand_name', 'part_number', 'full_part_number', 'warehouse', 'unique_hash', 'price', 'description_english']);
                 $part = $partCollection->firstWhere('unique_hash', $partHash['unique_hash']);
 
                 $object = new \stdClass();
@@ -240,7 +245,17 @@ class PayPalController extends Controller
                 $user = User::where('email', $customersOrder['user']['email'])->first();
                 $object->user_id = $user->id;
                 array_push($array, $object);
-		        $dataElem++;
+                $dataElem++;
+                $total_quantity_ordered += $partHash['count'];
+                $data_pdf_orderInfo[] = [
+                    'brand_name' => $part->brand_name,
+                    'part_number' => $part->full_part_number,
+                    'total_price' => $partHash['count'] * round($part->price, 2),
+                    'qty' => $partHash['count'],
+                    'price' => round($part->price, 2),
+                    'description' => $part->description_english,
+                    'warehouse' => $part->warehouse
+                ];
             }
 
             $ship = new \stdClass();
@@ -257,12 +272,77 @@ class PayPalController extends Controller
                 'user_id' => $customersOrder['user']['id']
             ]);
 
+            $currency = $customersOrder['user']['currency'];
+            $order_tax_price = $orderData['taxes']['active'] ? $orderData['taxes']['total_price'] : 0; 
+            $order_tax_rate = $orderData['taxes']['active'] ? $orderData['taxes']['tax_rate'] : 0; 
+            $user_email = $customersOrder['user']['email'];
+            $user_phone_number = json_decode($customersOrder['user']['phone'], true);
+            $user_city = $customersOrder['user']['city'];
+            $user_postal_code = $customersOrder['user']['postal_code'];
+            $user_state = $customersOrder['user']['state'];
+            $user_country = $customersOrder['user']['country'];
+            $user_street_address = $customersOrder['user']['street_address'];
+            $user_street_address_two = $customersOrder['user']['street_address'];
+            $shipping_total_price = $customersOrder['user']['shipping']['total_price'];
+
+            $total_price_order = round($amount, 2) + $order_tax_price;
+            $subtotal = $total_price_order - $shipping_total_price - $order_tax_price; //$order_tax_price
+            $encoded = json_encode($data_pdf_orderInfo);
+
+            $show_information_company = $user_country == "CA" ? 1 : 0;
+            $show_13_percent = $user_country == "CA" ? 1 : 0;
+
+            $pass_data_to_pdf = [
+                'order_id' => $newOrder->id,
+                'show_13_percent' => $show_13_percent,
+                'show_information_company' => $show_information_company,
+                'total_quantity_ordered' => $total_quantity_ordered,
+                'user_first_name' => $customersOrder['user']['first_name'],
+                'user_last_name' => $customersOrder['user']['last_name'],
+                'user_email' => $user_email,
+                'user_phone_number' => $user_phone_number['phoneNumber'],
+                'user_phone_countryCode' => $user_phone_number['countryCode'],
+                'user_city' => $user_city,
+                'user_state' => $user_state,
+                'user_country' => $user_country,
+                'user_postal_code' => $user_postal_code,
+                'user_street_address' => $user_street_address,
+                'user_street_address_two' => $user_street_address_two,
+                'currency' => $currency,
+                'invoice_date' => date('M d, Y'),
+                'total_price_order' => $total_price_order,
+                'shipping_total_price' => $shipping_total_price,
+                'subtotal' => $subtotal,
+                'taxe_price' => $order_tax_price,
+                'tax_rate' => $order_tax_rate,
+                "orderInfo" => $encoded
+            ];
+
+            // PDF::setOptions(['isPhpEnabled' => true, "enable_php" => true]);
+            $pdf = PDF::loadView('payment_file_history/index', $pass_data_to_pdf);
+            $pdf->setOptions(['isPhpEnabled' => true, "enable_php" => true]);
+            $content_pdf = $pdf->download()->getOriginalContent();
+            $unique_hash_string = Str::random(22);
+            Storage::disk('public_uploads')->put("payment_file_history/{$unique_hash_string}.pdf", $content_pdf);
+            PaymentHistoryFile::create([
+                'originalFileName' => "Payment_{$newOrder->id}.pdf",
+                'extension' => 'pdf',
+                'unique_hash' => $unique_hash_string,
+                'user_id' => $customersOrder['user']['id']
+            ]);
+            $pathToFile = Storage::disk('public_uploads')->path("payment_file_history/{$unique_hash_string}.pdf");
+            Mail::send('email.payment_done', [''], function ($message) use ($user_email, $pathToFile) {
+                    $message->to($user_email)
+                            ->subject('Thank you for your business!')
+                            ->attach($pathToFile);
+            });
+
             try{
                 $insertedId = $newOrder->id;
                 $customersOrder['order_id'] = $insertedId;
                 $customersOrder['data'] = $newOrder->data;
                 $url = base64_encode(json_encode($customersOrder));
-                return Redirect::away('http://test.cruiseraddiction.com/final?result='.$url);
+                return Redirect::away('https://test.cruiseraddiction.com/final?result='.$url);
                         
             } catch(Exception $e){
                 dd($e);

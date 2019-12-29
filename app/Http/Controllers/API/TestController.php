@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 class TestController
 {
     public function test(){
-        $user_email = 'your_email';
+        $user_email = 'nikitosnov@gmail.com';
         $pass_data_to_pdf = [
             'order_id' => '',
         ];
