@@ -285,7 +285,7 @@ class PayPalController extends Controller
             $user_street_address_two = $customersOrder['user']['street_address'];
             $shipping_total_price = $customersOrder['user']['shipping']['total_price'];
 
-            $total_price_order = round($amount, 2) + $order_tax_price;
+            $total_price_order = round($amount, 2);
             $subtotal = $total_price_order - $shipping_total_price - $order_tax_price; //$order_tax_price
             $encoded = json_encode($data_pdf_orderInfo);
 
