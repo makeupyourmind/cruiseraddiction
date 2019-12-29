@@ -53,7 +53,38 @@
 					</div>
 				</div>
 			</template>
+<!--			<vs-dropdown vs-custom-content vs-trigger-click class="cursor-pointer">-->
+<!--				<div class="con-img ml-3"><vs-button-->
+<!--						size="small"-->
 
+<!--						icon-pack="feather"-->
+<!--						icon="icon-check-circle"-->
+<!--						icon-after-->
+<!--						color="Blue"-->
+<!--						type="border"-->
+<!--						class="btn-tour-finish">-->
+<!--					Page-->
+<!--				</vs-button></div>-->
+<!--				<vs-dropdown-menu class="vx-navbar-dropdown">-->
+<!--					<ul style="min-width: 9rem">-->
+<!--						<li class="flex py-2 px-4 cursor-pointer hover:bg-primary hover:text-white"-->
+<!--							@click="$router.push(item.url)"-->
+<!--							v-for="item in sidebarItems">-->
+<!--							<span class="ml-2">{{item.name}}</span>-->
+<!--						</li>-->
+<!--					</ul>-->
+<!--				</vs-dropdown-menu>-->
+<!--			</vs-dropdown>-->
+
+			<vs-button
+					color="danger"
+					type="line"
+					v-for="item in sidebarItems"
+					@click="$router.push(item.url)"
+                    :key="item.url"
+			>
+				{{item.name}}
+			</vs-button>
 
 			<vs-spacer></vs-spacer>
 
@@ -143,6 +174,7 @@ import VuePerfectScrollbar from 'vue-perfect-scrollbar';
 import draggable from 'vuedraggable';
 import { mapGetters} from "vuex";
 import {Token} from "@/store/tokenStorage"
+import sidebarItems from "./vx-sidebar/sidebarItems";
 
 export default {
     name: "the-navbar",
@@ -168,6 +200,7 @@ export default {
                 maxScrollbarLength: 60,
                 wheelSpeed: .60,
             },
+			sidebarItems: Array.from(sidebarItems),
             autoFocusSearch: false,
             showBookmarkPagesDropdown: false,
         }
