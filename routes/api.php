@@ -44,6 +44,7 @@ Route::group([
     Route::post('check-email', 'UsersController@checkEmail');
 
     Route::get('doc', 'DocumentationController@index');
+    Route::post('send-email', 'SendEmailController@sendEmail');
 
     Route::post('paypal', array('as' => 'addmoney.paypal','uses' => 'PayPalController@post'));
 });
