@@ -268,6 +268,7 @@ class PayPalController extends Controller
 
             $ship = new \stdClass();
             $ship->create_ac = $customersOrder['user']['create_ac'];
+            $ship->taxes = $customersOrder['taxes'];
             $ship->same_address = $customersOrder['user']['same_address'];
             $ship->shipping = $customersOrder['user']['shipping'];
             $ship->currency = $customersOrder['user']['currency'];
