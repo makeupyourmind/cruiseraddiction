@@ -222,6 +222,7 @@ class PayPalController extends Controller
 
             $customersOrder = array();
             $customersOrder['user'] = $orderData['user'];
+            $customersOrder['taxes'] = $orderData['taxes'];
             $customersOrder['amount'] = $amount;
             $dataElem = 0;
             $array = [];
