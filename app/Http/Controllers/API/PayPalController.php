@@ -337,7 +337,7 @@ class PayPalController extends Controller
                 'unique_hash' => $unique_hash_string,
                 'user_id' => $customersOrder['user']['id']
             ]);
-            $pathToFile = Storage::disk('public_uploads')->path("payment_file_history/{$unique_hash_string}.pdf");
+            $pathToFile = "payment_file_history/{$unique_hash_string}.pdf";
             Mail::send('email.payment_done', [''], function ($message) use ($user_email, $pathToFile) {
                     $message->to($user_email)
                             ->subject('Thank you for your business!')
