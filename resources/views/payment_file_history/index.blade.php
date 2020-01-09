@@ -46,8 +46,8 @@
     <div>Bill to:</div>
     <div>{{$user_first_name}} {{$user_last_name}}</div>
     <div>{{ $user_street_address }}</div>
-    <div>{{ $user_city }} {{ $user_postal_code }}</div>
-    <div>{{ $user_state }}</div>
+    <div>{{ $user_city }}, {{ $user_state }} {{ $user_postal_code }}</div>
+    <div>{{ $user_country }}</div>
     <div>{{ $user_phone_number }}</div>
     <div>{{ $user_email }}</div>
 </div>

@@ -348,9 +348,9 @@ class PayPalController extends Controller
                 $insertedId = $newOrder->id;
                 $customersOrder['order_id'] = $insertedId;
                 $customersOrder['data'] = $newOrder->data;
+                $customersOrder['pdf_url'] = $pathToFile;
                 $url = base64_encode(json_encode($customersOrder));
                 return Redirect::away('https://test.cruiseraddiction.com/final?result='.$url);
-                        
             } catch(Exception $e){
                 dd($e);
             }
