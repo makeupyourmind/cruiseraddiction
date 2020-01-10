@@ -222,6 +222,7 @@ class PayPalController extends Controller
 
             $customersOrder = array();
             $customersOrder['user'] = $orderData['user'];
+            $customersOrder['taxes'] = $orderData['taxes'];
             $customersOrder['amount'] = $amount;
             $dataElem = 0;
             $array = [];
@@ -267,6 +268,7 @@ class PayPalController extends Controller
 
             $ship = new \stdClass();
             $ship->create_ac = $customersOrder['user']['create_ac'];
+            $ship->taxes = $customersOrder['taxes'];
             $ship->same_address = $customersOrder['user']['same_address'];
             $ship->shipping = $customersOrder['user']['shipping'];
             $ship->currency = $customersOrder['user']['currency'];
