@@ -1,8 +1,6 @@
 const fs_extra = require('fs-extra');
-const fs = require('fs');
+const fs = require('fs')
 const puppeteer = require('puppeteer')
-// const StealthPlugin = require('puppeteer-extra-plugin-stealth')
-// const AdblockerPlugin = require('puppeteer-extra-plugin-adblocker')
 const cheerio = require('cheerio')
 const config = require('./parser/config')
 const { Tpd } = require('./parser/sequelize/models')
@@ -10,13 +8,10 @@ const Sequelize = require('sequelize')
 const Op = Sequelize.Op
 const detailUrl = config.TOYOTA_PARTS_DEAL;
 
-// puppeteer.use(StealthPlugin());
-// puppeteer.use(AdblockerPlugin({ blockTrackers: true }));
-
 (async (part_number) => {
     let execution_time_start = new Date(), execution_time_end
     // let item = {}
-    // part_number = "27060-0T041";
+    part_number = "27060-0T041";
     // part_number = "43401-60041"
     // part_number = "43212-60050"
     // part_number = "85242-42030"
@@ -44,11 +39,14 @@ const detailUrl = config.TOYOTA_PARTS_DEAL;
     }
     else {
         const browser = await puppeteer.launch({
-            headless: false,
+            headless: true,
             args: [
-                config.PROXY_URL,
+                // config.PROXY_URL,
+                `--proxy-server=${config.PROXY_URL}`,
+                '--proxy-bypass-list=*'
             ]
         })
+
         let chromeTmpDataDir = null;
         let chromeSpawnArgs = browser.process().spawnargs;
         for (let i = 0; i < chromeSpawnArgs.length; i++) {
@@ -57,13 +55,13 @@ const detailUrl = config.TOYOTA_PARTS_DEAL;
             }
         }
         const page = await browser.newPage();
+        // await page.setUserAgent(config.USER_AGENT);
         await page.setViewport({ width: 1800, height: 800 })
+
         await page.goto(detailUrl, {
-            timeout: 3000000,
-            waitUntil: 'domcontentloaded'
+            waitUntil: 'load',
+            timeout: 0
         })
-        // console.log(`Testing the stealth plugin1..`)
-        // await page.goto(detailUrl)
 
         await page.waitFor(2000)
 
@@ -71,15 +69,10 @@ const detailUrl = config.TOYOTA_PARTS_DEAL;
 
         await page.keyboard.type(part_number)
 
-        // await page.click('section.e.search_box > div.e.submit')
-        await page.focus('section.e.search_box > input.e.input')
-        await page.keyboard.press('Enter');
-        // await page.type(String.fromCharCode(13));
+        await page.click('section.e.search_box > div.e.submit')
 
-        // await page.screenshot({ path: 'testresult.png', fullPage: true })
-        await page.waitFor(4000)
-        // await page.screenshot({ path: 'testresult.png', fullPage: true })
-        // console.log(`Testing the stealth plugin2..`)
+        await page.waitFor(1000)
+
         let part_number_in_available = await page.evaluate(() => {
             let check = document.querySelector('section.m_ns_results is_recommend p_clear > div.title > p.total > span')
             return check ? true : false
