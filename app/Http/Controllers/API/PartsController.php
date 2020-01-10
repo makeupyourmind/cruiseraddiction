@@ -307,7 +307,7 @@ class PartsController extends BaseController
         ]);
 
         if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors(), 403);
+            return $this->sendError('Validation Error.', $validator->errors(), 422);
         }
 
         $part = Part::where('brand_name', $request->brand_name)
@@ -326,7 +326,7 @@ class PartsController extends BaseController
                 }
             }
         }
-        else if(!$request->is_bundle) {
+        else if($part && !$request->is_bundle) {
                 Part::where('brand_name', $request->brand_name)
                 ->where('part_number', $request->part_number)
                 ->where('warehouse', 'canada')
@@ -334,7 +334,7 @@ class PartsController extends BaseController
                 if((float) $part->price != (float) $request->price){
                     $part->update(['changedAdministrator' => 1]);
                 }
-        } else if($request->is_bundle) {
+        } else if($part && $request->is_bundle) {
 
             if((float) $part->price != (float) $request->price){
                 $part->update(['changedAdministrator' => 1]);

@@ -222,6 +222,7 @@ class PayPalController extends Controller
 
             $customersOrder = array();
             $customersOrder['user'] = $orderData['user'];
+            $customersOrder['taxes'] = $orderData['taxes'];
             $customersOrder['amount'] = $amount;
             $dataElem = 0;
             $array = [];
@@ -247,6 +248,13 @@ class PayPalController extends Controller
                 array_push($array, $object);
                 $dataElem++;
                 $total_quantity_ordered += $partHash['count'];
+                $warehouse = $part->warehouse;
+                if(strpos($warehouse, "O") !== false){
+                    $warehouse = 1;
+                }
+                if(strpos($warehouse, "E") !== false){
+                    $warehouse = 2;
+                }
                 $data_pdf_orderInfo[] = [
                     'brand_name' => $part->brand_name,
                     'part_number' => $part->full_part_number,
@@ -254,12 +262,13 @@ class PayPalController extends Controller
                     'qty' => $partHash['count'],
                     'price' => round($part->price, 2),
                     'description' => $part->description_english,
-                    'warehouse' => $part->warehouse
+                    'warehouse' => $warehouse
                 ];
             }
 
             $ship = new \stdClass();
             $ship->create_ac = $customersOrder['user']['create_ac'];
+            $ship->taxes = $customersOrder['taxes'];
             $ship->same_address = $customersOrder['user']['same_address'];
             $ship->shipping = $customersOrder['user']['shipping'];
             $ship->currency = $customersOrder['user']['currency'];
@@ -285,7 +294,7 @@ class PayPalController extends Controller
             $user_street_address_two = $customersOrder['user']['street_address'];
             $shipping_total_price = $customersOrder['user']['shipping']['total_price'];
 
-            $total_price_order = round($amount, 2) + $order_tax_price;
+            $total_price_order = round($amount, 2);
             $subtotal = $total_price_order - $shipping_total_price - $order_tax_price; //$order_tax_price
             $encoded = json_encode($data_pdf_orderInfo);
 
@@ -300,7 +309,7 @@ class PayPalController extends Controller
                 'user_first_name' => $customersOrder['user']['first_name'],
                 'user_last_name' => $customersOrder['user']['last_name'],
                 'user_email' => $user_email,
-                'user_phone_number' => $user_phone_number['phoneNumber'],
+                'user_phone_number' => $user_phone_number['formattedNumber'] ? $user_phone_number['formattedNumber'] : $user_phone_number['phoneNumber'],
                 'user_phone_countryCode' => $user_phone_number['countryCode'],
                 'user_city' => $user_city,
                 'user_state' => $user_state,
@@ -330,7 +339,7 @@ class PayPalController extends Controller
                 'unique_hash' => $unique_hash_string,
                 'user_id' => $customersOrder['user']['id']
             ]);
-            $pathToFile = Storage::disk('public_uploads')->path("payment_file_history/{$unique_hash_string}.pdf");
+            $pathToFile = "payment_file_history/{$unique_hash_string}.pdf";
             Mail::send('email.payment_done', [''], function ($message) use ($user_email, $pathToFile) {
                     $message->to($user_email)
                             ->subject('Thank you for your business!')
@@ -341,9 +350,9 @@ class PayPalController extends Controller
                 $insertedId = $newOrder->id;
                 $customersOrder['order_id'] = $insertedId;
                 $customersOrder['data'] = $newOrder->data;
+                $customersOrder['pdf_url'] = $pathToFile;
                 $url = base64_encode(json_encode($customersOrder));
                 return Redirect::away('https://test.cruiseraddiction.com/final?result='.$url);
-                        
             } catch(Exception $e){
                 dd($e);
             }

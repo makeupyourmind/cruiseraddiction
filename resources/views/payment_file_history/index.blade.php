@@ -46,8 +46,8 @@
     <div>Bill to:</div>
     <div>{{$user_first_name}} {{$user_last_name}}</div>
     <div>{{ $user_street_address }}</div>
-    <div>{{ $user_city }} {{ $user_postal_code }}</div>
-    <div>{{ $user_state }}</div>
+    <div>{{ $user_city }}, {{ $user_state }} {{ $user_postal_code }}</div>
+    <div>{{ $user_country }}</div>
     <div>{{ $user_phone_number }}</div>
     <div>{{ $user_email }}</div>
 </div>
@@ -71,7 +71,7 @@
         <td style="border-bottom: 1px solid black">{{ $order["qty"] }}</td>
         <td style="border-bottom: 1px solid black">${{ $order["price"] }}</td>
         <td style="border-bottom: 1px solid black">${{ $order["total_price"] }}</td>
-        <td style="border-bottom: 1px solid black"> W {{ $order["warehouse"] }}</td>
+        <td style="border-bottom: 1px solid black"> W{{ $order["warehouse"] }}</td>
     </tr>
 @endforeach
 
