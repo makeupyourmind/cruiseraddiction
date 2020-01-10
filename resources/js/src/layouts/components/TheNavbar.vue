@@ -15,7 +15,7 @@
 		<vs-navbar class="vx-navbar navbar-custom" :color="navbarColor" :class="classObj">
 
 			<!-- SM - OPEN SIDEBAR BUTTON -->
-			<feather-icon class="sm:inline-flex xl:hidden cursor-pointer mr-1" icon="MenuIcon" @click.stop="showSidebar"></feather-icon>
+<!--			<feather-icon class="sm:inline-flex xl:hidden cursor-pointer mr-1" icon="MenuIcon" @click.stop="showSidebar"></feather-icon>-->
 
 			<template v-if="breakpoint != 'md'">
 				<!-- STARRED PAGES - FIRST 10 -->
@@ -46,12 +46,12 @@
 					</vs-dropdown>
 				</div>
 
-				<div class="bookmark-container">
-					<feather-icon icon="StarIcon" :svgClasses="['stoke-current text-warning', {'text-white': navbarColor != '#fff'}]" class="cursor-pointer p-2" @click.stop="showBookmarkPagesDropdown = !showBookmarkPagesDropdown" />
-                    <div v-click-outside="outside" class="absolute bookmark-list w-1/3 xl:w-1/4 mt-4" v-if="showBookmarkPagesDropdown">
-					<vx-auto-suggest :autoFocus="true" :data="navbarSearchAndPinList" @selected="selected" @actionClicked="actionClicked" inputClassses="w-full" show-action show-pinned background-overlay></vx-auto-suggest>
-					</div>
-				</div>
+<!--				<div class="bookmark-container">-->
+<!--					<feather-icon icon="StarIcon" :svgClasses="['stoke-current text-warning', {'text-white': navbarColor != '#fff'}]" class="cursor-pointer p-2" @click.stop="showBookmarkPagesDropdown = !showBookmarkPagesDropdown" />-->
+<!--                    <div v-click-outside="outside" class="absolute bookmark-list w-1/3 xl:w-1/4 mt-4" v-if="showBookmarkPagesDropdown">-->
+<!--					<vx-auto-suggest :autoFocus="true" :data="navbarSearchAndPinList" @selected="selected" @actionClicked="actionClicked" inputClassses="w-full" show-action show-pinned background-overlay></vx-auto-suggest>-->
+<!--					</div>-->
+<!--				</div>-->
 			</template>
 <!--			<vs-dropdown vs-custom-content vs-trigger-click class="cursor-pointer">-->
 <!--				<div class="con-img ml-3"><vs-button-->
@@ -77,16 +77,43 @@
 <!--			</vs-dropdown>-->
 
 			<vs-button
-					color="danger"
+					color="primary"
 					type="line"
 					v-for="item in sidebarItems"
-					@click="$router.push(item.url)"
+					@click="current !== item.url && $router.push(item.url)"
+					:class="{active:current === item.url}"
                     :key="item.url"
 			>
 				{{item.name}}
 			</vs-button>
 
 			<vs-spacer></vs-spacer>
+			<vs-dropdown class="ml-auto md:block hidden cursor-pointer" vs-trigger-click>
+				<vs-button radius icon="icon-settings" icon-pack="feather"></vs-button>
+
+				<vs-dropdown-menu class="w-32">
+					<vs-dropdown-item>
+					  <div @click="$router.push('/pages/profile')" class="flex items-center">
+						<feather-icon icon="UserIcon" class="inline-block mr-2" svgClasses="w-4 h-4" />
+						<span>Profile</span>
+					  </div>
+					</vs-dropdown-item>
+
+					<vs-dropdown-item>
+					  <div @click="$router.push('/apps/todo')" class="flex items-center">
+						<feather-icon icon="CheckSquareIcon" class="inline-block mr-2" svgClasses="w-4 h-4" />
+						<span>Tasks</span>
+					  </div>
+					</vs-dropdown-item>
+
+					<vs-dropdown-item>
+					  <div @click="$router.push('/apps/email')" class="flex items-center">
+						<feather-icon icon="MailIcon" class="inline-block mr-2" svgClasses="w-4 h-4" />
+						<span>Inbox</span>
+					  </div>
+					</vs-dropdown-item>
+				</vs-dropdown-menu>
+			</vs-dropdown>
 
             <!-- SEARCHBAR -->
             <div class="search-full-container w-full h-full absolute left-0 rounded-lg" :class="{'flex': showFullSearch}" v-show="showFullSearch">
@@ -203,14 +230,17 @@ export default {
 			sidebarItems: Array.from(sidebarItems),
             autoFocusSearch: false,
             showBookmarkPagesDropdown: false,
+			current: ''
         }
     },
     watch: {
-        '$route'() {
-            if (this.showBookmarkPagesDropdown) this.showBookmarkPagesDropdown = false
+        '$route'(to) {
+            if (this.showBookmarkPagesDropdown) this.showBookmarkPagesDropdown = false;
+            this.current = to.path;
         }
     },
     created(){
+		this.current = this.$router.history.current.path
         // if (localStorage.getItem("tokenUser") !== null) {
         //     this.$store.dispatch("getStorage", JSON.parse(localStorage.getItem("tokenUser")))
         // }

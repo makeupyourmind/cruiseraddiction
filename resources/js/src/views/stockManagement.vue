@@ -28,14 +28,8 @@
                         <!--</vs-dropdown-menu>-->
                     </vs-dropdown>
                     <singlebundle :select="select"></singlebundle>
-                    <vs-button
-                            @click="getImage()"
-                            color="success"
-                            type="relief"
-                            icon="icon-plus"
-                            icon-pack="feather">
-                        RELOAD IMAGE
-                    </vs-button>
+
+                    <vs-button color="primary" style="margin-left: 20px" @click="getImage()" type="flat">RELOAD IMAGE</vs-button>
                 </div>
                 <!-- TABLE ACTION COL-2: SEARCH & EXPORT AS CSV -->
                 <div class="flex flex-wrap items-center justify-between ag-grid-table-actions-right">
@@ -88,6 +82,7 @@
     import test from '../components/SingleBundle/cellRenderer'
     import Vue from 'vue'
     import {StockManagment} from "../api/stockManagment";
+    import VxSidebarItem from "../layouts/components/vx-sidebar/VxSidebarItem";
 
     let SquareComponent = Vue.extend({
         template: '<vs-chip color="primary" @click="test(params)">{{params.valueFormatted}}</vs-chip>',
@@ -112,7 +107,8 @@
             return {
                 ascSort: null,
                 descSort: null,
-                noSort: null
+                noSort: null,
+
             };
         },
         computed:{
@@ -157,11 +153,14 @@
             }
         }
     });
+
+
     export default {
 
         components: {
             AgGridVue,
             singlebundle,
+            VxSidebarItem
         },
 
         data() {
@@ -182,7 +181,8 @@
                 contacts: contacts,
                 context: null,
                 timeout:null,
-                isNoActive: false
+                isNoActive: false,
+                groupItem: {}
             }
         },
 
