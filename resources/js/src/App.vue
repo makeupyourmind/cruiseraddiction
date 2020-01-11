@@ -85,6 +85,12 @@
     }
 </script>
 <style lang="scss">
+    .active .vs-button-linex {
+        width: 100%!important;
+    }
+    .router-view #ag-grid-demo{
+        height: 104%!important;
+    }
     .material-icons {
         font-size: 16px !important;
     }
