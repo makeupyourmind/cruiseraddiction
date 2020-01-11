@@ -25,9 +25,11 @@ class SendEmailController extends BaseController
         $data = [
             'variables' => $request->all()
         ];
+        $email = $request->email;
 
-        Mail::send("email.contact_us", $data , function ($mail){
-            $mail->to('yarik.roterdamskiy@gmail.com')
+        Mail::send("email.contact_us", $data , function ($mail) use ($email){
+            $mail->from($email)
+                 ->to(env('SEND_EMAIL_TO'))
                  ->subject('Contact us');
         });
 
