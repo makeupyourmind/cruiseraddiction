@@ -17,7 +17,7 @@
     <br>
     @foreach ($variables as $key => $value)
         @if($key == 'name')
-            <div style="width: 200px">
+            <div style="width: 300px">
                 <div style="float: left; font-weight: bold">Full Name:</div>
                 <div style="float: right">{{ $value }}</div>
             </div>
@@ -26,7 +26,7 @@
         @endif
         @if($key == 'email')
 
-            <div style="width: 200px">
+            <div style="width: 300px">
                 <div style="float: left; font-weight: bold">Email Address:</div>
                 <div style="float: right">{{ $value }}</div>
             </div>
@@ -35,7 +35,7 @@
         @endif
         @if($key == 'phone')
 
-            <div style="width: 200px">
+            <div style="width: 300px">
                 <div style="float: left; font-weight: bold">Phone Number:</div>
                 <div style="float: right">{{ $value }}</div>
             </div>
@@ -43,7 +43,7 @@
             <br>
         @endif
         @if($key == 'message')
-            <div style="width: 200px">
+            <div style="width: 300px">
                 <div style="float: left; font-weight: bold">Order Number:</div>
             </div>
             <div style="clear: both"></div>
