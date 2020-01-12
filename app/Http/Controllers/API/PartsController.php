@@ -79,7 +79,7 @@ class PartsController extends BaseController
         } catch (\Throwable $th) {
            $randomParts = [];
            return response()->json($randomParts, 200);
-        }
+	}
     }
 
     public function images(){

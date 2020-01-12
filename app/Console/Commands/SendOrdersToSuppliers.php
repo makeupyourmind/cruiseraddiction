@@ -83,7 +83,7 @@ class SendOrdersToSuppliers extends Command
                 Mail::send([], [] ,function($message) use ($pathToFile, $orderNumber) {
                     $message->to('Info@cruiseraddiction.com') //order@vivat-uae.net
                             // ->cc('Info@cruiseraddiction.com')
-                            ->subject("Cruiser Addiction: Order # $orderNumber");           
+                            ->subject("Cruiser Addiction Test: Order # $orderNumber");           
                     $message->attach($pathToFile);
                 });
                 $OrderNumber->increment('number', 1);
