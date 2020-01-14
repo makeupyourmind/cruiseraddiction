@@ -18,9 +18,9 @@ class ShipmentController extends Controller
 {
     public function rates(Request $request)
     {
-        $client = new \GuzzleHttp\Client(['headers' => ['API_USERNAME' => 'Dmitriy',  'API_PASSWORD' => 'cokzzoa4ky2f']]);
+        $client = new \GuzzleHttp\Client(['headers' => ['API_USERNAME' => 'cruisera',  'API_PASSWORD' => '9ljplpz3hxst']]);
         $url = "https://netparcel.com/shipping_service";
-
+        //Dmitriy cokzzoa4ky2f
         $first_name = array_key_exists('first_name', $request->user) ? $request->user['first_name'] : '';
         $street_address = array_key_exists('street_address', $request->user) ? $request->user['street_address'] : '';
         $phone = array_key_exists('phone', $request->user) ? $request->user['phone'] : '';
@@ -29,11 +29,11 @@ class ShipmentController extends Controller
             "rate" => [
                 "origin" => [
                     "country" => "CA",
-                    "postal_code" => "V3N4R3",
+                    "postal_code" => "N5Y0B2",
                     "province" => "ON",
-                    "city" => "Burnaby",
+                    "city" => "London",
                     "name" => null,
-                    "address1" => "90 Maverick",
+                    "address1" => "918-625 Kipps Lane",
                     "address2" => null,
                     "address3" => null,
                     "phone" => null,
