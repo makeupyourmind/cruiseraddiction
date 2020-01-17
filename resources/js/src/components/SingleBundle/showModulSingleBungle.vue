@@ -31,6 +31,7 @@
                         :style="!moduleStock.description_full && 'border: 1px solid red'"
                         v-model="moduleStock.description_full"
                         class="w-full mb-6" />
+
                     <vs-input
                         name="descriptionFull"
                         label-placeholder="Description Full"
@@ -51,7 +52,29 @@
                             <!--<vs-checkbox v-model="moduleStock.stores" vs-value="other">Other</vs-checkbox>-->
                         <!--</li>-->
                     <!--</ul>-->
+                    <div style="width: 100%; display: flex; justify-content: space-between">
+                        <vs-input
+                                name="description"
+                                label-placeholder="weight"
+                                v-model="moduleStock.weight"
+                                class="w-full mb-6" />
+                        <vs-input
+                                name="length"
+                                label-placeholder="length"
+                                v-model="moduleStock.length"
+                                class="w-full mb-6" />
+                        <vs-input
+                                name="width"
+                                label-placeholder="width"
+                                v-model="moduleStock.width"
+                                class="w-full mb-6" />
+                        <vs-input
+                                name="depth"
+                                label-placeholder="height"
+                                v-model="moduleStock.depth"
+                                class="w-full mb-6" />
 
+                    </div>
                     <vs-table v-if="moduleStock.is_bundle && moduleStock.bundle_parts"
                               :data="moduleStock.bundle_parts"
                               class="mt-5 mb-5 custom-my">
