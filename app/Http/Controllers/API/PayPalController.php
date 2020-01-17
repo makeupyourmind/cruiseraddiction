@@ -30,6 +30,7 @@ use App\Model\Price;
 use App\Model\Part;
 use App\Model\Order;
 use App\User;
+use App\Model\Guest;
 use App\PayPalData;
 use Illuminate\Support\Str;
 use PDF;
@@ -244,7 +245,23 @@ class PayPalController extends Controller
                 $object->unique_hash = $part->unique_hash;
                 $object->warehouse = $part->warehouse;
                 $user = User::where('email', $customersOrder['user']['email'])->first();
-                $object->user_id = $user->id;
+                if(!$user){
+                    $guest = Guest::create([
+                        'postal_code' => $customersOrder['user']['postal_code'],
+                        'city' => $customersOrder['user']['city'],
+                        'state' => $customersOrder['user']['state'],
+                        'country' => $customersOrder['user']['country'],
+                        'phone' => $customersOrder['user']['phone'],
+                        'email' => $customersOrder['user']['email'],
+                        'first_name' => $customersOrder['user']['first_name'],
+                        'last_name' => $customersOrder['user']['last_name'],
+                        'street_address' => $customersOrder['user']['street_address']
+                    ]);
+                    $object->user_id = $guest->id;
+                }
+                else{
+                    $object->user_id = $user->id;
+                }
                 array_push($array, $object);
                 $dataElem++;
                 $total_quantity_ordered += $partHash['count'];

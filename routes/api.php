@@ -48,7 +48,8 @@ Route::group([
 
     Route::post('paypal', array('as' => 'addmoney.paypal','uses' => 'PayPalController@post'));
 
-    Route::post('parser', 'ParserController@parser_site');
+    Route::post('parser-tpd', 'ParserController@parser_tpd');
+    Route::post('parser-emex', 'ParserController@parser_emex');
 });
 // 'middleware' => ['auth:api','role:User,Admin']
 Route::group([

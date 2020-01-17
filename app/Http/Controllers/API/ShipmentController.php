@@ -18,7 +18,7 @@ class ShipmentController extends Controller
 {
     public function rates(Request $request)
     {
-        $client = new \GuzzleHttp\Client(['headers' => ['API_USERNAME' => 'cruisera',  'API_PASSWORD' => '9ljplpz3hxst']]);
+        $client = new \GuzzleHttp\Client(['headers' => ['API_USERNAME' => 'CRUISERADDICTION',  'API_PASSWORD' => '9ljplpz3hxst']]);
         $url = "https://netparcel.com/shipping_service";
         //Dmitriy cokzzoa4ky2f
         $first_name = array_key_exists('first_name', $request->user) ? $request->user['first_name'] : '';
