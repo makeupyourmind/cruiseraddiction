@@ -192,5 +192,4 @@ const detailUrl = config.TOYOTA_PARTS_DEAL;
         }
         process.exit(0);
     }
-}
-)(process.argv[2]);
+})(process.argv[2]);

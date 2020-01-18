@@ -161,5 +161,4 @@ const detailUrl = config.EMEX;
         }
         process.exit(0);
     }
-}
-)(process.argv[2]);
+})(process.argv[2]);
