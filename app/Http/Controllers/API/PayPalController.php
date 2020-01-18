@@ -245,19 +245,23 @@ class PayPalController extends Controller
                 $object->unique_hash = $part->unique_hash;
                 $object->warehouse = $part->warehouse;
                 $user = User::where('email', $customersOrder['user']['email'])->first();
+                $guest = null;
                 if(!$user){
-                    $guest = Guest::create([
-                        'postal_code' => $customersOrder['user']['postal_code'],
-                        'city' => $customersOrder['user']['city'],
-                        'state' => $customersOrder['user']['state'],
-                        'country' => $customersOrder['user']['country'],
-                        'phone' => $customersOrder['user']['phone'],
-                        'email' => $customersOrder['user']['email'],
-                        'first_name' => $customersOrder['user']['first_name'],
-                        'last_name' => $customersOrder['user']['last_name'],
-                        'street_address' => $customersOrder['user']['street_address']
-                    ]);
-                    $object->user_id = $guest->id;
+                    $guest = Guest::where('email', $customersOrder['user']['email'])->first();
+                    if(!$guest){
+                        $guest = Guest::create([
+                            'postal_code' => $customersOrder['user']['postal_code'],
+                            'city' => $customersOrder['user']['city'],
+                            'state' => $customersOrder['user']['state'],
+                            'country' => $customersOrder['user']['country'],
+                            'phone' => $customersOrder['user']['phone'],
+                            'email' => $customersOrder['user']['email'],
+                            'first_name' => $customersOrder['user']['first_name'],
+                            'last_name' => $customersOrder['user']['last_name'],
+                            'street_address' => $customersOrder['user']['street_address']
+                        ]);
+                    }
+                    $object->guest_id = $guest->id;
                 }
                 else{
                     $object->user_id = $user->id;
@@ -295,7 +299,8 @@ class PayPalController extends Controller
                 'shipping' => $ship,
                 'amount' => $customersOrder['amount'],
                 'data' => $array,
-                'user_id' => $customersOrder['user']['id']
+                'user_id' => array_key_exists('id', $customersOrder['user']) ? $customersOrder['user']['id'] : null,
+                'guest_id' => $guest ? $guest->id : null
             ]);
 
             $currency = $customersOrder['user']['currency'];
@@ -354,7 +359,8 @@ class PayPalController extends Controller
                 'originalFileName' => "Payment_{$newOrder->id}.pdf",
                 'extension' => 'pdf',
                 'unique_hash' => $unique_hash_string,
-                'user_id' => $customersOrder['user']['id']
+                'user_id' => array_key_exists('id', $customersOrder['user']) ? $customersOrder['user']['id'] : null,
+                'guest_id' => $guest ? $guest->id : null
             ]);
             $pathToFile = "payment_file_history/{$unique_hash_string}.pdf";
             Mail::send('email.payment_done', [''], function ($message) use ($user_email, $pathToFile) {

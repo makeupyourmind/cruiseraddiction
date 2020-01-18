@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
 use App\User;
+use App\Model\Guest;
 use App\VerificationToken;
 use Illuminate\Support\Facades\Auth;
 use Validator;
@@ -64,11 +65,18 @@ class RegisterController extends BaseController
     public function verifyRegistration(Request $request){
 
         $foundToken = VerificationToken::with(['user'])->where('token', Input::get("token"))->first();
+        
         if(!$foundToken){
             return response()->json("NOT FOUND TOKEN");
         }
+
         if($foundToken->user->isVerified){
             return $this->sendResponse("", 'Email Already Verified');
+        }
+
+        $guest = Guest::where('email', $foundToken->user->email)->first();
+        if($guest){
+            $guest->delete();
         }
 
         $updated = User::where('email', $foundToken->user->email)->update([

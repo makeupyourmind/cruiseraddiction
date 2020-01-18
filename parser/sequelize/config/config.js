@@ -1,27 +1,27 @@
 const config = require('../../config')
 module.exports = {
   "development": {
-    "username": config.DB_USERNAME,
-    "password": config.DB_PASSWORD,
-    "database": config.DB_DATABASE,
-    "host": config.DB_HOST,
+    "username": config.development.DB_USERNAME,
+    "password": config.development.DB_PASSWORD,
+    "database": config.development.DB_DATABASE,
+    "host": config.development.DB_HOST,
     "dialect": "mysql",
     "operatorsAliases": 0
   },
   "test": {
-    "username": "root",
-    "password": null,
-    "database": "database_test",
-    "host": "127.0.0.1",
+    "username": config.test.DB_USERNAME,
+    "password": config.test.DB_PASSWORD,
+    "database": config.test.DB_DATABASE,
+    "host": config.test.DB_HOST,
     "dialect": "mysql",
-    "operatorsAliases": false
+    "operatorsAliases": 0
   },
   "production": {
-    "username": "root",
-    "password": null,
-    "database": "database_production",
-    "host": "127.0.0.1",
+    "username": config.production.DB_USERNAME,
+    "password": config.production.DB_PASSWORD,
+    "database": config.production.DB_DATABASE,
+    "host": config.production.DB_HOST,
     "dialect": "mysql",
-    "operatorsAliases": false
+    "operatorsAliases": 0
   }
 }

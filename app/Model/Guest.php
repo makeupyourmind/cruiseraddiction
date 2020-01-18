@@ -13,4 +13,12 @@ class Guest extends Model
     ];
 
     public $timestamps = true;
+
+    public function orders(){
+      return $this->hasMany('App\Model\Order');
+    }
+
+    public function payment_history_files(){
+      return $this->hasMany('App\Model\Order', 'guest_id');
+  }
 }

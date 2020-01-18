@@ -1,9 +1,10 @@
 const fs_extra = require('fs-extra');
 const fs = require('fs');
 const puppeteer = require('puppeteer')
-const { Emex } = require('./parser/sequelize/models')
 const { Op } = require('sequelize')
-const config = require('./parser/config')
+const { Emex } = require('./parser/sequelize/models')
+const env = process.env.NODE_ENV || 'development'
+const config = require('./parser/config')[env]
 const detailUrl = config.EMEX;
 
 (async (part_number) => {
@@ -43,7 +44,8 @@ const detailUrl = config.EMEX;
             height: 800,
             args: [
                 `--proxy-server=${config.PROXY_URL}`,
-                '--proxy-bypass-list=*'
+                '--proxy-bypass-list=*',
+                '--no-sandbox'
             ]
         })
 
