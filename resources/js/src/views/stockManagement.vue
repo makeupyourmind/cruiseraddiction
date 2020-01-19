@@ -390,11 +390,7 @@
             }
         },
         mounted() {
-            window.document.body.style.zoom = 0.7;
             this.gridApi = this.gridOptions.api;
-        },
-        destroyed(){
-            window.document.body.style.zoom = 1;
         }
     }
 
