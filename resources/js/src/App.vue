@@ -80,8 +80,12 @@
             }
         },
         mounted() {
+            window.document.body.style.zoom = 0.7;
             this.toggleClassInBody(themeConfig.theme)
         },
+        destroyed(){
+            window.document.body.style.zoom = 1;
+        }
     }
 </script>
 <style lang="scss">
