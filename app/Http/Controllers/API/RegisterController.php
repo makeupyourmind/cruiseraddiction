@@ -4,10 +4,13 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
 use App\User;
+use App\Model\Guest;
 use App\VerificationToken;
 use Illuminate\Support\Facades\Auth;
 use Validator;
 use App\Model\oauthAccessToken;
+use App\Model\PaymentHistoryFile;
+use App\Model\Order;
 use Mail;
 use Illuminate\Support\Facades\Input;
 Use Redirect;
@@ -64,14 +67,29 @@ class RegisterController extends BaseController
     public function verifyRegistration(Request $request){
 
         $foundToken = VerificationToken::with(['user'])->where('token', Input::get("token"))->first();
+        
         if(!$foundToken){
             return response()->json("NOT FOUND TOKEN");
         }
+
         if($foundToken->user->isVerified){
             return $this->sendResponse("", 'Email Already Verified');
         }
 
-        $updated = User::where('email', $foundToken->user->email)->update([
+        $user = User::where('email', $foundToken->user->email)->first();
+
+        $guest = Guest::where('email', $foundToken->user->email)->first();
+        if($guest){
+            Order::where('guest_id', $guest->id)->update([
+                'user_id' => $user->id
+            ]);
+            PaymentHistoryFile::where('guest_id', $guest->id)->update([
+                'user_id' => $user->id
+            ]);
+            $guest->delete();
+        }
+
+        $updated = $user->update([
             'isVerified' => 1
         ]);
 

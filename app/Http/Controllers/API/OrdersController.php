@@ -25,7 +25,16 @@ class OrdersController
 			if(isset($request->country)){
 				$query->where('country', $request->country);
 			}
-		}])->where(function($query) use ($request){
+		}])
+		->with(['guest' => function($query) use ($request){
+			if(isset($request->email)){
+				$query->where('email', $request->email);
+			}
+			if(isset($request->country)){
+				$query->where('country', $request->country);
+			}
+		}])
+		->where(function($query) use ($request){
 			if(isset($request->part)){
 				$part_number = str_replace("-", "", $request->part);
 				$left = '"';
@@ -34,10 +43,33 @@ class OrdersController
 				$q = '%"part_number"'.": ".$part_number.'%';
 				$query->where('data', 'like', $q);
 			}
-		})->get();
+		})
+		->get();
 
 		$ordersArr = [];
 		foreach($orders as $o){
+			if($o->guest){
+				$o->order = new \stdClass;
+				$o->order->amount = $o->amount;
+				$o->order->data = $o->data;
+				$o->order->guest = new \stdClass;
+
+				$o->order->guest->email = $o->guest->email;
+				$o->order->guest->postal_code = $o->guest->postal_code;
+				$o->order->guest->city = $o->guest->city;
+				$o->order->guest->state = $o->guest->state;
+				$o->order->guest->country = $o->guest->country;
+				$o->order->guest->phone = $o->guest->phone;
+				$o->order->guest->first_name = $o->guest->first_name;
+				$o->order->guest->last_name = $o->guest->last_name;
+				$o->order->guest->street_address = $o->guest->street_address;
+
+				$o->order->guest->shipping = $o->shipping["shipping"];
+				$o->order->guest->currency = $o->shipping["currency"];
+				$o->order->guest->order_notes = $o->shipping["order_notes"];
+				unset($o->data, $o->guest, $o->amount, $o->shipping);
+				array_push($ordersArr, $o);
+			}
 			if($o->user){
 				$o->order = new \stdClass;
 				$o->order->amount = $o->amount;

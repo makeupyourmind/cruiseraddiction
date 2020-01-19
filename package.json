@@ -77,6 +77,7 @@
         "cheerio": "^1.0.0-rc.3",
         "devextreme": "^19.1.4",
         "devextreme-vue": "^19.1.4",
+        "dotenv": "^8.2.0",
         "express": "^4.17.1",
         "fs-extra": "^8.1.0",
         "mysql2": "^2.1.0",

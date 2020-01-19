@@ -1,22 +1,22 @@
-const fs_extra = require('fs-extra');
+const fs_extra = require('fs-extra')
 const fs = require('fs')
 const puppeteer = require('puppeteer')
-const cheerio = require('cheerio')
-const config = require('./parser/config')
+const { Op } = require('sequelize')
 const { Tpd } = require('./parser/sequelize/models')
-const Sequelize = require('sequelize')
-const Op = Sequelize.Op
+const env = process.env.NODE_ENV || 'development'
+const config = require('./parser/config')[env]
 const detailUrl = config.TOYOTA_PARTS_DEAL;
 
 (async (part_number) => {
     let execution_time_start = new Date(), execution_time_end
     // let item = {}
-    part_number = "27060-0T041";
-    // part_number = "43401-60041"
+    // part_number = "27060-0T041";
+    part_number = "43401-60041"
     // part_number = "43212-60050"
     // part_number = "85242-42030"
     // part_number = "43340-39465"
     // part_number = "44444444444"
+
     const endDate = new Date();
     const startDate = new Date(new Date().getTime() - (24 * 3600 * 1000) * 30)
     const record_exsist = await Tpd.findOne({
@@ -27,9 +27,10 @@ const detailUrl = config.TOYOTA_PARTS_DEAL;
             }
         }
     })
+
     if (record_exsist) {
         execution_time_end = new Date() - execution_time_start
-        console.log(`Record exsist ${execution_time_end / 1000}s`)
+        console.log(`TPD. Record ${part_number} exsist in the last 30 days ${execution_time_end / 1000}s`)
         fs.appendFile("./parser/logs/parsing_toyotapartsdeal.txt", `Record ${part_number} exsist ${execution_time_end / 1000}s ${new Date()}\n`, function (err) {
             if (err) {
                 return console.log(err);
@@ -41,21 +42,23 @@ const detailUrl = config.TOYOTA_PARTS_DEAL;
         const browser = await puppeteer.launch({
             headless: true,
             args: [
-                // config.PROXY_URL,
                 `--proxy-server=${config.PROXY_URL}`,
-                '--proxy-bypass-list=*'
+                '--proxy-bypass-list=*',
+                '--no-sandbox'
             ]
         })
 
         let chromeTmpDataDir = null;
         let chromeSpawnArgs = browser.process().spawnargs;
-        for (let i = 0; i < chromeSpawnArgs.length; i++) {
-            if (chromeSpawnArgs[i].indexOf("--user-data-dir=") === 0) {
-                chromeTmpDataDir = chromeSpawnArgs[i].replace("--user-data-dir=", "");
+
+        for (let chromeSpawnArg of chromeSpawnArgs) {
+            if (chromeSpawnArg.includes("--user-data-dir=")) {
+                chromeTmpDataDir = chromeSpawnArg.replace("--user-data-dir=", "");
             }
         }
+
         const page = await browser.newPage();
-        // await page.setUserAgent(config.USER_AGENT);
+
         await page.setViewport({ width: 1800, height: 800 })
 
         await page.goto(detailUrl, {
@@ -140,7 +143,6 @@ const detailUrl = config.TOYOTA_PARTS_DEAL;
                 relatedParts = relatedParts ? relatedParts : []
             }
 
-            ////////////////////
             // replaced ? item.replaced = replaced.replace('\t', ' ') : item.replaced = null
             replaced = replaced ? replaced.replace('\t', ' ') : null
             // retail ? item.retail_price = retail : item.retail_price = null
@@ -155,29 +157,30 @@ const detailUrl = config.TOYOTA_PARTS_DEAL;
             // item.part_number = part_number
             // item.name = name
             // console.log(item);
-            ///////////////
+
             await Tpd.create({
-                part_number: part_number,
-                brand_name: brand_name,
-                replaced: replaced,
-                retail_price: retail_price,
-                price: price,
-                description: description,
-                discontinued: discontinued,
-                relatedParts: relatedParts
+                part_number,
+                brand_name,
+                replaced,
+                retail_price,
+                price,
+                description,
+                discontinued,
+                relatedParts
             })
-            execution_time_end = new Date() - execution_time_start
+
             await browser.close()
-            console.log(`Script executed successfully ${execution_time_end / 1000}s`)
+            execution_time_end = new Date() - execution_time_start
+            console.log(`Script TPD executed successfully ${execution_time_end / 1000}s`)
             fs.appendFile("./parser/logs/parsing_toyotapartsdeal.txt", `Script executed successfully ${execution_time_end / 1000}s ${new Date()}\n`, function (err) {
                 if (err) {
                     return console.log(err);
                 }
             });
         } else {
-            execution_time_end = new Date() - execution_time_start
             await browser.close()
-            console.log(`Script executed part not found on site ${execution_time_end / 1000}s`)
+            execution_time_end = new Date() - execution_time_start
+            console.log(`Script TPD executed part not found on site ${execution_time_end / 1000}s`)
             fs.appendFile("./parser/logs/parsing_toyotapartsdeal.txt", `Script executed part ${part_number} not found on site ${execution_time_end / 1000}s ${new Date()}\n`, function (err) {
                 if (err) {
                     return console.log(err);
@@ -189,5 +192,4 @@ const detailUrl = config.TOYOTA_PARTS_DEAL;
         }
         process.exit(0);
     }
-}
-)(process.argv[2]);
+})(process.argv[2]);

@@ -1,6 +1,6 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const Tpd = sequelize.define('Tpd', {
+  const Tpd = sequelize.define('tpd', {
     part_number: DataTypes.STRING,
     brand_name: DataTypes.STRING,
     replaced: DataTypes.STRING,

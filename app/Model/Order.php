@@ -9,7 +9,7 @@ class Order extends Model
     protected $table = 'orders';
 
     protected $fillable = [
-      'id', 'shipping', 'amount' ,'data', 'user_id', 'isCheckedParser'
+      'id', 'shipping', 'amount' ,'data', 'user_id', 'guest_id', 'isCheckedParser'
     ];
 
     protected $casts = [
@@ -25,5 +25,9 @@ class Order extends Model
 
     public function user(){
       return $this->belongsTo('App\User');
+    }
+
+    public function guest(){
+      return $this->belongsTo('App\Model\Guest');
     }
 }
