@@ -50,7 +50,7 @@ class OrdersController
 		foreach($orders as $o){
 			if($o->guest){
 				$o->order = new \stdClass;
-				$o->order->amount = $o->amount;
+				$o->order->amount = round($o->amount, 2);
 				$o->order->data = $o->data;
 				$o->order->guest = new \stdClass;
 
@@ -72,7 +72,7 @@ class OrdersController
 			}
 			if($o->user){
 				$o->order = new \stdClass;
-				$o->order->amount = $o->amount;
+				$o->order->amount = round($o->amount, 2);
 				$o->order->data = $o->data;
 				$o->order->user = new \stdClass; //$o->user
 				//////////////////////

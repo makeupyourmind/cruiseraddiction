@@ -10,7 +10,7 @@ const detailUrl = config.EMEX;
 (async (part_number) => {
     let execution_time_start = new Date(), execution_time_end
 
-    part_number = "43401-60041"
+    // part_number = "43401-60041"
     // part_number = "9008036064"
     // part_number = "9091901164"
     // part_number = "444444444"
