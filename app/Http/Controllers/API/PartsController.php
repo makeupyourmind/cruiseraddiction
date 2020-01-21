@@ -74,7 +74,7 @@ class PartsController extends BaseController
 
     public function randoms() {
         try {
-            $randomParts = Part::take(10000)->get()->random(12);
+            $randomParts = Part::take(1000)->get()->random(12);
             return response()->json($randomParts, 200);
         } catch (\Throwable $th) {
            $randomParts = [];
