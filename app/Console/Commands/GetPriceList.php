@@ -60,8 +60,10 @@ class GetPriceList extends Command
             echo "Get price is done. Files time is equal ".date('Y/m/d H:i:s')."\n";
             return;
         }
-        Storage::put('GetPriceList.txt', $time);   
-	Storage::put('pricelist.csv', $contents);
+        Storage::put('GetPriceList.txt', $time); 
+
+        Storage::put('pricelist.csv', $contents);
+        
         $path = storage_path('app/pricelist.csv');
         $fileContent = Storage::get('pricelist.csv');
 
@@ -88,8 +90,6 @@ class GetPriceList extends Command
         Storage::put('pricelist.csv', $fileContent);
         //dd($fileContent);
 
-	
-
         $data   = array_map(function($datas) { return str_getcsv($datas,";"); }, file($path));
         ////Storage::delete('pricelist.csv');
 
@@ -109,12 +109,12 @@ class GetPriceList extends Command
 
             if ($r != 1) {
                 $row[8] = md5($row[0].$row[1].$row[6]);
-		$row[1] = str_replace("-", '', str_replace('"', '', str_replace("'", '', $row[1])));
-		$row[9] = $row[1];
+                $row[1] = str_replace("-", '', str_replace('"', '', str_replace("'", '', $row[1])));
+                $row[9] = $row[1];
                 $row[3] = (float)str_replace(',', '.', $row[3]);
                 $row[4] = (float)str_replace(',', '.', $row[4]);
                 $row[7] = (float)str_replace(',', '.', $row[7]);
-		$row[7] = (float)((($row[3]*6.0)+$row[7]*0.061+$row[7])*1.3)*1.037;
+		        $row[7] = (float)((($row[3]*6.0)+$row[7]*0.061+$row[7])*1.3)*1.037;
 
                 if (is_null($row[3]) || is_null($row[4]) || is_null($row[5]) || is_null($row[7])) {
                     $parsingLogText .= $r . " " . Carbon::now() . " NULL or empty value" . "\n";

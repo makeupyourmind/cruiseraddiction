@@ -171,7 +171,7 @@ const detailUrl = config.TOYOTA_PARTS_DEAL;
 
             await browser.close()
             execution_time_end = new Date() - execution_time_start
-            console.log(`Script TPD executed successfully ${execution_time_end / 1000}s`)
+            console.log(`Script TPD executed successfully ${part_number} ${execution_time_end / 1000}s`)
             fs.appendFile("./parser/logs/parsing_toyotapartsdeal.txt", `Script executed successfully ${execution_time_end / 1000}s ${new Date()}\n`, function (err) {
                 if (err) {
                     return console.log(err);
@@ -180,7 +180,7 @@ const detailUrl = config.TOYOTA_PARTS_DEAL;
         } else {
             await browser.close()
             execution_time_end = new Date() - execution_time_start
-            console.log(`Script TPD executed part not found on site ${execution_time_end / 1000}s`)
+            console.log(`Script TPD executed part - ${part_number} not found on site ${execution_time_end / 1000}s`)
             fs.appendFile("./parser/logs/parsing_toyotapartsdeal.txt", `Script executed part ${part_number} not found on site ${execution_time_end / 1000}s ${new Date()}\n`, function (err) {
                 if (err) {
                     return console.log(err);

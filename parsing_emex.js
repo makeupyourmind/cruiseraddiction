@@ -10,6 +10,7 @@ const detailUrl = config.EMEX;
 (async (part_number) => {
     let execution_time_start = new Date(), execution_time_end
 
+    //part_number = "27060-0T041"
     // part_number = "43401-60041"
     // part_number = "9008036064"
     // part_number = "9091901164"
@@ -138,7 +139,7 @@ const detailUrl = config.EMEX;
                 analogues
             })
 
-            console.log(`Script EMEX executed successfully ${execution_time_end / 1000}s`)
+            console.log(`Script EMEX executed successfully ${part_number} ${execution_time_end / 1000}s`)
             fs.appendFile("./parser/logs/parsing_emex.txt", `Script executed successfully ${execution_time_end / 1000}s ${new Date()}\n`, function (err) {
                 if (err) {
                     return console.log(err);
