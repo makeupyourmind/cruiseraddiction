@@ -49,22 +49,58 @@
                             data-field="id"/>
                     <dx-column
                             caption="Country"
-                            data-field="user.country"/>
-                    <dx-column
-                            :width="125"
-                            caption="First Name"
-                            data-field="user.first_name"
+                            data-field="user.country"
+                            cell-template="countryTemplate"
                     />
+                    <div slot="countryTemplate" slot-scope="{ data }">
+                        <span style="white-space: nowrap;width: 100%; text-overflow: ellipsis"
+                              :style="{color:typeof data.data.guest === 'object' ? 'maroon' : 'green' }">
+                            {{ typeof data.data.guest === 'object' ? data.data.guest.country : data.data.user.country}}
+                        </span>
+                    </div>
+
+
                     <dx-column
-                            caption="Last Name"
-                            data-field="user.last_name"
+                            caption="Country"
+                            data-field="user.country"
+                            cell-template="first_nameTemplate"
                     />
+                    <div slot="first_nameTemplate" slot-scope="{ data }">
+                        <span style="white-space: nowrap;width: 100%; text-overflow: ellipsis"
+                              :style="{color:typeof data.data.guest === 'object' ? 'maroon' : 'green' }">
+                            {{ typeof data.data.guest === 'object' ? data.data.guest.first_name : data.data.user.first_name}}
+                        </span>
+                    </div>
+
+                    <dx-column
+                            caption="Country"
+                            data-field="user.country"
+                            cell-template="last_nameTemplate"
+                    />
+                    <div slot="last_nameTemplate" slot-scope="{ data }">
+                        <span style="white-space: nowrap;width: 100%; text-overflow: ellipsis"
+                              :style="{color:typeof data.data.guest === 'object' ? 'maroon' : 'green' }">
+                            {{ typeof data.data.guest === 'object' ? data.data.guest.last_name : data.data.user.last_name}}
+                        </span>
+                    </div>
 
                     <dx-column
                             :width="70"
                             data-field="amount"
                             caption="Total"
                     />
+                    <dx-column
+                            :width="70"
+                            caption="USER"
+                            cell-template="guestTemplate"
+                    />
+                    <div slot="guestTemplate" slot-scope="{ data }">
+                        <span style="white-space: nowrap;width: 100%; text-overflow: ellipsis; font-weight: bold;"
+                            :style="{color:typeof data.data.guest === 'object' ? 'maroon' : 'green' }">
+                            {{ typeof data.data.guest === 'object' ? 'GUEST' : "USER"}}
+                        </span>
+                    </div>
+
                     <dx-column
                             :width="70"
                             caption="Action"
@@ -177,6 +213,9 @@
                     this.$store.dispatch("GET_EDIT_STORE", e.data)
 
                 }
+            },
+            ll(e){
+                console.log(e)
             },
             select(){
                 const selectedNodes = this.gridApi.getSelectedNodes();
