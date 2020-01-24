@@ -101,7 +101,7 @@ class ShipmentController extends Controller
                     ->subject('Confirm registration');
             });
             return response()->json(['shipping' => $postResponse], 201);
-        }                                                                        
-        return response()->json(['shipping' => $postResponse], 200);
+        }
+        return response()->json(['count' => count($postResponse->rates), 'shipping' => $postResponse], 200);
     }
 }
