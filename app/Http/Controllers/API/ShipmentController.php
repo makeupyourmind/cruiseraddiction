@@ -24,7 +24,8 @@ class ShipmentController extends Controller
         $first_name = array_key_exists('first_name', $request->user) ? $request->user['first_name'] : '';
         $street_address = array_key_exists('street_address', $request->user) ? $request->user['street_address'] : '';
         $phone = array_key_exists('phone', $request->user) ? $request->user['phone'] : '';
-        
+        $province = array_key_exists('state', $request->user) ? $request->user['state'] : 'ON';
+
         $ratesRequest = [
             "rate" => [
                 "origin" => [
@@ -44,7 +45,7 @@ class ShipmentController extends Controller
                 "destination" => [
                     "country" => $request->user['country'],
                     "postal_code" => $request->user['postal_code'],
-                    "province" => "ON",
+                    "province" => $province,
                     "city" => $request->user['city'],
                     "name" => $first_name,
                     "address1" => $street_address,
@@ -78,7 +79,7 @@ class ShipmentController extends Controller
             ]);
             
             if($validator->fails()){
-                return  response()->json(  $validator->errors(), 402) ;
+                return  response()->json(  $validator->errors(), 422) ;
             }
             $input = $request->user;
             $input['password'] = bcrypt($input['password']);
@@ -100,7 +101,7 @@ class ShipmentController extends Controller
                     ->subject('Confirm registration');
             });
             return response()->json(['shipping' => $postResponse], 201);
-        }                                                                        
-        return response()->json(['shipping' => $postResponse], 200);
+        }
+        return response()->json(['count' => count($postResponse->rates), 'shipping' => $postResponse], 200);
     }
 }
