@@ -24,7 +24,7 @@ class ShipmentController extends Controller
         $first_name = array_key_exists('first_name', $request->user) ? $request->user['first_name'] : '';
         $street_address = array_key_exists('street_address', $request->user) ? $request->user['street_address'] : '';
         $phone = array_key_exists('phone', $request->user) ? $request->user['phone'] : '';
-        $province = array_key_exists('state', $request->user['state']) ? $request->user['state'] : 'ON';
+        $province = array_key_exists('state', $request->user) ? $request->user['state'] : 'ON';
 
         $ratesRequest = [
             "rate" => [
