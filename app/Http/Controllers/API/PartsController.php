@@ -26,6 +26,15 @@ class PartsController extends BaseController
 		->paginate(100);
         return response()->json($parts, 200);
     }
+    
+    public function indexProduct() {
+            $parts = Part::orderBy('id', 'desc')
+        	->whereIn('brand_name', ['TOYOTA', 'KOYO', 'AISIN', 'TAIHO', 'NSK', 'HKT', '555', 'TOYO', 'NACHI', 'MITSUBOSHI'])
+                ->paginate(5000);
+                    return response()->json($parts, 200);
+                        }
+                        
+    
 
     public function stock_ca() {
 	$client = new \GuzzleHttp\Client();
