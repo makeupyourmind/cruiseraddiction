@@ -44,6 +44,7 @@ class OrdersController
 				$query->where('data', 'like', $q);
 			}
 		})
+		->orderBy('id', 'desc')
 		->get();
 
 		$ordersArr = [];
