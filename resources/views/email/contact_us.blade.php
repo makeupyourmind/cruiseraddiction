@@ -7,7 +7,7 @@
     <title>Contact us</title>
 </head>
 <body>
-    <h1 style="color: #c06508">'info@proactiveautomotive.ca' submitted the form from your 'CONTACT US' page </h1>
+    <h1 style="color: #c06508">'{{ $value }}' submitted the form from your 'CONTACT US' page </h1>
     <br>
     <div style="width: 100%; border-top: 1px dotted black"></div>
     <br>
@@ -44,7 +44,7 @@
         @endif
         @if($key == 'message')
             <div style="width: 300px">
-                <div style="float: left; font-weight: bold">Order Number:</div>
+                <div style="float: left; font-weight: bold">Message:</div>
             </div>
             <div style="clear: both"></div>
             <div style="float: right">{{ $value }}</div>

@@ -1,5 +1,5 @@
 <template>
-    <div class="detail">
+    <div class="detail" :style="{background: typeof templateData.data.guest === 'object' ? 'rgba(142, 17, 30, 0.16)': 'rgba(0, 142, 109, 0.16)'}">
         <div class="master-detail-caption">Order Info</div>
         <br>
         <div class="container-info">
@@ -46,7 +46,7 @@
                 </div>
                 <div>
                     <div>Phone:</div>
-                    <div>{{(user.phone)|| '-----'}}</div>
+                    <div>{{(user.phone && phone(user.phone))|| '-----'}}</div>
                 </div>
                 <div>
                     <div>Post code:</div>
@@ -119,7 +119,7 @@
             Shipping : {{shipping.value || 0}}
         </div>
         <div class="total">
-            <span style="font-weight: bold">Total : {{getSubtotal + (shipping.value ? Number(shipping.value) : 0)}}</span>
+            <span style="font-weight: bold">Total : {{Number(getSubtotal) + (shipping.value ? Number(shipping.value) : 0)}}</span>
         </div>
     </div>
 </template>
@@ -143,8 +143,8 @@
             return {
                 dataSource: this.getSource(),
                 detailInfo: `Orders`,
-                user: this.templateData.data.user,
-                shipping: this.templateData.data.user.shipping || {}
+                user: this.templateData.data[`${typeof this.templateData.data.guest === 'object' ? 'guest' : 'user'}`],
+                shipping: this.templateData.data[`${typeof this.templateData.data.guest === 'object' ? 'guest' : 'user'}`].shipping || {}
             };
         },
         computed: {
@@ -162,6 +162,15 @@
                     item.order = this.templateData.data.id;
                     return item;
                 })
+            },
+
+            phone(phone){
+                try{
+                    const parse = JSON.parse(phone);
+                    return parse.formattedNumber
+                } catch(e){
+                    return false;
+                }
             },
 
             completedValue(rowData) {
@@ -227,5 +236,8 @@
 
     .info div div {
         width: 100px;
+    }
+    .d{
+        color: rgba(142, 17, 30, 0.43)
     }
 </style>
