@@ -9,7 +9,7 @@ class Guest extends Model
     protected $table = 'guests';
 
     protected $fillable = [
-      'id', 'postal_code','city', 'state', 'country', 'phone', 'email', 'first_name', 'last_name', 'street_address'
+      'id', 'postal_code','city', 'state', 'country', 'phone', 'email', 'first_name', 'last_name', 'street_address', 'street_address_two'
     ];
 
     public $timestamps = true;

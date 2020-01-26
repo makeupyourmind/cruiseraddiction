@@ -258,7 +258,22 @@ class PayPalController extends Controller
                             'email' => $customersOrder['user']['email'],
                             'first_name' => $customersOrder['user']['first_name'],
                             'last_name' => $customersOrder['user']['last_name'],
-                            'street_address' => $customersOrder['user']['street_address']
+                            'street_address' => $customersOrder['user']['street_address'],
+                            'street_address_two' => array_key_exsist('street_address_two', $customersOrder['user']) ? $customersOrder['user']['street_address_two'] : null
+                        ]);
+                    }
+                    else{
+                        $guest->update([
+                            'postal_code' => $customersOrder['user']['postal_code'],
+                            'city' => $customersOrder['user']['city'],
+                            'state' => $customersOrder['user']['state'],
+                            'country' => $customersOrder['user']['country'],
+                            'phone' => $customersOrder['user']['phone'],
+                            'email' => $customersOrder['user']['email'],
+                            'first_name' => $customersOrder['user']['first_name'],
+                            'last_name' => $customersOrder['user']['last_name'],
+                            'street_address' => $customersOrder['user']['street_address'],
+                            'street_address_two' => array_key_exsist('street_address_two', $customersOrder['user']) ? $customersOrder['user']['street_address_two'] : null
                         ]);
                     }
                     $object->guest_id = $guest->id;
@@ -313,7 +328,7 @@ class PayPalController extends Controller
             $user_state = $customersOrder['user']['state'];
             $user_country = $customersOrder['user']['country'];
             $user_street_address = $customersOrder['user']['street_address'];
-            $user_street_address_two = $customersOrder['user']['street_address'];
+            $user_street_address_two = array_key_exsist('street_address_two', $customersOrder['user']) ? $customersOrder['user']['street_address_two'] : null;
             $shipping_total_price = $customersOrder['user']['shipping']['total_price'];
 
             $total_price_order = round($amount, 2);
