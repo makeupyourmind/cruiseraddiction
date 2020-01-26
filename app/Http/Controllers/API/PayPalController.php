@@ -259,7 +259,7 @@ class PayPalController extends Controller
                             'first_name' => $customersOrder['user']['first_name'],
                             'last_name' => $customersOrder['user']['last_name'],
                             'street_address' => $customersOrder['user']['street_address'],
-                            'street_address_two' => array_key_exsist('street_address_two', $customersOrder['user']) ? $customersOrder['user']['street_address_two'] : null
+                            'street_address_two' => array_key_exists('street_address_two', $customersOrder['user']) ? $customersOrder['user']['street_address_two'] : null
                         ]);
                     }
                     else{
@@ -273,7 +273,7 @@ class PayPalController extends Controller
                             'first_name' => $customersOrder['user']['first_name'],
                             'last_name' => $customersOrder['user']['last_name'],
                             'street_address' => $customersOrder['user']['street_address'],
-                            'street_address_two' => array_key_exsist('street_address_two', $customersOrder['user']) ? $customersOrder['user']['street_address_two'] : null
+                            'street_address_two' => array_key_exists('street_address_two', $customersOrder['user']) ? $customersOrder['user']['street_address_two'] : null
                         ]);
                     }
                     $object->guest_id = $guest->id;

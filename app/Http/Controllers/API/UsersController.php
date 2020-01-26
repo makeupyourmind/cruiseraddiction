@@ -56,7 +56,7 @@ class UsersController extends BaseController
                     'first_name' => $request->first_name,
                     'last_name' => $request->last_name,
                     'street_address' => $request->street_address,
-                    'street_address_two' => array_key_exsist('street_address_two', $request) ? $request->street_address_two : null
+                    'street_address_two' => array_key_exists('street_address_two', $request) ? $request->street_address_two : null
                 ]);
                 return $this->sendResponse('', 'Guest modified successfully.');
             }
@@ -71,7 +71,7 @@ class UsersController extends BaseController
                     'first_name' => $request->first_name,
                     'last_name' => $request->last_name,
                     'street_address' => $request->street_address,
-                    'street_address_two' => array_key_exsist('street_address_two', $request) ? $request->street_address_two : null
+                    'street_address_two' => array_key_exists('street_address_two', $request) ? $request->street_address_two : null
                 ]);
                 return $this->sendResponse('', 'Guest modified successfully.');
             }
