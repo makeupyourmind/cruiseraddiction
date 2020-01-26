@@ -25,6 +25,7 @@ Route::group([
     Route::post('parts-search', 'PartsSearchController@index');
 
     Route::post('parts', 'PartsController@show');
+    Route::get('site-map-products', 'PartsController@indexProduct');
 
     Route::get('parts', 'PartsController@index');
     Route::get('stock-ca-parts', 'PartsController@getStockCa');

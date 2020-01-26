@@ -16,7 +16,8 @@ class ParserController
     public function parser_emex(Request $request){
         $path = base_path();
         $pass_to_script = $request->part_number;
-        $response_emex = exec("cd ". $path. " && node parsing_emex.js $pass_to_script", $out, $err);
+        exec("cd ". $path. " && node -v", $out, $err);
+        //$response_emex = exec("cd ". $path. " && node parsing_emex.js $pass_to_script", $out, $err);
         return array('out' => $out, 'err' => $err);
     }
 }
