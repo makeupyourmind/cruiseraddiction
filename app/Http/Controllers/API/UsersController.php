@@ -96,15 +96,15 @@ class UsersController extends BaseController
         return $this->sendResponse(array('user' => $user, 'changes' => $diff), 'User modified successfully.');
     }
 
-    public function recursive_array_diff($a1, $a2) { 
-        $r = array(); 
-        $a1 = $a1->toArray();
-        foreach ($a2 as $key => $value) {
-            if($a1[$key] != $a2[$key]){
-                $r[$key] = $value;
+    public function recursive_array_diff($user, $request) { 
+        $result_diff = array(); 
+        $user = $user->toArray();
+        foreach ($request as $key => $value) {
+            if($user[$key] != $request[$key]){
+                $result_diff[$key] = $value;
             }
         }
-        return $r; 
+        return $result_diff; 
     }
 
     public function checkEmail(Request $request) {
