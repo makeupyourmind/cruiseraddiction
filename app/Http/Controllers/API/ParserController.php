@@ -30,7 +30,7 @@ class ParserController
     public function parser_partsouq(Request $request){
         $path = base_path();
         $pass_to_script = $request->part_number;
-        $response_amayama = exec("cd $path && node parsing_partsouq $pass_to_script", $out, $err);
+        $response_partsouq = exec("cd $path && node parsing_partsouq $pass_to_script", $out, $err);
         return array('out' => $out, 'err' => $err);
     }
 }
