@@ -51,6 +51,8 @@ Route::group([
 
     Route::post('parser-tpd', 'ParserController@parser_tpd');
     Route::post('parser-emex', 'ParserController@parser_emex');
+    Route::post('parser-amayama', 'ParserController@parser_amayama');
+    Route::post('parser-partsouq', 'ParserController@parser_partsouq');
 });
 // 'middleware' => ['auth:api','role:User,Admin']
 Route::group([

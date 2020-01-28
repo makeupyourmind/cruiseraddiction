@@ -5,7 +5,7 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
 use App\User;
-use App\Model\Guest;
+// use App\Model\Guest;
 use Illuminate\Support\Facades\Auth;
 use Validator;
 use Mail;
@@ -41,41 +41,43 @@ class UsersController extends BaseController
             return $this->sendError('Validation Error.', $validator->errors(), 422);
         }
 
-        $user = User::where('id', $id)->first();
+        $user = User::find($id);
 
-        if(!$user){
-            $guest = Guest::where('email', $request->email)->first();
-            if($guest){
-                $guest->update([
-                    'email' => $request->email,
-                    'postal_code' => $request->postal_code,
-                    'city' => $request->city,
-                    'state' => $request->state,
-                    'country' => $request->country,
-                    'phone' => $request->phone,
-                    'first_name' => $request->first_name,
-                    'last_name' => $request->last_name,
-                    'street_address' => $request->street_address,
-                    'street_address_two' => array_key_exists('street_address_two', $request) ? $request->street_address_two : null
-                ]);
-                return $this->sendResponse('', 'Guest modified successfully.');
-            }
-            else{
-                Guest::create([
-                    'email' => $request->email,
-                    'postal_code' => $request->postal_code,
-                    'city' => $request->city,
-                    'state' => $request->state,
-                    'country' => $request->country,
-                    'phone' => $request->phone,
-                    'first_name' => $request->first_name,
-                    'last_name' => $request->last_name,
-                    'street_address' => $request->street_address,
-                    'street_address_two' => array_key_exists('street_address_two', $request) ? $request->street_address_two : null
-                ]);
-                return $this->sendResponse('', 'Guest modified successfully.');
-            }
-        }
+        // $user = User::where('id', $id)->first();
+
+        // if(!$user){
+        //     $guest = Guest::where('email', $request->email)->first();
+        //     if($guest){
+        //         $guest->update([
+        //             'email' => $request->email,
+        //             'postal_code' => $request->postal_code,
+        //             'city' => $request->city,
+        //             'state' => $request->state,
+        //             'country' => $request->country,
+        //             'phone' => $request->phone,
+        //             'first_name' => $request->first_name,
+        //             'last_name' => $request->last_name,
+        //             'street_address' => $request->street_address,
+        //             'street_address_two' => array_key_exists('street_address_two', $request) ? $request->street_address_two : null
+        //         ]);
+        //         return $this->sendResponse('', 'Guest modified successfully.');
+        //     }
+        //     else{
+        //         Guest::create([
+        //             'email' => $request->email,
+        //             'postal_code' => $request->postal_code,
+        //             'city' => $request->city,
+        //             'state' => $request->state,
+        //             'country' => $request->country,
+        //             'phone' => $request->phone,
+        //             'first_name' => $request->first_name,
+        //             'last_name' => $request->last_name,
+        //             'street_address' => $request->street_address,
+        //             'street_address_two' => array_key_exists('street_address_two', $request) ? $request->street_address_two : null
+        //         ]);
+        //         return $this->sendResponse('', 'Guest modified successfully.');
+        //     }
+        // }
 
         $diff = self::recursive_array_diff($user, $request->all());
 
@@ -113,7 +115,7 @@ class UsersController extends BaseController
 	    ]);
 
         if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors(), 202);
+            return $this->sendError('Validation Error.', $validator->errors(), 422);
         }
         return $this->sendResponse('Success', 'Email not used');
 
