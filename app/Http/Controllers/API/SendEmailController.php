@@ -13,7 +13,7 @@ class SendEmailController extends BaseController
     public function sendEmail(Request $request){
         $validator = Validator::make($request->all(), [
             'name' => 'required',
-            'email' => 'required',
+            'email' => 'required|email',
             'message' => 'required'
         ]);
 
@@ -22,7 +22,8 @@ class SendEmailController extends BaseController
         }
 
         $data = [
-            'variables' => $request->all()
+            'variables' => $request->all(),
+            'user_email' => $request->email
         ];
         $email = $request->email;
 
