@@ -7,7 +7,7 @@
     <title>Contact us</title>
 </head>
 <body>
-    <h1 style="color: #c06508">'{{ $value }}' submitted the form from your 'CONTACT US' page </h1>
+    <h1 style="color: #c06508">'{{ $user_email }}' submitted the form from your 'CONTACT US' page </h1>
     <br>
     <div style="width: 100%; border-top: 1px dotted black"></div>
     <br>

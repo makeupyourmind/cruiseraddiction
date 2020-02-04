@@ -355,7 +355,7 @@ class PartsController extends BaseController
                 ->update(['part_number' => $request->part_number, 'brand_name' => $request->brand_name, 'description_english' => $request->description_english,
                 'description_full' => $request->description_full, 'min_stock' => $request->min_stock, 'price' => $request->price,
                 'min_price' => $request->min_price, 'max_price' => $request->max_price, 'location' => $request->location, 'categories' => $request->categories,
-                'weight' => $request->weight, 'length' => $request->length, 'width' => $request->width, 'depth' => $request->depth]);
+                'weight' => $request->weight, 'length' => $request->length, 'width' => $request->width, 'depth' => $request->depth, 'meta' => $request->meta]);
             $bundleId =  Part::where('brand_name', $request->brand_name)
                     ->where('part_number', $request->part_number)
                     ->where('warehouse', 'canada')
