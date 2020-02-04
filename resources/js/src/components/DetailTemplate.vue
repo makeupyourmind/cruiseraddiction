@@ -119,7 +119,7 @@
             Shipping : {{shipping.value || 0}}
         </div>
         <div class="total">
-            <span style="font-weight: bold">Total : {{Number(getSubtotal) + (shipping.value ? Number(shipping.value) : 0)}}</span>
+            <span style="font-weight: bold">Total : {{(Number(getSubtotal) + (shipping.value ? Number(shipping.value) : 0)).toFixed(2)}}</span>
         </div>
     </div>
 </template>
@@ -159,6 +159,7 @@
             getSource() {
                 return [...this.templateData.data.data].map(item => {
                     item.total = (item.count * Number(item.price)).toFixed(2);
+                    item.price = (Number(item.price)).toFixed(2);
                     item.order = this.templateData.data.id;
                     return item;
                 })

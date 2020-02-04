@@ -61,7 +61,7 @@
 
 
                     <dx-column
-                            caption="Country"
+                            caption="First name"
                             data-field="user.country"
                             cell-template="first_nameTemplate"
                     />
@@ -73,7 +73,7 @@
                     </div>
 
                     <dx-column
-                            caption="Country"
+                            caption="Surname"
                             data-field="user.country"
                             cell-template="last_nameTemplate"
                     />
@@ -91,7 +91,7 @@
                     />
                     <dx-column
                             :width="70"
-                            caption="USER"
+                            caption="Type"
                             cell-template="guestTemplate"
                     />
                     <div slot="guestTemplate" slot-scope="{ data }">
@@ -238,6 +238,7 @@
                             item.order.ID = index;
                             item.order.id = item.id;
                             item.order.date = item.created_at;
+                            item.order.amount = (Number(item.order.amount)).toFixed(2);
                             item.order.attachments = item.attachments;
                             return item.order;
                         });
