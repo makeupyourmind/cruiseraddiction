@@ -65,7 +65,7 @@ class OrdersController
 				$o->order->guest->last_name = $o->guest->last_name;
 				$o->order->guest->street_address = $o->guest->street_address;
 
-				$o->order->guest->shipping = $o->shipping["shipping"];
+				$o->order->guest->shipping = $o->shipping;
 				$o->order->guest->currency = $o->shipping["currency"];
 				$o->order->guest->order_notes = $o->shipping["order_notes"];
 				unset($o->data, $o->guest, $o->amount, $o->shipping);
@@ -101,7 +101,7 @@ class OrdersController
 				///////////////////////////
 				$o->order->user->create_ac = $o->shipping["create_ac"];
 				$o->order->user->same_adress = $o->shipping["same_address"];
-				$o->order->user->shipping = $o->shipping["shipping"];
+				$o->order->user->shipping = $o->shipping;
 				$o->order->user->currency = $o->shipping["currency"];
 				$o->order->user->order_notes = $o->shipping["order_notes"];
 				unset($o->data, $o->user, $o->amount, $o->shipping);
