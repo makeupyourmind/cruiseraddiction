@@ -7,27 +7,27 @@
                 <h3>Shipping</h3>
                 <div>
                     <div>Service name:</div>
-                    <div>{{shipping.service_name || '-----'}}</div>
+                    <div>{{(shipping.shipping && shipping.shipping.service_name) || '-----'}}</div>
                 </div>
                 <div>
                     <div>Service code:</div>
-                    <div>{{shipping.service_code || '-----'}}</div>
+                    <div>{{(shipping.shipping && shipping.shipping.service_code ) || '-----'}}</div>
                 </div>
                 <div>
                     <div>Min day:</div>
-                    <div>{{shipping.max_delivery_date || '-----'}}</div>
+                    <div>{{(shipping.shipping && shipping.shipping.max_delivery_date)  || '-----'}}</div>
                 </div>
                 <div>
                     <div>Max day:</div>
-                    <div>{{shipping.min_delivery_date || '-----'}}</div>
+                    <div>{{(shipping.shipping && shipping.shipping.min_delivery_date ) || '-----'}}</div>
                 </div>
                 <div>
                     <div>Currency:</div>
-                    <div>{{shipping.currency || '-----'}}</div>
+                    <div>{{(shipping.shipping && shipping.shipping.currency) || '-----'}}</div>
                 </div>
                 <div>
                     <div>value:</div>
-                    <div>{{shipping.value || '-----'}}</div>
+                    <div>{{(shipping.shipping && shipping.shipping.value) || '-----'}}</div>
                 </div>
             </div>
             <div class="info">
@@ -116,10 +116,19 @@
             Subtotal : {{getSubtotal}} {{user.currency}}
         </div>
         <div class="total">
-            Shipping : {{shipping.value || 0}}
+            Shipping : {{(shipping.shipping && shipping.shipping.value) || 0}}
         </div>
         <div class="total">
-            <span style="font-weight: bold">Total : {{(Number(getSubtotal) + (shipping.value ? Number(shipping.value) : 0)).toFixed(2)}}</span>
+            Taxes : {{( shipping.taxes && shipping.taxes.total_price) || 0}}
+        </div>
+        <div class="total">
+            <span style="font-weight: bold">Total : {{
+                (Number(getSubtotal) + (
+                    shipping.shipping && shipping.shipping.value ? Number(shipping.shipping.value) : 0
+                ) + (shipping.taxes ? Number(shipping.taxes.total_price) : 0))
+                .toFixed(2)
+                }}
+            </span>
         </div>
     </div>
 </template>
