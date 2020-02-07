@@ -175,6 +175,16 @@
                             label-placeholder="Important general information"
                             v-model="moduleStock.important_general"
                             class="w-full mb-6" />
+                    <vs-textarea
+                            name="descriptionFull"
+                            label-placeholder="Important general information"
+                            v-model="moduleStock"
+                            class="w-full mb-6" />
+                    <vs-textarea
+                            name="descriptionFull"
+                            label-placeholder="Important general information"
+                            v-model="moduleStock.meta"
+                            class="w-full mb-6" />
                     <div class="w-full mb-6">
                         <div style="display: flex; justify-content: space-between; align-items: center">
                             <vs-input
