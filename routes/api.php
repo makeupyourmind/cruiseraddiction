@@ -64,6 +64,8 @@ Route::group([
     Route::put('user/{id}', 'UsersController@update');
     Route::get('user-orders/{id}', 'OrdersController@userOrders');
 
+    Route::post('availability_notification', 'AvailabilityNotificationController@subscribe');
+
     Route::group(['prefix' => 'user-files'], function(){
         Route::get('/', 'PaymentHistoryFileController@getUserPaymentFiles');
         Route::get('/{id}', 'PaymentHistoryFileController@downloadUserPaymentFile');
