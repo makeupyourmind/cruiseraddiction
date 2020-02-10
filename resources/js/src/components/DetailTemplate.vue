@@ -123,9 +123,7 @@
         </div>
         <div class="total">
             <span style="font-weight: bold">Total : {{
-                (Number(getSubtotal) + (
-                    shipping.shipping && shipping.shipping.value ? Number(shipping.shipping.value) : 0
-                ) + (shipping.taxes ? Number(shipping.taxes.total_price) : 0))
+                getSubWithShips
                 .toFixed(2)
                 }}
             </span>
@@ -158,16 +156,21 @@
         },
         computed: {
             getSubtotal() {
-                return this.dataSource.length > 1 ? [...this.dataSource]
+                return this.dataSource.length >= 1 ? [...this.dataSource, {total: 0}]
                     .map(item => Number(item.total))
                     .reduce((a, b) => a + b)
                     .toFixed(2) : Number(this.dataSource[0].total)
+            },
+            getSubWithShips(){
+                return (Number(this.getSubtotal) + (
+                    this.shipping.shipping && this.shipping.shipping.value ? Number(this.shipping.shipping.value) : 0
+                ) + (this.shipping.taxes && this.shipping.taxes.active ? Number(this.shipping.taxes.total_price) : 0))
             }
         },
         methods: {
             getSource() {
                 return [...this.templateData.data.data].map(item => {
-                    item.total = (item.count * Number(item.price)).toFixed(2);
+                    item.total = (item.count * Number(item.price)* Number(item.exchange || 1)).toFixed(2);
                     item.price = (Number(item.price)).toFixed(2);
                     item.order = this.templateData.data.id;
                     return item;

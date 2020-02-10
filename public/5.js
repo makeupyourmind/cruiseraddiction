@@ -192,6 +192,13 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -216,11 +223,16 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   },
   computed: {
     getSubtotal: function getSubtotal() {
-      return this.dataSource.length > 1 ? _toConsumableArray(this.dataSource).map(function (item) {
+      return this.dataSource.length >= 1 ? [].concat(_toConsumableArray(this.dataSource), [{
+        total: 0
+      }]).map(function (item) {
         return Number(item.total);
       }).reduce(function (a, b) {
         return a + b;
       }).toFixed(2) : Number(this.dataSource[0].total);
+    },
+    getSubWithShips: function getSubWithShips() {
+      return Number(this.getSubtotal) + (this.shipping.shipping && this.shipping.shipping.value ? Number(this.shipping.shipping.value) : 0) + (this.shipping.taxes && this.shipping.taxes.active ? Number(this.shipping.taxes.total_price) : 0);
     }
   },
   methods: {
@@ -228,7 +240,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       var _this = this;
 
       return _toConsumableArray(this.templateData.data.data).map(function (item) {
-        item.total = (item.count * Number(item.price)).toFixed(2);
+        item.total = (item.count * Number(item.price) * Number(item.exchange || 1)).toFixed(2);
         item.price = Number(item.price).toFixed(2);
         item.order = _this.templateData.data.id;
         return item;
@@ -746,20 +758,42 @@ var render = function() {
           _c("div", [
             _c("div", [_vm._v("Service name:")]),
             _vm._v(" "),
-            _c("div", [_vm._v(_vm._s(_vm.shipping.service_name || "-----"))])
+            _c("div", [
+              _vm._v(
+                _vm._s(
+                  (_vm.shipping.shipping &&
+                    _vm.shipping.shipping.service_name) ||
+                    "-----"
+                )
+              )
+            ])
           ]),
           _vm._v(" "),
           _c("div", [
             _c("div", [_vm._v("Service code:")]),
             _vm._v(" "),
-            _c("div", [_vm._v(_vm._s(_vm.shipping.service_code || "-----"))])
+            _c("div", [
+              _vm._v(
+                _vm._s(
+                  (_vm.shipping.shipping &&
+                    _vm.shipping.shipping.service_code) ||
+                    "-----"
+                )
+              )
+            ])
           ]),
           _vm._v(" "),
           _c("div", [
             _c("div", [_vm._v("Min day:")]),
             _vm._v(" "),
             _c("div", [
-              _vm._v(_vm._s(_vm.shipping.max_delivery_date || "-----"))
+              _vm._v(
+                _vm._s(
+                  (_vm.shipping.shipping &&
+                    _vm.shipping.shipping.max_delivery_date) ||
+                    "-----"
+                )
+              )
             ])
           ]),
           _vm._v(" "),
@@ -767,20 +801,40 @@ var render = function() {
             _c("div", [_vm._v("Max day:")]),
             _vm._v(" "),
             _c("div", [
-              _vm._v(_vm._s(_vm.shipping.min_delivery_date || "-----"))
+              _vm._v(
+                _vm._s(
+                  (_vm.shipping.shipping &&
+                    _vm.shipping.shipping.min_delivery_date) ||
+                    "-----"
+                )
+              )
             ])
           ]),
           _vm._v(" "),
           _c("div", [
             _c("div", [_vm._v("Currency:")]),
             _vm._v(" "),
-            _c("div", [_vm._v(_vm._s(_vm.shipping.currency || "-----"))])
+            _c("div", [
+              _vm._v(
+                _vm._s(
+                  (_vm.shipping.shipping && _vm.shipping.shipping.currency) ||
+                    "-----"
+                )
+              )
+            ])
           ]),
           _vm._v(" "),
           _c("div", [
             _c("div", [_vm._v("value:")]),
             _vm._v(" "),
-            _c("div", [_vm._v(_vm._s(_vm.shipping.value || "-----"))])
+            _c("div", [
+              _vm._v(
+                _vm._s(
+                  (_vm.shipping.shipping && _vm.shipping.shipping.value) ||
+                    "-----"
+                )
+              )
+            ])
           ])
         ]),
         _vm._v(" "),
@@ -939,20 +993,28 @@ var render = function() {
       _vm._v(" "),
       _c("div", { staticClass: "total" }, [
         _vm._v(
-          "\n        Shipping : " + _vm._s(_vm.shipping.value || 0) + "\n    "
+          "\n        Shipping : " +
+            _vm._s(
+              (_vm.shipping.shipping && _vm.shipping.shipping.value) || 0
+            ) +
+            "\n    "
+        )
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "total" }, [
+        _vm._v(
+          "\n        Taxes : " +
+            _vm._s(
+              (_vm.shipping.taxes && _vm.shipping.taxes.total_price) || 0
+            ) +
+            "\n    "
         )
       ]),
       _vm._v(" "),
       _c("div", { staticClass: "total" }, [
         _c("span", { staticStyle: { "font-weight": "bold" } }, [
           _vm._v(
-            "Total : " +
-              _vm._s(
-                (
-                  Number(_vm.getSubtotal) +
-                  (_vm.shipping.value ? Number(_vm.shipping.value) : 0)
-                ).toFixed(2)
-              )
+            "Total : " + _vm._s(_vm.getSubWithShips.toFixed(2)) + "\n        "
           )
         ])
       ])

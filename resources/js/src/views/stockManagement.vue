@@ -301,8 +301,12 @@
             },
 
             getData() {
-                const store = this.getDataStock;
-                return store ? store.data : []
+                const store = JSON.parse(JSON.stringify(this.getDataStock));
+                return store  && store.data? store.data.map(i => {
+                    // debugger
+                    i.price = (Number(i.price) || 0 ).toFixed(2);
+                    return i
+                }) : []
             },
 
             totalPages() {
