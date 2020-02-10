@@ -15,69 +15,153 @@ use Illuminate\Support\Facades\Hash;
 use Excel;
 use Illuminate\Support\Facades\Input;
 use App\Http\Controllers\API\UserFilter;
+use Illuminate\Support\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 use DB;
 
 class PartsController extends BaseController
 {
 
-    public function index() {
+    public function index(Request $request) {
+        // $parts = DB::table('parts')
+        //                         // ->orderBy('id', 'desc')
+        //                         // ->select('part_number','brand_name', DB::raw('COUNT(*) as count'))
+        //                         ->select('id','part_number', 'brand_name', DB::raw('count(*) as count'))
+        //                         // ->groupBy('part_number', 'brand_name')
+        //                         // ->having('count', '>', 1)
+        //                         ->having('count', '>', 1)
+        //                         // ->havingRaw('COUNT(*) > 1')
+        //                         ->paginate(100);
+        // return $parts;
+        $count_total = Part::distinct('part_number')->count('part_number');
+        // $count_total = Part::distinct('part_number')->count('part_number');
+        // return $count_total;
+        // $parts = DB::table('parts')->distinct('part_number')->paginate(100);
+        // return $parts;
         $parts = Part::orderBy('id', 'desc')
-		->whereIn('brand_name', ['TOYOTA', 'KOYO', 'AISIN', 'TAIHO', 'NSK', 'HKT', '555', 'TOYO', 'NACHI', 'MITSUBOSHI'])
-		->paginate(100);
-        return response()->json($parts, 200);
+                            ->select('id', 'part_number', 'brand_name', 'description_full', 'price', 'qty', 'description_english')
+                            ->whereIn('brand_name', ['TOYOTA', 'KOYO', 'AISIN', 'TAIHO', 'NSK', 'HKT', '555', 'TOYO', 'NACHI', 'MITSUBOSHI'])
+                            ->paginate(100);
+        //                     // ->get('part_number');
+        // return $parts;
+        // print json_encode($parts);
+        // $count = Part::whereIn('brand_name', ['TOYOTA', 'KOYO', 'AISIN', 'TAIHO', 'NSK', 'HKT', '555', 'TOYO', 'NACHI', 'MITSUBOSHI'])
+        //                         ->count();
+        // Session::put('count', $count);
+        // return $count;
+// return $parts;
+        $data = array();
+        foreach($parts as $key => $value){
+            $data[] = $value;
+        }
+        // return;
+        //return $data;
+// return $parts;
+        $collection = new Collection($data);
+        $uniqueItems = $collection->unique('part_number');
+
+        $uniqueItemsArr = [];
+        foreach($uniqueItems as $value){
+            $uniqueItemsArr[] = $value;
+        }
+        // return array( 'initial' => count($parts) , 'unique' => count($uniqueItemsArr));
+        $count_temp = 100 - count($uniqueItemsArr);
+        // $session_count_total = Session::get('count');
+        // Session::put('count', $session_count_total - count($uniqueItemsArr));
+        // $count_total = Session::get('count');
+        // return gettype($uniqueItemsArr);
+        $page = Input::get('page', 1);
+
+		$perPage = 100;
+        //$offset = (($page * $perPage) - $perPage) - $count_temp;
+        //return array($offset, 'init' => count($uniqueItems));
+        // if($offset < 0){
+        //     $offset = 0;
+        // }
+        $offset = 0;
+        $paginate = [];
+        // return $uniqueItemsArr;
+		foreach(array_slice($uniqueItemsArr, $offset, $perPage, true) as $item){
+            // print json_encode($item);
+			array_push($paginate, $item);
+        }
+        // return count($paginate);
+        return new LengthAwarePaginator(
+			$paginate, // Only grab the items we need    //was array_slice($ordersArr, $offset, $perPage, true)
+			$count_total, // Total items
+			$perPage, // Items per page
+			$page, // Current page
+			['path' => url('/').'/parts', 'query' => $request->query()] // We need this so we can keep all old query parameters from the url
+		);
+        //return array('total_data' => count($data), 'unique' => count($uniqueItems));
+
+        // $parts = Part::orderBy('id', 'desc')
+        //                     ->whereIn('brand_name', ['TOYOTA', 'KOYO', 'AISIN', 'TAIHO', 'NSK', 'HKT', '555', 'TOYO', 'NACHI', 'MITSUBOSHI'])
+        //                     ->get();
+        // $parts = $parts->map(function ($array) {
+        //     return collect($array)->unique('part_number')->paginate(100);
+        // });
+        // $parts = Part::distinct('brand_name', 'part_number')
+        //                         ->pluck('brand_name', 'part_number');
+        // $parts = Part::orderBy('id', 'desc')
+        //                     ->whereIn('brand_name', ['TOYOTA', 'KOYO', 'AISIN', 'TAIHO', 'NSK', 'HKT', '555', 'TOYO', 'NACHI', 'MITSUBOSHI'])
+        //                     // ->get();
+        //                     ->distinct('brand_name')
+        //                     ->paginate(100);
+        //return response()->json($parts, 200);
     }
     
     public function indexProduct() {
-            $parts = Part::orderBy('id', 'desc')
-        	->whereIn('brand_name', ['TOYOTA', 'KOYO', 'AISIN', 'TAIHO', 'NSK', 'HKT', '555', 'TOYO', 'NACHI', 'MITSUBOSHI'])
-                ->paginate(5000);
-                    return response()->json($parts, 200);
-                        }
+        $parts = Part::orderBy('id', 'desc')
+                            ->whereIn('brand_name', ['TOYOTA', 'KOYO', 'AISIN', 'TAIHO', 'NSK', 'HKT', '555', 'TOYO', 'NACHI', 'MITSUBOSHI'])
+                            ->paginate(100);
+        return response()->json($parts, 200);
+    }
                         
     
 
     public function stock_ca() {
-	$client = new \GuzzleHttp\Client();
+        $client = new \GuzzleHttp\Client();
 
-	for($i = 1; $i <= 19; $i++) {
-    	    $request = $client->get('http://system.cruiseraddiction.com/api/stock_ca/list?page='.$i);
-    	    $responseJson = $request->getBody()->getContents();
-	    $response = json_decode($responseJson, true);
+        for($i = 1; $i <= 19; $i++) {
+                $request = $client->get('http://system.cruiseraddiction.com/api/stock_ca/list?page='.$i);
+                $responseJson = $request->getBody()->getContents();
+            $response = json_decode($responseJson, true);
 
-	    foreach($response['data'] as $caPart) {
+            foreach($response['data'] as $caPart) {
 
-		$caOrderData = array();
+            $caOrderData = array();
 
-		$DD= '44444444-444444444';
-		$caOrder['brand_name'] = $caPart['brand']['BrandName'];
-		$caOrder['part_number'] = $caPart['PartNumber'];
-		$caOrder['part_number_without_too_much'] = str_replace(['-', '-'], '', $caPart['PartNumber']);
-		$caOrder['description_english'] = $caPart['DescriptionEnglish'];
-		$caOrder['weight_physical'] = $caPart['part']['WeightPhysical'];
-		$caOrder['weight_volumetric'] = $caPart['part']['WeightVolumetric'];
-		$caOrder['qty'] = $caPart['Stock_Qty'];
-		$caOrder['warehouse'] = 'canada';
-		$caOrder['price'] = $caPart['Price'];
-		$caOrder['unique_hash'] = 'CA_'.md5($caOrder['brand_name'].$caOrder['part_number'].'canada');
-		//$caOrder['unique_hash'] = '1234567qwert';
-		$caOrder['is_bundle'] = $caPart['part']['IsBundle'];
-		$caOrder['modified_by'] = $caPart['stats']['modifier']['email'];
-		$caOrder['description_full'] = $caPart['description_full'];
-		$caOrder['notes'] = serialize($caPart);
-		$caOrder['categories'] = $caPart['stats'] && $caPart['stats']['categories'] ? json_encode($caPart['stats']['categories']) : null;
-		$caOrder['tags'] =       $caPart['stats'] && $caPart['stats']['tags'] ? json_encode($caPart['stats']['tags']) : null;
-		$caOrder['min_price'] =  $caPart['stats'] ? (string) $caPart['stats']['min_price'] : null;
-		$caOrder['max_price'] =  $caPart['stats'] ? (string) $caPart['stats']['max_price'] : null;
-		$caOrder['min_stock'] =  $caPart['stats'] ? (string) $caPart['stats']['stock_min'] : null;
+            $DD= '44444444-444444444';
+            $caOrder['brand_name'] = $caPart['brand']['BrandName'];
+            $caOrder['part_number'] = $caPart['PartNumber'];
+            $caOrder['part_number_without_too_much'] = str_replace(['-', '-'], '', $caPart['PartNumber']);
+            $caOrder['description_english'] = $caPart['DescriptionEnglish'];
+            $caOrder['weight_physical'] = $caPart['part']['WeightPhysical'];
+            $caOrder['weight_volumetric'] = $caPart['part']['WeightVolumetric'];
+            $caOrder['qty'] = $caPart['Stock_Qty'];
+            $caOrder['warehouse'] = 'canada';
+            $caOrder['price'] = $caPart['Price'];
+            $caOrder['unique_hash'] = 'CA_'.md5($caOrder['brand_name'].$caOrder['part_number'].'canada');
+            //$caOrder['unique_hash'] = '1234567qwert';
+            $caOrder['is_bundle'] = $caPart['part']['IsBundle'];
+            $caOrder['modified_by'] = $caPart['stats']['modifier']['email'];
+            $caOrder['description_full'] = $caPart['description_full'];
+            $caOrder['notes'] = serialize($caPart);
+            $caOrder['categories'] = $caPart['stats'] && $caPart['stats']['categories'] ? json_encode($caPart['stats']['categories']) : null;
+            $caOrder['tags'] =       $caPart['stats'] && $caPart['stats']['tags'] ? json_encode($caPart['stats']['tags']) : null;
+            $caOrder['min_price'] =  $caPart['stats'] ? (string) $caPart['stats']['min_price'] : null;
+            $caOrder['max_price'] =  $caPart['stats'] ? (string) $caPart['stats']['max_price'] : null;
+            $caOrder['min_stock'] =  $caPart['stats'] ? (string) $caPart['stats']['stock_min'] : null;
 
-		$caOrder['location'] = $caPart['Location'];
-		$caOrder['is_stock_ca'] = true;
+            $caOrder['location'] = $caPart['Location'];
+            $caOrder['is_stock_ca'] = true;
 
-		Part::updateOrCreate(
-		    ['unique_hash' => $caOrder['unique_hash']],
-			$caOrder)->toSql();
-	    }
-	}
+            Part::updateOrCreate(
+                ['unique_hash' => $caOrder['unique_hash']],
+                $caOrder)->toSql();
+            }
+        }
 	return response()->json('Stock CA imported successfully', 200);
     }
 

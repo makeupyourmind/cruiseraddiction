@@ -144,7 +144,8 @@ class PayPalController extends Controller
                     ->setDescription('Your transaction description');
         $redirect_urls = new RedirectUrls();
 
-        $redirect_urls->setReturnUrl('https://testback.cruiseraddiction.com/paypal/success') /** Specify return URL **/
+        // $redirect_urls->setReturnUrl('https://testback.cruiseraddiction.com/paypal/success') /** Specify return URL **/
+        $redirect_urls->setReturnUrl(env('APP_URL_BACK').'/paypal/success') /** Specify return URL **/
                       ->setCancelUrl(URL::route('payment.status'));
         $payment = new Payment();
         $payment->setIntent('Sale')
@@ -222,6 +223,7 @@ class PayPalController extends Controller
             $orderData = json_decode(base64_decode($resultData), true);
 
             $customersOrder = array();
+            $customersOrder['exchange'] = $orderData['exchange'];
             $customersOrder['user'] = $orderData['user'];
             $customersOrder['taxes'] = $orderData['taxes'];
             $customersOrder['amount'] = $amount;
@@ -390,7 +392,8 @@ class PayPalController extends Controller
                 $customersOrder['data'] = $newOrder->data;
                 $customersOrder['pdf_url'] = $pathToFile;
                 $url = base64_encode(json_encode($customersOrder));
-                return Redirect::away('https://test.cruiseraddiction.com/final?result='.$url);
+                // return Redirect::away('https://test.cruiseraddiction.com/final?result='.$url);
+                return Redirect::away(env("APP_URL_FRONT").'/final?result='.$url);
             } catch(Exception $e){
                 dd($e);
             }

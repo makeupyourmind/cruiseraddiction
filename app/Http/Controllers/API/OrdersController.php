@@ -55,6 +55,7 @@ class OrdersController
 				$o->order->data = $o->data;
 				$o->order->guest = new \stdClass;
 
+				$o->order->exchange = $o->exhange;
 				$o->order->guest->email = $o->guest->email;
 				$o->order->guest->postal_code = $o->guest->postal_code;
 				$o->order->guest->city = $o->guest->city;
@@ -73,6 +74,7 @@ class OrdersController
 			}
 			if($o->user){
 				$o->order = new \stdClass;
+				$o->order->exchange = $o->exhange;
 				$o->order->amount = round($o->amount, 2);
 				$o->order->data = $o->data;
 				$o->order->user = new \stdClass; //$o->user
