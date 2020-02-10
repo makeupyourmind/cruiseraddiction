@@ -39,7 +39,7 @@ class PartsController extends BaseController
         // $parts = DB::table('parts')->distinct('part_number')->paginate(100);
         // return $parts;
         $parts = Part::orderBy('id', 'desc')
-                            ->select('id', 'part_number', 'brand_name', 'description_full', 'price', 'qty')
+                            ->select('id', 'part_number', 'brand_name', 'description_full', 'price', 'qty', 'description_english')
                             ->whereIn('brand_name', ['TOYOTA', 'KOYO', 'AISIN', 'TAIHO', 'NSK', 'HKT', '555', 'TOYO', 'NACHI', 'MITSUBOSHI'])
                             ->paginate(100);
         //                     // ->get('part_number');

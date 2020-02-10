@@ -223,6 +223,7 @@ class PayPalController extends Controller
             $orderData = json_decode(base64_decode($resultData), true);
 
             $customersOrder = array();
+            $customersOrder['exchange'] = $orderData['exchange'];
             $customersOrder['user'] = $orderData['user'];
             $customersOrder['taxes'] = $orderData['taxes'];
             $customersOrder['amount'] = $amount;
