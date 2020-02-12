@@ -236,6 +236,7 @@ class PayPalController extends Controller
                 $part = $partCollection->firstWhere('unique_hash', $partHash['unique_hash']);
 
                 $object = new \stdClass();
+                $object->exchange = $customersOrder['exchange'];
                 $object->amount = $customersOrder['amount'];
                 $object->brand_name = $part->brand_name;
                 $object->client_column_two = time().$dataElem;
