@@ -418,8 +418,12 @@ var CustomHeader = vue__WEBPACK_IMPORTED_MODULE_4__["default"].extend({
       return this.$store.getters['stockCaModule/GET_STOCK_DATA'];
     },
     getData: function getData() {
-      var store = this.getDataStock;
-      return store ? store.data : [];
+      var store = JSON.parse(JSON.stringify(this.getDataStock));
+      return store && store.data ? store.data.map(function (i) {
+        // debugger
+        i.price = (Number(i.price) || 0).toFixed(2);
+        return i;
+      }) : [];
     },
     totalPages: function totalPages() {
       var store = this.getDataStock;
