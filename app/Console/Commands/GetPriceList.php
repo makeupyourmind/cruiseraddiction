@@ -291,6 +291,6 @@ class GetPriceList extends Command
             }
         }
 
-        echo "\nCheck in availability notification is done".date('Y/m/d H:i:s');
+        echo "\nCheck in availability notification is done ".date('Y/m/d H:i:s');
     }
 }

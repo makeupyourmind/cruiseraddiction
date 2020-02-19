@@ -8,20 +8,16 @@
 </head>
 <body>
 
-<p>Hello</p>
+<p>We have good news!</p>
 @foreach($data as $element)
-    <p> The part number <a href="{{$element['link']}}">{{ $element['full_part_number'] }}</a> is back in stock in Warehouse {{ $element['warehouse_number'] }}.</p>
-    <p>If you are still interested in purchasing this item, please click on the part number and 
-            you will be redirected to our website where you can make a purchase.</p>
+    <p>{{$element['brand_name']}} {{ $element['description'] }} {{ $element['full_part_number'] }} 
+    is back in stock. Please click on the link bellow or on the part number.</p>
+    <p><a href="{{$element['link']}}">{{$element['link']}}</a></p>
 @endforeach
-<p>
-This is a one-time notification. If you need to order more quantity, please use the notification icon again.  
-If you have any questions, please do not hesitate to contact us through Contact Us form on our website. Please do not reply to this message
-</p>
-<p>
-Best regards,
-Cruiser Addiction Team
-</p>
+<p>This is a one-time notification.</p>
+<p>If you have any other questions feel free to contact us at <a href="info@cruiseraddiction.com">info@cruiseraddiction.com</a></p>
+<p>Thank you for your business!</p>
+<p>Cruiser Addiction Team</p>
 
 </body>
 </html>
