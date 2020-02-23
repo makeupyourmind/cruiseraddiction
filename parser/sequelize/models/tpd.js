@@ -2,6 +2,7 @@
 module.exports = (sequelize, DataTypes) => {
   const Tpd = sequelize.define('tpd', {
     part_number: DataTypes.STRING,
+    full_part_number: DataTypes.STRING,
     brand_name: DataTypes.STRING,
     replaced: DataTypes.STRING,
     retail_price: DataTypes.STRING,

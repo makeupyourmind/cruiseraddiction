@@ -14,14 +14,14 @@ class AddColumnInTableParts extends Migration
     public function up()
     {
         Schema::table('parts', function (Blueprint $table) {
-            $table->text('categories')->nullable();
-            $table->text('tags')->nullable();
+            // $table->text('categories')->nullable();
+            // $table->text('tags')->nullable();
             $table->string('min_price')->nullable();
             $table->string('max_price')->nullable();
-            $table->string('part_number_without_too_much')->nullable();
+            // $table->string('part_number_without_too_much')->nullable();
             $table->string('min_stock')->nullable();
             $table->boolean('is_stock_ca')->default(false);
-            $table->string('location')->nullable();
+            // $table->string('location')->nullable();
             $table->longText('fits')->nullable();
             $table->longText('important_general')->nullable();
         });

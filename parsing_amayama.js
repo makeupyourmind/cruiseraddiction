@@ -214,6 +214,7 @@ const detailUrl = config.AMAYAMA;
                 let check_in_dom = document.querySelector('div.part-page__catalog-name > span.info-hint-new.part-page__catalog-number ')
                 return check_in_dom ? check_in_dom.innerText : null
             })
+            part_number = await page.evaluate(() => document.querySelector('div.part-page__number').innerText)
 
             item.name = name
             item.description = description
@@ -229,9 +230,12 @@ const detailUrl = config.AMAYAMA;
             await browser.close();
             execution_time_end = new Date() - execution_time_start
 
+            const full_part_number = part_number
+            part_number = full_part_number.replace("-", "")
             await Amayama.create({
                 name,
                 part_number,
+                full_part_number,
                 weight,
                 description,
                 catalog,

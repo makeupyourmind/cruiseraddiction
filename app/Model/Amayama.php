@@ -8,8 +8,8 @@ class Amayama extends Model
 {
     protected $table = 'amayamas';
 
-    protected $fillable = ['id', 'name', 'part_number', 'weight', 'description', 'catalog', 
-    'discontinued', 'tableData', 'original_replacements', 'non_original_replacements'];
+    protected $fillable = ['id', 'name', 'part_number',  'full_part_number', 'weight', 'description', 'catalog', 
+    'discontinued', 'tableData', 'original_replacements', 'non_original_replacements', 'created_at'];
 
     public $timestamps = true;
 

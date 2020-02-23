@@ -3,6 +3,7 @@ module.exports = (sequelize, DataTypes) => {
     const Amayama = sequelize.define('amayama', {
         name: DataTypes.STRING,
         part_number: DataTypes.STRING,
+        full_part_number: DataTypes.STRING,
         weight: DataTypes.FLOAT,
         description: DataTypes.STRING,
         catalog: DataTypes.STRING,

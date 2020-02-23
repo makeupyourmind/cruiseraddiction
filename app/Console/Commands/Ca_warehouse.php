@@ -62,7 +62,7 @@ class Ca_warehouse extends Command
                         $uniqueHash = md5(rand().$row[0].$row[2]."canada");
                         Part::create([
                             'brand_name' => $row[0],
-                            'description_full' => $row[1],
+                            // 'description_full' => $row[1],
                             'part_number' => str_replace("-", "", $row[2]),
                             'full_part_number' => $row[2],
                             'qty' => $row[3],
