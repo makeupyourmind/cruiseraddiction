@@ -122,7 +122,7 @@ const detailUrl = config.TOYOTA_PARTS_DEAL;
                 return check ? true : false
             })
 
-            let relatedParts
+            let relatedParts = []
 
             if (related_exsist) {
                 relatedParts = await page.evaluate(() => {
@@ -157,9 +157,11 @@ const detailUrl = config.TOYOTA_PARTS_DEAL;
             // item.part_number = part_number
             // item.name = name
             // console.log(item);
-
+            const full_part_number = await page.evaluate(() => document.querySelector('div.summary.p_clear > h1 > b').innerText)
+            part_number = part_number.replace("-", "")
             await Tpd.create({
                 part_number,
+                full_part_number,
                 brand_name,
                 replaced,
                 retail_price,

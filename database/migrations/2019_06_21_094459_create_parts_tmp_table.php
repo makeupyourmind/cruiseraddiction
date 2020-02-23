@@ -25,16 +25,16 @@ class CreatePartsTmpTable extends Migration
             $table->string('price')->default('0');
             $table->string('unique_hash')->unique();
             $table->text('part_fits')->nullable();
-            $table->string('description_full')->nullable();
-            $table->string('color')->nullable();
+            // $table->string('description_full')->nullable();
+            // $table->string('color')->nullable();
             $table->string('image')->nullable();
             $table->integer('is_bundle')->default('0');
-            $table->integer('subst_for')->default('0');
-            $table->string('modified_by')->nullable();
+            // $table->integer('subst_for')->default('0');
+            // $table->string('modified_by')->nullable();
             $table->text('full_part_number')->nullable();
-	    $table->text('notes')->nullable();
-	    $table->string('bundle_id', '512')->default(0);
-	    $table->integer('bundle_qty')->default(0);
+            // $table->text('notes')->nullable();
+            $table->string('bundle_id', '512')->default(0);
+            $table->integer('bundle_qty')->default(0);
             $table->timestamps();
         });
     }

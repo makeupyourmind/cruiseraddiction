@@ -18,7 +18,7 @@ class BundlesController extends BaseController
             'part_number' => 'required|string',
             'brand_name' => 'required|string',
             'part_number' => 'required',
-            'description_full' => 'required',
+            // 'description_full' => 'required',
             'description_english' => 'required',
             'min_stock' => 'required',
             'qty' => 'required',

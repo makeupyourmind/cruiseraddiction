@@ -23,40 +23,19 @@ class PartsController extends BaseController
 {
 
     public function index(Request $request) {
-        // $parts = DB::table('parts')
-        //                         // ->orderBy('id', 'desc')
-        //                         // ->select('part_number','brand_name', DB::raw('COUNT(*) as count'))
-        //                         ->select('id','part_number', 'brand_name', DB::raw('count(*) as count'))
-        //                         // ->groupBy('part_number', 'brand_name')
-        //                         // ->having('count', '>', 1)
-        //                         ->having('count', '>', 1)
-        //                         // ->havingRaw('COUNT(*) > 1')
-        //                         ->paginate(100);
-        // return $parts;
+
         $count_total = Part::distinct('part_number')->count('part_number');
-        // $count_total = Part::distinct('part_number')->count('part_number');
-        // return $count_total;
-        // $parts = DB::table('parts')->distinct('part_number')->paginate(100);
-        // return $parts;
+ 
         $parts = Part::orderBy('id', 'desc')
-                            ->select('id', 'part_number', 'brand_name', 'description_full', 'price', 'qty', 'description_english')
+                            ->select('id', 'part_number', 'brand_name', 'price', 'qty', 'description_english')
                             ->whereIn('brand_name', ['TOYOTA', 'KOYO', 'AISIN', 'TAIHO', 'NSK', 'HKT', '555', 'TOYO', 'NACHI', 'MITSUBOSHI'])
                             ->paginate(100);
-        //                     // ->get('part_number');
-        // return $parts;
-        // print json_encode($parts);
-        // $count = Part::whereIn('brand_name', ['TOYOTA', 'KOYO', 'AISIN', 'TAIHO', 'NSK', 'HKT', '555', 'TOYO', 'NACHI', 'MITSUBOSHI'])
-        //                         ->count();
-        // Session::put('count', $count);
-        // return $count;
-// return $parts;
+                            // ->get('part_number');
         $data = array();
         foreach($parts as $key => $value){
             $data[] = $value;
         }
-        // return;
-        //return $data;
-// return $parts;
+
         $collection = new Collection($data);
         $uniqueItems = $collection->unique('part_number');
 
@@ -64,28 +43,19 @@ class PartsController extends BaseController
         foreach($uniqueItems as $value){
             $uniqueItemsArr[] = $value;
         }
-        // return array( 'initial' => count($parts) , 'unique' => count($uniqueItemsArr));
+
         $count_temp = 100 - count($uniqueItemsArr);
-        // $session_count_total = Session::get('count');
-        // Session::put('count', $session_count_total - count($uniqueItemsArr));
-        // $count_total = Session::get('count');
-        // return gettype($uniqueItemsArr);
+
         $page = Input::get('page', 1);
 
 		$perPage = 100;
-        //$offset = (($page * $perPage) - $perPage) - $count_temp;
-        //return array($offset, 'init' => count($uniqueItems));
-        // if($offset < 0){
-        //     $offset = 0;
-        // }
+
         $offset = 0;
         $paginate = [];
-        // return $uniqueItemsArr;
 		foreach(array_slice($uniqueItemsArr, $offset, $perPage, true) as $item){
-            // print json_encode($item);
 			array_push($paginate, $item);
         }
-        // return count($paginate);
+
         return new LengthAwarePaginator(
 			$paginate, // Only grab the items we need    //was array_slice($ordersArr, $offset, $perPage, true)
 			$count_total, // Total items
@@ -93,22 +63,6 @@ class PartsController extends BaseController
 			$page, // Current page
 			['path' => url('/').'/parts', 'query' => $request->query()] // We need this so we can keep all old query parameters from the url
 		);
-        //return array('total_data' => count($data), 'unique' => count($uniqueItems));
-
-        // $parts = Part::orderBy('id', 'desc')
-        //                     ->whereIn('brand_name', ['TOYOTA', 'KOYO', 'AISIN', 'TAIHO', 'NSK', 'HKT', '555', 'TOYO', 'NACHI', 'MITSUBOSHI'])
-        //                     ->get();
-        // $parts = $parts->map(function ($array) {
-        //     return collect($array)->unique('part_number')->paginate(100);
-        // });
-        // $parts = Part::distinct('brand_name', 'part_number')
-        //                         ->pluck('brand_name', 'part_number');
-        // $parts = Part::orderBy('id', 'desc')
-        //                     ->whereIn('brand_name', ['TOYOTA', 'KOYO', 'AISIN', 'TAIHO', 'NSK', 'HKT', '555', 'TOYO', 'NACHI', 'MITSUBOSHI'])
-        //                     // ->get();
-        //                     ->distinct('brand_name')
-        //                     ->paginate(100);
-        //return response()->json($parts, 200);
     }
     
     public function indexProduct() {
@@ -135,7 +89,7 @@ class PartsController extends BaseController
             $DD= '44444444-444444444';
             $caOrder['brand_name'] = $caPart['brand']['BrandName'];
             $caOrder['part_number'] = $caPart['PartNumber'];
-            $caOrder['part_number_without_too_much'] = str_replace(['-', '-'], '', $caPart['PartNumber']);
+            // $caOrder['part_number_without_too_much'] = str_replace(['-', '-'], '', $caPart['PartNumber']);
             $caOrder['description_english'] = $caPart['DescriptionEnglish'];
             $caOrder['weight_physical'] = $caPart['part']['WeightPhysical'];
             $caOrder['weight_volumetric'] = $caPart['part']['WeightVolumetric'];
@@ -145,16 +99,16 @@ class PartsController extends BaseController
             $caOrder['unique_hash'] = 'CA_'.md5($caOrder['brand_name'].$caOrder['part_number'].'canada');
             //$caOrder['unique_hash'] = '1234567qwert';
             $caOrder['is_bundle'] = $caPart['part']['IsBundle'];
-            $caOrder['modified_by'] = $caPart['stats']['modifier']['email'];
-            $caOrder['description_full'] = $caPart['description_full'];
-            $caOrder['notes'] = serialize($caPart);
-            $caOrder['categories'] = $caPart['stats'] && $caPart['stats']['categories'] ? json_encode($caPart['stats']['categories']) : null;
-            $caOrder['tags'] =       $caPart['stats'] && $caPart['stats']['tags'] ? json_encode($caPart['stats']['tags']) : null;
+            // $caOrder['modified_by'] = $caPart['stats']['modifier']['email'];
+            // $caOrder['description_full'] = $caPart['description_full'];
+            // $caOrder['notes'] = serialize($caPart);
+            // $caOrder['categories'] = $caPart['stats'] && $caPart['stats']['categories'] ? json_encode($caPart['stats']['categories']) : null;
+            // $caOrder['tags'] =       $caPart['stats'] && $caPart['stats']['tags'] ? json_encode($caPart['stats']['tags']) : null;
             $caOrder['min_price'] =  $caPart['stats'] ? (string) $caPart['stats']['min_price'] : null;
             $caOrder['max_price'] =  $caPart['stats'] ? (string) $caPart['stats']['max_price'] : null;
             $caOrder['min_stock'] =  $caPart['stats'] ? (string) $caPart['stats']['stock_min'] : null;
 
-            $caOrder['location'] = $caPart['Location'];
+            // $caOrder['location'] = $caPart['Location'];
             $caOrder['is_stock_ca'] = true;
 
             Part::updateOrCreate(
@@ -391,7 +345,7 @@ class PartsController extends BaseController
         $validator = Validator::make($request->all(), [
             'brand_name' => 'required|string',
             'part_number' => 'required|string',
-            'description_full' => 'required',
+            // 'description_full' => 'required',
             'description_english' => 'required',
             'min_stock' => 'required',
             'qty' => 'required',
@@ -437,9 +391,9 @@ class PartsController extends BaseController
                 ->where('part_number', $request->part_number)
                 ->where('warehouse', 'canada')
                 ->update(['part_number' => $request->part_number, 'brand_name' => $request->brand_name, 'description_english' => $request->description_english,
-                'description_full' => $request->description_full, 'min_stock' => $request->min_stock, 'price' => $request->price,
-                'min_price' => $request->min_price, 'max_price' => $request->max_price, 'location' => $request->location, 'categories' => $request->categories,
-                'weight' => $request->weight, 'length' => $request->length, 'width' => $request->width, 'depth' => $request->depth, 'meta' => $request->meta]);
+                 'min_stock' => $request->min_stock, 'price' => $request->price,
+                'min_price' => $request->min_price, 'max_price' => $request->max_price,
+                'weight' => $request->weight, 'length' => $request->length, 'width' => $request->width, 'depth' => $request->depth ]);
             $bundleId =  Part::where('brand_name', $request->brand_name)
                     ->where('part_number', $request->part_number)
                     ->where('warehouse', 'canada')

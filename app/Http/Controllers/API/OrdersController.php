@@ -128,7 +128,7 @@ class OrdersController
 		////////////////////////////////////////////////////////////////////////
     }
 
-    public function userOrders($id) {
+    public function userOrders(Request $request, $id) {
 		$user_id = Auth::id();
 		$orders = Order::with('user')->whereHas('user', function(Builder $query) use ($user_id){
 										     		$query->where('id', '=', $user_id);
@@ -145,6 +145,22 @@ class OrdersController
 			unset($order->data, $order->user, $order->user_id);
 			array_push($ordersArr, $order);
 		}
+
+		$page = Input::get('page', 1);
+		$perPage = 15;
+		$offset = ($page * $perPage) - $perPage;
+		$paginate = [];
+		foreach(array_slice($ordersArr, $offset, $perPage, true) as $item){
+			array_push($paginate, $item);
+		}
+		return new LengthAwarePaginator(
+			$paginate, // Only grab the items we need    //was array_slice($ordersArr, $offset, $perPage, true)
+			count($ordersArr), // Total items
+			$perPage, // Items per page
+			$page, // Current page
+			['path' => url('/').'/user-orders', 'query' => $request->query()] // We need this so we can keep all old query parameters from the url
+		);
+
 		return response()->json($ordersArr);
     }
 }
