@@ -263,27 +263,27 @@
                     suppressMenu: true
                     // width: 250,
                 },
-                {
-                    headerName: 'Location',
-                    field: 'location',
-                    // filter: true,
-                    suppressMenu: true,
-                    width: 125,
-                },
-                {
-                    headerName: 'Categories',
-                    field: 'categories',
-                    // filter: true,
-                    suppressMenu: true,
-                    width: 125,
-                },
-                {
-                    headerName: 'Tags',
-                    field: 'tags',
-                    cellRenderer: "test",
-                    suppressMenu: true,
-                    width: 125,
-                },
+                // {
+                //     headerName: 'Location',
+                //     field: 'location',
+                //     // filter: true,
+                //     suppressMenu: true,
+                //     width: 125,
+                // },
+                // {
+                //     headerName: 'Categories',
+                //     field: 'categories',
+                //     // filter: true,
+                //     suppressMenu: true,
+                //     width: 125,
+                // },
+                // {
+                //     headerName: 'Tags',
+                //     field: 'tags',
+                //     cellRenderer: "test",
+                //     suppressMenu: true,
+                //     width: 125,
+                // },
             ];
 
             this.context = {componentParent: this};

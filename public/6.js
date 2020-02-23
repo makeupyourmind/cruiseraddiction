@@ -386,24 +386,6 @@ var CustomHeader = vue__WEBPACK_IMPORTED_MODULE_4__["default"].extend({
       // filter: true,
       suppressMenu: true // width: 250,
 
-    }, {
-      headerName: 'Location',
-      field: 'location',
-      // filter: true,
-      suppressMenu: true,
-      width: 125
-    }, {
-      headerName: 'Categories',
-      field: 'categories',
-      // filter: true,
-      suppressMenu: true,
-      width: 125
-    }, {
-      headerName: 'Tags',
-      field: 'tags',
-      cellRenderer: "test",
-      suppressMenu: true,
-      width: 125
     }];
     this.context = {
       componentParent: this
