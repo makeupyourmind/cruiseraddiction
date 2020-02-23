@@ -1372,24 +1372,6 @@ var render = function() {
                     _c("vs-input", {
                       staticClass: "w-full mb-6",
                       style:
-                        !_vm.moduleStock.description_full &&
-                        "border: 1px solid red",
-                      attrs: {
-                        name: "description",
-                        "label-placeholder": "Description"
-                      },
-                      model: {
-                        value: _vm.moduleStock.description_full,
-                        callback: function($$v) {
-                          _vm.$set(_vm.moduleStock, "description_full", $$v)
-                        },
-                        expression: "moduleStock.description_full"
-                      }
-                    }),
-                    _vm._v(" "),
-                    _c("vs-input", {
-                      staticClass: "w-full mb-6",
-                      style:
                         !_vm.moduleStock.description_english &&
                         "border: 1px solid red",
                       attrs: {
@@ -1567,11 +1549,11 @@ var render = function() {
                                                 },
                                                 [
                                                   _vm._v(
-                                                    "\n                                    " +
+                                                    "\n                                        " +
                                                       _vm._s(
                                                         data[elem].bundle_qty
                                                       ) +
-                                                      "\n                                "
+                                                      "\n                                    "
                                                   )
                                                 ]
                                               )
@@ -1601,7 +1583,7 @@ var render = function() {
                               ],
                               null,
                               false,
-                              2934420749
+                              2579861517
                             )
                           },
                           [
@@ -1738,43 +1720,9 @@ var render = function() {
                       }
                     }),
                     _vm._v(" "),
-                    _c("vs-input", {
-                      staticClass: "w-full mb-6",
-                      attrs: {
-                        name: "location",
-                        "label-placeholder": "Location"
-                      },
-                      model: {
-                        value: _vm.moduleStock.location,
-                        callback: function($$v) {
-                          _vm.$set(_vm.moduleStock, "location", $$v)
-                        },
-                        expression: "moduleStock.location"
-                      }
-                    }),
-                    _vm._v(" "),
-                    _c("vs-input", {
-                      staticClass: "w-full mb-6",
-                      staticStyle: { width: "100%!important" },
-                      attrs: {
-                        name: "categories",
-                        "label-placeholder": "Categories"
-                      },
-                      model: {
-                        value: _vm.moduleStock.categories,
-                        callback: function($$v) {
-                          _vm.$set(_vm.moduleStock, "categories", $$v)
-                        },
-                        expression: "moduleStock.categories"
-                      }
-                    }),
-                    _vm._v(" "),
                     _c("vs-textarea", {
                       staticClass: "w-full mb-6",
-                      attrs: {
-                        name: "descriptionFull",
-                        "label-placeholder": "Part fits"
-                      },
+                      attrs: { name: "descriptionFull", label: "Part fits" },
                       model: {
                         value: _vm.moduleStock.fits,
                         callback: function($$v) {
@@ -1788,7 +1736,7 @@ var render = function() {
                       staticClass: "w-full mb-6",
                       attrs: {
                         name: "descriptionFull",
-                        "label-placeholder": "Important general information"
+                        label: "Important general information"
                       },
                       model: {
                         value: _vm.moduleStock.important_general,
@@ -1797,105 +1745,7 @@ var render = function() {
                         },
                         expression: "moduleStock.important_general"
                       }
-                    }),
-                    _vm._v(" "),
-                    _c("vs-textarea", {
-                      staticClass: "w-full mb-6",
-                      attrs: {
-                        name: "descriptionFull",
-                        "label-placeholder": "Important general information"
-                      },
-                      model: {
-                        value: _vm.moduleStock,
-                        callback: function($$v) {
-                          _vm.moduleStock = $$v
-                        },
-                        expression: "moduleStock"
-                      }
-                    }),
-                    _vm._v(" "),
-                    _c("vs-textarea", {
-                      staticClass: "w-full mb-6",
-                      attrs: {
-                        name: "descriptionFull",
-                        "label-placeholder": "Important general information"
-                      },
-                      model: {
-                        value: _vm.moduleStock.meta,
-                        callback: function($$v) {
-                          _vm.$set(_vm.moduleStock, "meta", $$v)
-                        },
-                        expression: "moduleStock.meta"
-                      }
-                    }),
-                    _vm._v(" "),
-                    _c(
-                      "div",
-                      { staticClass: "w-full mb-6" },
-                      [
-                        _c(
-                          "div",
-                          {
-                            staticStyle: {
-                              display: "flex",
-                              "justify-content": "space-between",
-                              "align-items": "center"
-                            }
-                          },
-                          [
-                            _c("vs-input", {
-                              staticClass: "mt-0",
-                              attrs: {
-                                name: "chips",
-                                "label-placeholder": "Find & add tags"
-                              },
-                              model: {
-                                value: _vm.tag,
-                                callback: function($$v) {
-                                  _vm.tag = $$v
-                                },
-                                expression: "tag"
-                              }
-                            }),
-                            _vm._v(" "),
-                            _c(
-                              "vs-button",
-                              {
-                                staticStyle: { "box-sizing": "content-box" },
-                                attrs: { color: "primary", type: "filled" },
-                                on: { click: _vm.addChip }
-                              },
-                              [_vm._v("Add")]
-                            )
-                          ],
-                          1
-                        ),
-                        _vm._v(" "),
-                        _vm._l(_vm.moduleStock.tags, function(chip) {
-                          return _c(
-                            "vs-chip",
-                            {
-                              key: chip,
-                              staticStyle: { margin: "15px 5px" },
-                              attrs: { color: "primary", closable: "" },
-                              on: {
-                                click: function($event) {
-                                  return _vm.removeChip(chip)
-                                }
-                              }
-                            },
-                            [
-                              _vm._v(
-                                "\n                        " +
-                                  _vm._s(chip) +
-                                  "\n                    "
-                              )
-                            ]
-                          )
-                        })
-                      ],
-                      2
-                    )
+                    })
                   ],
                   1
                 )
