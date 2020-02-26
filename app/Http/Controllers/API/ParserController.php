@@ -36,7 +36,17 @@ class ParserController
                         ];
                     }
                 }
+            }else{
+                $response['toyota_parts_deal'] = [
+                    'exist' => false,
+                    "data" => "No record in parser table"
+                ];
             }
+        }else{
+            $response['toyota_parts_deal'] = [
+                'exist' => false,
+                "data" => "No success"
+            ];
         }
 
         return response()->json($response, 200);
@@ -76,8 +86,19 @@ class ParserController
                         ];
                     }
                 }
+            }else{
+                $response['amayama'] = [
+                    'exist' => false,
+                    "data" => "No record in parser table"
+                ];
             }
+        }else{
+            $response['amayama'] = [
+                'exist' => false,
+                "data" => "No success"
+            ];
         }
+
         return response()->json($response, 200);
     }
 
