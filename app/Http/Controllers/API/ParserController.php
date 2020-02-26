@@ -30,7 +30,7 @@ class ParserController
                             'replaced' => $data
                         ];
                     }else{
-                        $response['amayama'] = [
+                        $response['toyota_parts_deal'] = [
                             'exist' => true,
                             'replaced' => ['part_number' => "---------------"]
                         ];
@@ -65,12 +65,12 @@ class ParserController
                                 ->where('part_number', str_replace("-", "", $model->part_number))
                                 ->first();
                     if($data){
-                        $response['toyota_parts_deal'] = [
+                        $response['amayama'] = [
                             'exist' => true,
                             'replaced' => $data
                         ];
                     }else{
-                        $response['toyota_parts_deal'] = [
+                        $response['amayama'] = [
                             'exist' => true,
                             'replaced' => ['part_number' => "---------------"]
                         ];
