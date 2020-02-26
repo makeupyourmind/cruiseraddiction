@@ -25,12 +25,12 @@
                         @input="getData($event)"
                         :style="(!moduleStock.part_number|| errorPart)  && 'border: 1px solid red'"
                         class="w-full mb-6" />
-                    <vs-input
-                        name="description"
-                        label-placeholder="Description"
-                        :style="!moduleStock.description_full && 'border: 1px solid red'"
-                        v-model="moduleStock.description_full"
-                        class="w-full mb-6" />
+<!--                    <vs-input-->
+<!--                        name="description"-->
+<!--                        label-placeholder="Description"-->
+<!--                        :style="!moduleStock.description_full && 'border: 1px solid red'"-->
+<!--                        v-model="moduleStock.description_full"-->
+<!--                        class="w-full mb-6" />-->
 
                     <vs-input
                         name="descriptionFull"
@@ -153,58 +153,58 @@
                         label-placeholder="Max Price"
                         v-model="moduleStock.max_price"
                         class="w-full mb-6" />
-                    <vs-input
-                        name="location"
-                        label-placeholder="Location"
-                        v-model="moduleStock.location"
-                        class="w-full mb-6" />
-                    <vs-input
-                        name="categories"
-                        label-placeholder="Categories"
-                        v-model="moduleStock.categories"
-                        class="w-full mb-6"
-                        style="width:100%!important"
-                    />
+<!--                    <vs-input-->
+<!--                        name="location"-->
+<!--                        label-placeholder="Location"-->
+<!--                        v-model="moduleStock.location"-->
+<!--                        class="w-full mb-6" />-->
+<!--                    <vs-input-->
+<!--                        name="categories"-->
+<!--                        label-placeholder="Categories"-->
+<!--                        v-model="moduleStock.categories"-->
+<!--                        class="w-full mb-6"-->
+<!--                        style="width:100%!important"-->
+<!--                    />-->
                     <vs-textarea
                             name="descriptionFull"
-                            label-placeholder="Part fits"
+                            label="Part fits"
                             v-model="moduleStock.fits"
                             class="w-full mb-6" />
                     <vs-textarea
                             name="descriptionFull"
-                            label-placeholder="Important general information"
+                            label="Important general information"
                             v-model="moduleStock.important_general"
                             class="w-full mb-6" />
-                    <vs-textarea
-                            name="descriptionFull"
-                            label-placeholder="Important general information"
-                            v-model="moduleStock"
-                            class="w-full mb-6" />
-                    <vs-textarea
-                            name="descriptionFull"
-                            label-placeholder="Important general information"
-                            v-model="moduleStock.meta"
-                            class="w-full mb-6" />
-                    <div class="w-full mb-6">
-                        <div style="display: flex; justify-content: space-between; align-items: center">
-                            <vs-input
-                                name="chips"
-                                label-placeholder="Find & add tags"
-                                v-model="tag"
-                                class="mt-0"
-                            />
-                            <vs-button style="box-sizing: content-box" color="primary" @click="addChip" type="filled">Add</vs-button>
-                        </div>
-                        <vs-chip
-                            :key="chip"
-                            @click="removeChip(chip)"
-                            v-for="chip in moduleStock.tags"
-                            color="primary"
-                            closable
-                            style="margin: 15px 5px">
-                            {{ chip }}
-                        </vs-chip>
-                    </div>
+<!--                    <vs-textarea-->
+<!--                            name="descriptionFull"-->
+<!--                            label-placeholder="Important general information"-->
+<!--                            v-model="moduleStock"-->
+<!--                            class="w-full mb-6" />-->
+<!--                    <vs-textarea-->
+<!--                            name="descriptionFull"-->
+<!--                            label-placeholder="Important general information"-->
+<!--                            v-model="moduleStock.meta"-->
+<!--                            class="w-full mb-6" />-->
+<!--                    <div class="w-full mb-6">-->
+<!--                        <div style="display: flex; justify-content: space-between; align-items: center">-->
+<!--                            <vs-input-->
+<!--                                name="chips"-->
+<!--                                label-placeholder="Find & add tags"-->
+<!--                                v-model="tag"-->
+<!--                                class="mt-0"-->
+<!--                            />-->
+<!--                            <vs-button style="box-sizing: content-box" color="primary" @click="addChip" type="filled">Add</vs-button>-->
+<!--                        </div>-->
+<!--                        <vs-chip-->
+<!--                            :key="chip"-->
+<!--                            @click="removeChip(chip)"-->
+<!--                            v-for="chip in moduleStock.tags"-->
+<!--                            color="primary"-->
+<!--                            closable-->
+<!--                            style="margin: 15px 5px">-->
+<!--                            {{ chip }}-->
+<!--                        </vs-chip>-->
+<!--                    </div>-->
                 </form>
             </div>
             <div v-else>
