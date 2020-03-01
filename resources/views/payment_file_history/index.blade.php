@@ -69,8 +69,8 @@
         <td style="border-bottom: 1px solid black;">{{ $order["part_number"] }}</td>
         <td style="border-bottom: 1px solid black">{{ $order["description"] }}</td>
         <td style="border-bottom: 1px solid black">{{ $order["qty"] }}</td>
-        <td style="border-bottom: 1px solid black">${{ $order["price"] }}</td>
-        <td style="border-bottom: 1px solid black">${{ $order["total_price"] }}</td>
+        <td style="border-bottom: 1px solid black">${{ $order["price"] * $order['exchange'] }}</td>
+        <td style="border-bottom: 1px solid black">${{ $order["total_price"] * $order['exchange'] }}</td>
         <td style="border-bottom: 1px solid black"> W{{ $order["warehouse"] }}</td>
     </tr>
 @endforeach

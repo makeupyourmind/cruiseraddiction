@@ -15,42 +15,30 @@
     <br>
     <h3 style="color: #ac733a">Here are their details</h3>
     <br>
-    @foreach ($variables as $key => $value)
-        @if($key == 'name')
-            <div style="width: 300px">
-                <div style="float: left; font-weight: bold">Full Name:</div>
-                <div style="float: right">{{ $value }}</div>
-            </div>
-            <div style="clear: both"></div>
-            <br>
-        @endif
-        @if($key == 'email')
-
-            <div style="width: 300px">
-                <div style="float: left; font-weight: bold">Email Address:</div>
-                <div style="float: right">{{ $value }}</div>
-            </div>
-            <div style="clear: both"></div>
-            <br>
-        @endif
-        @if($key == 'phone')
-
-            <div style="width: 300px">
-                <div style="float: left; font-weight: bold">Phone Number:</div>
-                <div style="float: right">{{ $value }}</div>
-            </div>
-            <div style="clear: both"></div>
-            <br>
-        @endif
-        @if($key == 'message')
-            <div style="width: 300px">
-                <div style="float: left; font-weight: bold">Message:</div>
-            </div>
-            <div style="clear: both"></div>
-            <div style="float: right">{{ $value }}</div>
-            <br>
-        @endif
-    @endforeach
+        <div style="width: 300px">
+            <div style="float: left; font-weight: bold">Full Name:</div>
+            <div style="float: right">{{ $variables['name'] }}</div>
+        </div>
+        <div style="clear: both"></div>
+        <br>
+        <div style="width: 300px">
+            <div style="float: left; font-weight: bold">Email Address:</div>
+            <div style="float: right">{{ $variables['email'] }}</div>
+        </div>
+        <div style="clear: both"></div>
+        <br>
+        <div style="width: 300px">
+            <div style="float: left; font-weight: bold">Phone Number:</div>
+            <div style="float: right">{{ $variables['phone'] }}</div>
+        </div>
+        <div style="clear: both"></div>
+        <br>
+        <div style="width: 300px">
+            <div style="float: left; font-weight: bold; margin-right: 10px;">Message:</div>
+            <div style="float: right">{{ $variables['message'] }}</div>
+        </div>
+        <div style="clear: both"></div>
+        <br>
     <h3>CRUISER ADDICTION - TOYOTA OEM LANDCRUISER 4X4 PARTS </h3>
     <a href="http://cruiseraddiction.com">http://cruiseraddiction.com/</a>
     <hr>

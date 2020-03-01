@@ -75,7 +75,14 @@ const detailUrl = config.AMAYAMA;
 
         await page.waitFor(1000);
 
-        const isStock = await page.evaluate(() => document.querySelector('.text_plate').innerText);
+        const isStock = await page.evaluate(() => {
+            const selector = document.querySelector('.text_plate')
+            return selector ? selector.innerText : ""
+        });
+
+        if (!isStock) {
+            process.exit(0)
+        }
 
         if (isStock == "Permanently out of stock") {
             await browser.close();

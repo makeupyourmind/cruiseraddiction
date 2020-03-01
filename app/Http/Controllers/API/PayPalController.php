@@ -343,6 +343,7 @@ class PayPalController extends Controller
 
             $pass_data_to_pdf = [
                 'order_id' => $newOrder->id,
+                'exchange' => $customersOrder['exchange'],
                 'show_13_percent' => $show_13_percent,
                 'show_information_company' => $show_information_company,
                 'total_quantity_ordered' => $total_quantity_ordered,

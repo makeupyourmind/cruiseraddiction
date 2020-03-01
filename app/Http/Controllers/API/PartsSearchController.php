@@ -77,7 +77,7 @@ class PartsSearchController extends BaseController
                 == str_replace("-", "", $toyota_parts_deal->replaced) 
             )){
             $part_both = str_replace("-", "", $toyota_parts_deal->replaced);
-            $data = Part::select('qty', 'price', 'part_number')
+            Part::select('qty', 'price', 'part_number', 'brand_name', 'unique_hash', 'warehouse', 'image')
                         ->where('part_number', $part_both)
                         ->first();
             if($data){
@@ -95,7 +95,7 @@ class PartsSearchController extends BaseController
             if($amayama_part){
                 if(count($amayama_part['original_replacements']) > 0){
                     $part_in_our_amayama = str_replace("-", "", $amayama_part->original_replacements[0]["original_number"]);
-                    $data = Part::select('qty', 'price', 'part_number')
+                    $data = Part::select('qty', 'price', 'part_number', 'brand_name', 'unique_hash', 'warehouse', 'image')
                                 ->where('part_number', $part_in_our_amayama)
                                 ->first();
                     if($data){
@@ -119,7 +119,7 @@ class PartsSearchController extends BaseController
             if($toyota_parts_deal){
                 if($toyota_parts_deal['replaced']){
                     $part_in_our_toyota = str_replace("-", "", $toyota_parts_deal['replaced']);
-                    $data = Part::select('qty', 'price', 'part_number')
+                    $data = Part::select('qty', 'price', 'part_number', 'brand_name', 'unique_hash', 'warehouse', 'image')
                                 ->where('part_number', $part_in_our_toyota)
                                 ->first();
                     if($data){

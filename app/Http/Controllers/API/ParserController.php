@@ -21,7 +21,7 @@ class ParserController
                             ->first();
             if($model){
                 if($model['replaced']){
-                    $data = Part::select('qty', 'price', 'part_number')
+                    $data = Part::select('qty', 'price', 'part_number', 'brand_name', 'unique_hash', 'warehouse', 'image')
                                     ->where('part_number', str_replace("-", "", $model->part_number))
                                     ->first();
                     if($data){
@@ -71,7 +71,7 @@ class ParserController
                                 ->first();
             if($model){
                 if(count($model['original_replacements']) > 0){
-                    $data = Part::select('qty', 'price', 'part_number')
+                    $data = Part::select('qty', 'price', 'part_number', 'brand_name', 'unique_hash', 'warehouse', 'image')
                                 ->where('part_number', str_replace("-", "", $model->part_number))
                                 ->first();
                     if($data){
