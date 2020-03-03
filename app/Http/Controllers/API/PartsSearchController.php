@@ -55,7 +55,7 @@ class PartsSearchController extends BaseController
         return response()->json($response, 200);//$partsList
     }
 
-    public function search_in_parsing_tables($response, $part_number){
+    private function search_in_parsing_tables($response, $part_number){
         $sub_days = 30; 
         $from = Carbon::today()->subDays($sub_days);
         $to = Carbon::now(env("TIMEZONE"));
@@ -77,13 +77,17 @@ class PartsSearchController extends BaseController
                 == str_replace("-", "", $toyota_parts_deal->replaced) 
             )){
             $part_both = str_replace("-", "", $toyota_parts_deal->replaced);
-            Part::select('qty', 'price', 'part_number', 'brand_name', 'unique_hash', 'warehouse', 'image')
+            $parts = Part::select('description_english', 'weight_physical', 'weight_volumetric', 
+                        'qty', 'price', 'part_number', 'brand_name', 'unique_hash', 'warehouse', 'image')
                         ->where('part_number', $part_both)
-                        ->first();
-            if($data){
+                        ->get();
+            
+            $partsList = self::search_transform($parts);
+
+            if(count($parts) > 0){
                 $response['parser'] = [
                     'exist' => true, 
-                    'replaced' => $data
+                    'replaced' => $partsList
                 ];
             }else{
                 $response['parser'] = [
@@ -95,13 +99,17 @@ class PartsSearchController extends BaseController
             if($amayama_part){
                 if(count($amayama_part['original_replacements']) > 0){
                     $part_in_our_amayama = str_replace("-", "", $amayama_part->original_replacements[0]["original_number"]);
-                    $data = Part::select('qty', 'price', 'part_number', 'brand_name', 'unique_hash', 'warehouse', 'image')
+                    $parts = Part::select('description_english', 'weight_physical', 'weight_volumetric', 'qty', 'price', 
+                                        'part_number', 'brand_name', 'unique_hash', 'warehouse', 'image')
                                 ->where('part_number', $part_in_our_amayama)
-                                ->first();
-                    if($data){
+                                ->get();
+
+                    $partsList = self::search_transform($parts);
+
+                    if(count($parts) > 0){
                         $response['amayama'] = [
                             'exist' => true, 
-                            'replaced' => $data
+                            'replaced' => $partsList
                         ];
                     }else{
                         $response['amayama'] = [
@@ -119,13 +127,17 @@ class PartsSearchController extends BaseController
             if($toyota_parts_deal){
                 if($toyota_parts_deal['replaced']){
                     $part_in_our_toyota = str_replace("-", "", $toyota_parts_deal['replaced']);
-                    $data = Part::select('qty', 'price', 'part_number', 'brand_name', 'unique_hash', 'warehouse', 'image')
+                    $parts = Part::select('description_english', 'weight_physical', 'weight_volumetric', 
+                                    'qty', 'price', 'part_number', 'brand_name', 'unique_hash', 'warehouse', 'image')
                                 ->where('part_number', $part_in_our_toyota)
-                                ->first();
-                    if($data){
+                                ->get();
+                
+                    $partsList = self::search_transform($parts);
+
+                    if(count($parts) > 0){
                         $response['toyota_parts_deal'] = [
                             'exist' => true,
-                            'replaced' => $data
+                            'replaced' => $partsList
                         ];
                     }
                     else{ ///okay
@@ -143,6 +155,25 @@ class PartsSearchController extends BaseController
         }
 
         return $response;
+    }
+
+
+    private function search_transform($parts){
+        $partsList = array();
+        foreach($parts as $part) {
+            $partsList['brand_name'] = $part['brand_name'];
+            $partsList['part_number'] = $part['part_number'];
+            foreach($parts as $index => $data) {
+                $partsList['data'][$index]['warehouse'] = $data['warehouse'];
+                $partsList['data'][$index]['available'] = $data['qty'];
+                $partsList['data'][$index]['price'] = $data['price'];
+                $partsList['data'][$index]['unique_hash'] = $data['unique_hash'];
+                $partsList['data'][$index]['weight_physical'] = $data['weight_physical'];
+                $partsList['data'][$index]['description_english'] = $data['description_english'];
+                $partsList['data'][$index]['image'] = $data['image'];
+            }
+        }
+        return $partsList;
     }
 
 }

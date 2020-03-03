@@ -21,13 +21,18 @@ class ParserController
                             ->first();
             if($model){
                 if($model['replaced']){
-                    $data = Part::select('qty', 'price', 'part_number', 'brand_name', 'unique_hash', 'warehouse', 'image')
-                                    ->where('part_number', str_replace("-", "", $model->part_number))
-                                    ->first();
-                    if($data){
+                    $part_in_our_toyota = str_replace("-", "", $model['replaced']);
+                    $parts = Part::select('description_english', 'weight_physical', 'weight_volumetric',
+                                        'qty', 'price', 'part_number', 'brand_name', 'unique_hash', 'warehouse', 'image')
+                                    ->where('part_number', str_replace("-", "", $part_in_our_toyota))
+                                    ->get();
+
+                    $partsList = self::search_transform($parts);
+
+                    if(count($parts) > 0){
                         $response['toyota_parts_deal'] = [
                             'exist' => true,
-                            'replaced' => $data
+                            'replaced' => $partsList
                         ];
                     }else{
                         $response['toyota_parts_deal'] = [
@@ -71,13 +76,18 @@ class ParserController
                                 ->first();
             if($model){
                 if(count($model['original_replacements']) > 0){
-                    $data = Part::select('qty', 'price', 'part_number', 'brand_name', 'unique_hash', 'warehouse', 'image')
-                                ->where('part_number', str_replace("-", "", $model->part_number))
-                                ->first();
-                    if($data){
+                    $part_in_our_amayama = str_replace("-", "", $model[0]["original_number"]);
+                    $parts = Part::select('description_english', 'weight_physical', 'weight_volumetric',
+                                        'qty', 'price', 'part_number', 'brand_name', 'unique_hash', 'warehouse', 'image')
+                                ->where('part_number', str_replace("-", "", $part_in_our_amayama))
+                                ->get();
+
+                    $partsList = self::search_transform($parts);
+
+                    if(count($parts) > 0){
                         $response['amayama'] = [
                             'exist' => true,
-                            'replaced' => $data
+                            'replaced' => $partsList
                         ];
                     }else{
                         $response['amayama'] = [
@@ -107,5 +117,23 @@ class ParserController
         $pass_to_script = $request->part_number;
         $response_partsouq = exec("cd $path && node parsing_partsouq $pass_to_script", $out, $err);
         return array('out' => $out, 'err' => $err);
+    }
+
+    private function search_transform($parts){
+        $partsList = array();
+        foreach($parts as $part) {
+            $partsList['brand_name'] = $part['brand_name'];
+            $partsList['part_number'] = $part['part_number'];
+            foreach($parts as $index => $data) {
+                $partsList['data'][$index]['warehouse'] = $data['warehouse'];
+                $partsList['data'][$index]['available'] = $data['qty'];
+                $partsList['data'][$index]['price'] = $data['price'];
+                $partsList['data'][$index]['unique_hash'] = $data['unique_hash'];
+                $partsList['data'][$index]['weight_physical'] = $data['weight_physical'];
+                $partsList['data'][$index]['description_english'] = $data['description_english'];
+                $partsList['data'][$index]['image'] = $data['image'];
+            }
+        }
+        return $partsList;
     }
 }
