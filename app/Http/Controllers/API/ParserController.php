@@ -14,7 +14,7 @@ class ParserController
         $pass_to_script = $request->part_number;
         $response_tpd = exec("cd ". $path. " && node parsing_toyotapartsdeal.js $pass_to_script", $out, $err);
 
-        $response = array('out' => $response_tpd, 'err' => $err);
+        $response = array('out' => $response_tpd, 'err' => $err, 'requested_part_number' => $pass_to_script);
         if (strpos($response_tpd, 'successfully') !== false) {
             $model = Tpd::select('replaced', 'part_number')
                             ->where('part_number', str_replace("-", "", $request->part_number))
@@ -69,7 +69,7 @@ class ParserController
         $pass_to_script = $request->part_number;
         $response_amayama = exec("cd $path && node parsing_amayama $pass_to_script", $out, $err);
 
-        $response = array('out' => $response_amayama, 'err' => $err);
+        $response = array('out' => $response_amayama, 'err' => $err, 'requested_part_number' => $pass_to_script);
         if (strpos($response_amayama, 'successfully') !== false) {
             $model = Amayama::select('original_replacements','part_number')
                                 ->where('part_number', str_replace("-", "", $request->part_number))

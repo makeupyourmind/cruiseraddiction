@@ -46,7 +46,8 @@ class PartsSearchController extends BaseController
         }
 
         $response = [
-            'parts' => $partsList
+            'parts' => $partsList,
+            'requested_part_number' => $request->partNumber
         ];
 
         if(count($partNums) == 1){
