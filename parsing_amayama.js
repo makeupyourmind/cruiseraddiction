@@ -22,7 +22,7 @@ const detailUrl = config.AMAYAMA;
     const startDate = new Date(new Date().getTime() - (24 * 3600 * 1000) * 30)
     const record_exsist = await Amayama.findOne({
         where: {
-            part_number: part_number,
+            part_number: part_number.split("-").join(''),
             createdAt: {
                 [Op.between]: [startDate, endDate]
             }

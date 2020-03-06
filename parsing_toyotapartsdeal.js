@@ -21,7 +21,7 @@ const detailUrl = config.TOYOTA_PARTS_DEAL;
     const startDate = new Date(new Date().getTime() - (24 * 3600 * 1000) * 30)
     const record_exsist = await Tpd.findOne({
         where: {
-            part_number: part_number,
+            part_number: part_number.split("-").join(''),
             createdAt: {
                 [Op.between]: [startDate, endDate]
             }
