@@ -6,6 +6,7 @@
 /storage/*.key
 /storage/images/
 /storage/app/orders/
+/parser/*
 /vendor
 .env
 .phpunit.result.cache
