@@ -238,7 +238,7 @@ const detailUrl = config.AMAYAMA;
             execution_time_end = new Date() - execution_time_start
 
             const full_part_number = part_number
-            part_number = full_part_number.replaceAll("-", "")
+            part_number = part_number.split("-").join('')
             await Amayama.create({
                 name,
                 part_number,

@@ -158,7 +158,7 @@ const detailUrl = config.TOYOTA_PARTS_DEAL;
             // item.name = name
             // console.log(item);
             const full_part_number = await page.evaluate(() => document.querySelector('div.summary.p_clear > h1 > b').innerText)
-            part_number = part_number.replaceAll("-", "")
+            part_number = part_number.split("-").join('')
             await Tpd.create({
                 part_number,
                 full_part_number,
