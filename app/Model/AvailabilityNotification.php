@@ -8,7 +8,7 @@ class AvailabilityNotification extends Model
 {
     protected $table = 'availability_notifications';
 
-    protected $fillable = ['id', 'brand_name', 'part_number', 'description', 'user_email'];
+    protected $fillable = ['id', 'brand_name', 'part_number', 'warehouse', 'description', 'user_email'];
 
     public $timestamps = true;
 }

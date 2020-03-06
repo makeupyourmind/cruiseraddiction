@@ -33,6 +33,7 @@ class AvailabilityNotificationController extends BaseController
         AvailabilityNotification::create([
             'brand_name' => $request->brand_name,
             'part_number' => $request->part_number,
+            'warehouse' => $request->warehouse,
             'description' => $request->description,
             'user_email' => $request->user()->email
         ]);

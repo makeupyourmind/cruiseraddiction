@@ -7,6 +7,7 @@ use App\Http\Controllers\API\BaseController as BaseController;
 use Validator;
 use App\Model\Part;
 use App\Model\Amayama;
+use App\Model\AvailabilityNotification;
 use App\Model\Tpd;
 use Carbon\Carbon;
 
@@ -34,6 +35,17 @@ class PartsSearchController extends BaseController
                 $partsList[$index]['weight_physical'] = $parts[0]->weight_physical;
                 $partsList[$index]['images'] = $parts[0]->image;
                 for($j = 0; $j < count($parts); $j++){
+                    if($request->user_email){
+                        $user_part_subscribed = AvailabilityNotification::where([
+                            ['part_number', $part_number],
+                            ['brand_name', $parts[0]->brand_name],
+                            ['warehouse', $parts[$j]->warehouse],
+                            ['user_email', $request->user_email]
+                        ])->first();
+                        if($user_part_subscribed){
+                            $partsList[$index]['data'][$j]['subscribed'] = true;
+                        }
+                    }
                     $partsList[$index]['data'][$j]['warehouses'] = $parts[$j]->warehouse;
                     $partsList[$index]['data'][$j]['available'] = $parts[$j]->qty;
                     $partsList[$index]['data'][$j]['prices'] = $parts[$j]->price;
