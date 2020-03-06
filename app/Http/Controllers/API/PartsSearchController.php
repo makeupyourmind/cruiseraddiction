@@ -43,6 +43,7 @@ class PartsSearchController extends BaseController
                             ['user_email', $request->user_email]
                         ])->first();
                         if($user_part_subscribed){
+                            $partsList[$index]['data'][$j]['id_subscribed'] = $user_part_subscribed->id;
                             $partsList[$index]['data'][$j]['subscribed'] = true;
                         }
                     }

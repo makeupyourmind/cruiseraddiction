@@ -40,4 +40,14 @@ class AvailabilityNotificationController extends BaseController
 
         return $this->sendResponse('', 'Successfully signed.');
     }
+
+    public function unSubscribe($id){
+
+        $check_in_table = AvailabilityNotification::find($id);
+        if($check_in_table){
+            AvailabilityNotification::destroy($id);
+            return $this->sendResponse('', 'Successfully unsubscribed.');
+        }
+        return $this->sendError('Wrong id', [], 404);
+    }
 }

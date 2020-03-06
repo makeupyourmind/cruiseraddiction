@@ -65,6 +65,7 @@ Route::group([
     Route::get('user-orders/{id}', 'OrdersController@userOrders');
 
     Route::post('availability_notification', 'AvailabilityNotificationController@subscribe');
+    Route::post('unsubscribe_availability_notification', 'AvailabilityNotificationController@unSubscribe');
 
     Route::group(['prefix' => 'user-files'], function(){
         Route::get('/', 'PaymentHistoryFileController@getUserPaymentFiles');
