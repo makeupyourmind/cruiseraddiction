@@ -41,6 +41,12 @@ class ParserController
                         ];
                     }
                 }
+                else{
+                    $response['toyota_parts_deal'] = [
+                        'exist' => false,
+                        'data' => "Replaced null"
+                    ];
+                }
             }else{
                 $response['toyota_parts_deal'] = [
                     'exist' => false,
@@ -95,6 +101,12 @@ class ParserController
                             'replaced' => ['part_number' => "---------------"]
                         ];
                     }
+                }
+                else{
+                    $response['amayama'] = [
+                        'exist' => false,
+                        'data' => "Replaced null"
+                    ];
                 }
             }else{
                 $response['amayama'] = [
