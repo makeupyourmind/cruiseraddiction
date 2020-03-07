@@ -86,8 +86,8 @@ class PartsSearchController extends BaseController
                                 ->first();
 
         if( ($amayama_part && $toyota_parts_deal) 
-            && 
-            ( str_replace("-", "", $amayama_part->original_replacements[0]["original_number"]) 
+            && ($toyota_parts_deal['replaced'] && count($amayama_part['original_replacements']) > 0)
+            && ( str_replace("-", "", $amayama_part->original_replacements[0]["original_number"]) 
                 == str_replace("-", "", $toyota_parts_deal->replaced) 
             )){
             $part_both = str_replace("-", "", $toyota_parts_deal->replaced);
