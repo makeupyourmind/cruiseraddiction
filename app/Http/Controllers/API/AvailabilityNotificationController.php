@@ -23,7 +23,8 @@ class AvailabilityNotificationController extends BaseController
         $exsist = AvailabilityNotification::where([
             ['brand_name', $request->brand_name],
             ['part_number', $request->part_number],
-            ['user_email', $request->user()->email]
+            ['user_email', $request->user()->email],
+            ['warehouse', $request->warehouse]
         ])->first();
 
         if($exsist){
