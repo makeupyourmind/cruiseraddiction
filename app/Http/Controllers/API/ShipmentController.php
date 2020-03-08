@@ -90,7 +90,7 @@ class ShipmentController extends Controller
                 'user_id' => $user->id,
                 'token' => $token 
             ]);
-            $url = env('APP_URL')."/api/verifyRegistration?token=".$token;
+            $url = env('APP_URL_BACK')."/api/verifyRegistration?token=".$token;
             
             $data = array(
                 'url'=> $url,

@@ -38,7 +38,7 @@ class ForgotPasswordController extends BaseController
         ]);
         
         $content = [
-    		'url'=> env('APP_URL')."/api/forgot/$token", 
+    		'url'=> env('APP_URL_BACK')."/api/forgot/$token", 
     		'button' => 'Click Here'
         ];
         
