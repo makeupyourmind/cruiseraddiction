@@ -73,7 +73,8 @@ class RegisterController extends BaseController
         }
 
         if($foundToken->user->isVerified){
-            return $this->sendResponse("", 'Email Already Verified');
+            // return $this->sendResponse("", 'Email Already Verified');
+            return Redirect::to(env("REDIRECTION_AFTER_VERIFIED_REGISTRATION"));
         }
 
         $user = User::where('email', $foundToken->user->email)->first();
@@ -98,7 +99,7 @@ class RegisterController extends BaseController
                      ->subject('Welcome to our site');
         });
 
-        return Redirect::to("https://www.cruiseraddiction.com/chack-register");
+        return Redirect::to(env('REDIRECTION_AFTER_VERIFIED_REGISTRATION'));
        
     }
 
