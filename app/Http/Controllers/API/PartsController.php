@@ -10,6 +10,7 @@ use Validator;
 use App\Model\Part;
 use App\Model\PartImage;
 use App\Model\BundlePart;
+use App\Model\AvailabilityNotification;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Hash;
 use Excel;
@@ -254,6 +255,18 @@ class PartsController extends BaseController
             $partsList['important_general'] = $part['important_general'];
 
             foreach($parts as $index => $data) {
+                if($request->user_email){
+                    $user_part_subscribed = AvailabilityNotification::where([
+                        ['part_number', $request->part_number],
+                        ['brand_name', $data['brand_name']],
+                        ['warehouse', $data['warehouse']],
+                        ['user_email', $request->user_email]
+                    ])->first();
+                    if($user_part_subscribed){
+                        $partsList['data'][$index]['id_subscribed'] = $user_part_subscribed->id;
+                        $partsList['data'][$index]['subscribed'] = true;
+                    }
+                }
                 $partsList['data'][$index]['warehouses'] = $data['warehouse'];
                 $partsList['data'][$index]['available'] = $data['qty'];
                 $partsList['data'][$index]['prices'] = $data['price'];
