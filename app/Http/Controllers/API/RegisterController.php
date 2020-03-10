@@ -41,9 +41,10 @@ class RegisterController extends BaseController
 
         $input = $request->all();
         $input['password'] = bcrypt($input['password']);
-        // $role = Role::where('name', $request->role)->first();
+
+        $role = Role::where('name', 'User')->first();
         $user = User::create($input);
-        // $user->roles()->attach($role);
+        $user->roles()->attach($role);
 
         $token = Str::random();
         $verify = VerificationToken::create([
@@ -73,7 +74,6 @@ class RegisterController extends BaseController
         }
 
         if($foundToken->user->isVerified){
-            // return $this->sendResponse("", 'Email Already Verified');
             return Redirect::to(env("REDIRECTION_AFTER_VERIFIED_REGISTRATION"));
         }
 
@@ -123,14 +123,14 @@ class RegisterController extends BaseController
             //$user_role = $user->roles[0]->name;
 
             if($user->isVerified){
-                $success['token'] =  $user->createToken('New token')->accessToken;
-
+                $success['token'] = $user->createToken('New token')->accessToken;
+                $success['user_role'] = $user->roles[0]->name;
                 return $this->sendResponse($success, 'User authorized successfully.');
             }
             else{
                 return $this->sendError('You did not confirm email.', '', 400);
             }
-            // if($user->isSuperAdmin || ($user->isVerified && $user_role == $request->role)){
+            // if(($user->isVerified && $user->isSuperAdmin) || ($user->isVerified && $user_role == $request->role)){
             //     $success['token'] =  $user->createToken('New token')->accessToken;
             //     return $this->sendResponse($success, "$user_role authorized successfully.");
             // }
@@ -142,7 +142,7 @@ class RegisterController extends BaseController
             // }
         }
 
-            return $this->sendError('Authorization failed.', '', 400);
+        return $this->sendError('Authorization failed. Wrong credentials', '', 400);
     }
 
     public function logout() {

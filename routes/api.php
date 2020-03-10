@@ -57,7 +57,7 @@ Route::group([
 // 'middleware' => ['auth:api','role:User,Admin']
 Route::group([
     'namespace' => 'API',
-    'middleware' => 'auth:api'], function () { //, 'role:User,Admin' - add then
+    'middleware' => ['auth:api', 'role:User,Admin,SuperAdmin']], function () { //, 'role:User,Admin' - add then
 
     Route::post('logout', 'RegisterController@logout');
     Route::get('user', 'UsersController@show');
@@ -78,7 +78,7 @@ Route::group([
 
 Route::group([
     'namespace' => 'API',
-    'middleware' => 'auth:api'], function () { //, 'role:Admin' - add then
+    'middleware' => ['auth:api', 'role:Admin']], function () { //, 'role:Admin' - add then
 
     Route::post('add-parts', 'PartsController@store');
     Route::put('update-parts', 'PartsController@update');
@@ -94,7 +94,7 @@ Route::group([
     'prefix' => 'superadmin'], function () {
 
     Route::get('/', 'SuperAdminContoller@index');
-    Route::post('/', 'SuperAdminContoller@store');
+    Route::get('/roles', 'SuperAdminContoller@getRoles');
     Route::get('/{id}', 'SuperAdminContoller@show');
     Route::put('/{id}', 'SuperAdminContoller@update');
     Route::delete('/{id}', 'SuperAdminContoller@destroy');

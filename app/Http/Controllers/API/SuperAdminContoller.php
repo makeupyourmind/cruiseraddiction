@@ -7,6 +7,7 @@ use App\Http\Controllers\API\BaseController as BaseController;
 use App\User;
 use App\Model\Role;
 use Validator;
+use Mail;
 
 class SuperAdminContoller extends BaseController
 {
@@ -14,47 +15,26 @@ class SuperAdminContoller extends BaseController
      * @return \Illuminate\Http\Response
      */
     
-    public function index(){
-        $admins = User::with(['roles'])
-                                        ->whereHas('roles', function($q){
-                                            $q->where('roles.name', '=', 'Admin');
-                                        })
-                                        ->paginate(10);
-        return $this->sendResponse($admins, 'ok');
+    public function getRoles(){
+        return Role::where('name', '!=', 'SuperAdmin')->get();
     }
 
-    public function store(Request $request){
-        $validator = Validator::make($request->all(), [
-            'first_name' => 'required',
-            'last_name' => 'required',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required',
-            'c_password' => 'required|same:password',
-        ]);
-
-        if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors(), 422);       
-        }
-
-        $input = $request->all();
-        $input['password'] = bcrypt($input['password']);
-        $input['isVerified'] = 1;
-
-        $role = Role::where('name', $request->role)->first();
-        $admin = User::create($input);
-        $admin->roles()->attach($role);
-
-        return $this->sendResponse("Ok", 'New Admin created successfully.');
+    public function index(Request $request){
+        $users = User::with(['roles'])->where('id', '!=', $request->user()->id)
+                                       ->paginate(10);
+        return $this->sendResponse($users, 'ok');
     }
 
     public function show($id){
-        $admin = User::with(['roles'])->find($id);
-        return $this->sendResponse($admin, 'ok');
+        $user = User::with(['roles'])->find($id);
+        if(!$user){
+            return $this->sendError("User with id - $id Not found.", 404);
+        }
+        return $this->sendResponse($user, 'ok');
     }
 
     public function update(Request $request, $id){
         $validator = Validator::make($request->all(), [
-            'email' => 'required|string|email',
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'ihmud_username' => 'string|max:255',
@@ -69,24 +49,76 @@ class SuperAdminContoller extends BaseController
             'date_of_production' => 'string|max:255',
             'original_country' => 'string|max:255',
             'subscribed_for_news' => 'integer|max:11',
-
+            'role_id' => "required|string",
+            'password' => "string"
         ]);
 
         if($validator->fails()){
             return $this->sendError('Validation Error.', $validator->errors(), 422);
         }
 
-        User::where('id', $id)
-                            ->update($request->all());
-        return $this->sendResponse('', 'Admin modified successfully.');
+        $input = $request->all();
+
+        $role = Role::find($request->role_id);
+
+        $user = User::with('roles')->find($id);
+
+        if(!$role){
+            return $this->sendError("Role with id - $request->role_id Not found.", 404);
+        }
+    
+        if(!$user){
+            return $this->sendError("User with id - $id Not found.", 404);
+        }
+
+        $diff = self::recursive_array_diff($user, $request->except('role_id', 'password'));
+
+        if($user->roles[0]->name != $role->name){
+            $diff['role'] = $role->name;
+        }
+
+        if(array_key_exists('password', $input)){
+            $input['password'] = bcrypt($input['password']);
+            $diff['password'] = 'password was changed';
+        }
+
+        $data = array(
+            'user' => $user,
+            'changes' => $diff
+        );
+
+        $user->update($input);
+
+        if(count($diff) > 0){
+            Mail::send("email.changesInAccount", $data , function ($mail) use ($user) {
+                    $mail->to($user->email)
+                         ->subject('Changes In Account');
+            });
+        }
+
+        $oldRoleId = $user->roles[0]->id ;
+        $user->roles()->updateExistingPivot($oldRoleId, ['role_id' => $request->role_id]);
+
+        return $this->sendResponse('', 'User modified successfully.');
     }
 
     public function destroy($id){
         $user = User::find($id);
         if(!$user){
-            return $this->sendError('Not found.', 404);
+            return $this->sendError("User with id - $id Not found.", 404);
         }
         $user->delete();
         return $this->sendResponse('', 'Deleted successfully');
+    }
+
+    public function recursive_array_diff($user, $request) { 
+        $result_diff = array(); 
+        $user = $user->toArray();
+        foreach ($request as $key => $value) {
+            if($user[$key] != $request[$key]){
+                $result_diff[$key] = $value;
+            }
+        }
+        return $result_diff; 
     }
 }

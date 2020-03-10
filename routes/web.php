@@ -19,16 +19,20 @@ Route::group([
     Route::get('paypal', array('as' => 'addmoney.paypal','uses' => 'PayPalController@postPaymentWithpaypal',));
     Route::get('paypal/success', array('as' => 'payment.status','uses' => 'PayPalController@getPaymentStatus',));
 });
-   
-Route::get('/', function () {
-    return view('application');
-});
-Route::get('/{params1}', function () {
-    return view('application');
-});
-Route::get('/{params1}/{params2}', function () {
-    return view('application');
-});
-Route::get('/{params1}/{params2}/{params3}',function () {
-    return view('application');
+
+Route::group([
+    'middleware' => ['auth:api', 'role:Admin']
+    ], function(){
+    Route::get('/', function () {
+        return view('application');
+    });
+    Route::get('/{params1}', function () {
+        return view('application');
+    });
+    Route::get('/{params1}/{params2}', function () {
+        return view('application');
+    });
+    Route::get('/{params1}/{params2}/{params3}',function () {
+        return view('application');
+    });
 });
