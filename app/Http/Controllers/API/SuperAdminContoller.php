@@ -20,8 +20,10 @@ class SuperAdminContoller extends BaseController
     }
 
     public function index(Request $request){
-        $users = User::with(['roles'])->where('id', '!=', $request->user()->id)
-                                       ->paginate(10);
+        $users = User::with(['roles'])->whereHas('roles', function($query){
+                                        $query->where('name', '!=', 'SuperAdmin');
+                                    })
+                                      ->paginate(10);
         return $this->sendResponse($users, 'ok');
     }
 
