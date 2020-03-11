@@ -37,6 +37,7 @@ class UsersTableSeeder extends Seeder
                 'first_name' => 'Anna',
                 'last_name' => 'K',
                 'isSuperAdmin' => 1,
+                'ihmud_username' => null,
                 'street_address' => '625 kipps lane',
                 'city' => 'London',
                 'state' => 'ON',
