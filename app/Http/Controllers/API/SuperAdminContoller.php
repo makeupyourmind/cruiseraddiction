@@ -85,9 +85,11 @@ class SuperAdminContoller extends BaseController
             $diff['role'] = $role->name;
         }
 
-        if (!Hash::check($input['password'], $user->password)) {
+        if (array_key_exists('password', $input) && !Hash::check($input['password'], $user->password)) {
             $input['password'] = Hash::make($input['password']);
             $diff['password'] = 'password was changed';
+        } else {
+            unset($input['password']);
         }
 
         $data = array(
@@ -107,7 +109,7 @@ class SuperAdminContoller extends BaseController
         $oldRoleId = $user->roles[0]->id;
         $user->roles()->updateExistingPivot($oldRoleId, ['role_id' => $request->role_id]);
 
-        return $this->sendResponse('', 'User modified successfully.');
+        return $this->sendResponse(array('user' => $user, 'changes' => $diff), 'User modified successfully.');
     }
 
     public function destroy($id)

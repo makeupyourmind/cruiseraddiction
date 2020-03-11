@@ -9,134 +9,157 @@ use App\Model\Part;
 
 class ParserController
 {
-    public function parser_tpd(Request $request){
+    public function parser_tpd(Request $request)
+    {
         $path = base_path();
         $pass_to_script = $request->part_number;
-        $response_tpd = exec("cd ". $path. " && node parsing_toyotapartsdeal.js $pass_to_script", $out, $err);
+        $response_tpd = exec("cd " . $path . " && node parsing_toyotapartsdeal.js $pass_to_script", $out, $err);
 
         $response = array('out' => $response_tpd, 'err' => $err, 'requested_part_number' => $pass_to_script);
         if (strpos($response_tpd, 'successfully') !== false) {
             $model = Tpd::select('replaced', 'part_number')
-                            ->where('part_number', str_replace("-", "", $request->part_number))
-                            ->first();
-            if($model){
-                if($model['replaced']){
+                ->where('part_number', str_replace("-", "", $request->part_number))
+                ->first();
+            if ($model) {
+                if ($model['replaced']) {
                     $part_in_our_toyota = str_replace("-", "", $model['replaced']);
-                    $parts = Part::select('description_english', 'weight_physical', 'weight_volumetric',
-                                        'qty', 'price', 'part_number', 'brand_name', 'unique_hash', 'warehouse', 'image')
-                                    ->where('part_number', str_replace("-", "", $part_in_our_toyota))
-                                    ->get();
+                    $parts = Part::select(
+                        'description_english',
+                        'weight_physical',
+                        'weight_volumetric',
+                        'qty',
+                        'price',
+                        'part_number',
+                        'brand_name',
+                        'unique_hash',
+                        'warehouse',
+                        'image'
+                    )
+                        ->where('part_number', str_replace("-", "", $part_in_our_toyota))
+                        ->get();
 
                     $partsList = self::search_transform($parts);
 
-                    if(count($parts) > 0){
+                    if (count($parts) > 0) {
                         $response['toyota_parts_deal'] = [
                             'exist' => true,
                             'replaced' => $partsList
                         ];
-                    }else{
+                    } else {
                         $response['toyota_parts_deal'] = [
                             'exist' => true,
                             'replaced' => ['part_number' => "---------------"]
                         ];
                     }
-                }
-                else{
+                } else {
                     $response['toyota_parts_deal'] = [
                         'exist' => false,
                         'data' => "Replaced null"
                     ];
                 }
-            }else{
+            } else {
                 $response['toyota_parts_deal'] = [
                     'exist' => false,
                     "data" => "No record in parser table"
                 ];
             }
-        }else{
+        } else {
             $response['toyota_parts_deal'] = [
                 'exist' => false,
-                "data" => "No success"
+                "data" => "No success. Record was not added in table"
             ];
         }
 
         return response()->json($response, 200);
     }
 
-    public function parser_emex(Request $request){
+    public function parser_emex(Request $request)
+    {
         $path = base_path();
         $pass_to_script = $request->part_number;
-        $response_emex = exec("cd ". $path. " && node parsing_emex.js $pass_to_script", $out, $err);
+        $response_emex = exec("cd " . $path . " && node parsing_emex.js $pass_to_script", $out, $err);
         return array('out' => $out, 'err' => $err);
     }
 
-    public function parser_amayama(Request $request){
+    public function parser_amayama(Request $request)
+    {
         $path = base_path();
         $pass_to_script = $request->part_number;
         $response_amayama = exec("cd $path && node parsing_amayama $pass_to_script", $out, $err);
 
         $response = array('out' => $response_amayama, 'err' => $err, 'requested_part_number' => $pass_to_script);
         if (strpos($response_amayama, 'successfully') !== false) {
-            $model = Amayama::select('original_replacements','part_number')
-                                ->where('part_number', str_replace("-", "", $request->part_number))
-                                ->first();
-            if($model){
-                if(count($model['original_replacements']) > 0){
+            $model = Amayama::select('original_replacements', 'part_number')
+                ->where('part_number', str_replace("-", "", $request->part_number))
+                ->first();
+            if ($model) {
+                if (count($model['original_replacements']) > 0) {
                     $part_in_our_amayama = str_replace("-", "", $model[0]["original_number"]);
-                    $parts = Part::select('description_english', 'weight_physical', 'weight_volumetric',
-                                        'qty', 'price', 'part_number', 'brand_name', 'unique_hash', 'warehouse', 'image')
-                                ->where('part_number', str_replace("-", "", $part_in_our_amayama))
-                                ->get();
+                    $parts = Part::select(
+                        'description_english',
+                        'weight_physical',
+                        'weight_volumetric',
+                        'qty',
+                        'price',
+                        'part_number',
+                        'brand_name',
+                        'unique_hash',
+                        'warehouse',
+                        'image'
+                    )
+                        ->where('part_number', str_replace("-", "", $part_in_our_amayama))
+                        ->get();
 
                     $partsList = self::search_transform($parts);
 
-                    if(count($parts) > 0){
+                    if (count($parts) > 0) {
                         $response['amayama'] = [
                             'exist' => true,
                             'replaced' => $partsList
                         ];
-                    }else{
+                    } else {
                         $response['amayama'] = [
                             'exist' => true,
                             'replaced' => ['part_number' => "---------------"]
                         ];
                     }
-                }
-                else{
+                } else {
                     $response['amayama'] = [
                         'exist' => false,
                         'data' => "Replaced null"
                     ];
                 }
-            }else{
+            } else {
                 $response['amayama'] = [
                     'exist' => false,
                     "data" => "No record in parser table"
                 ];
             }
-        }else{
+        } else {
             $response['amayama'] = [
                 'exist' => false,
-                "data" => "No success"
+                "data" => "No success. Record was not added in table"
             ];
         }
 
         return response()->json($response, 200);
     }
 
-    public function parser_partsouq(Request $request){
+    public function parser_partsouq(Request $request)
+    {
         $path = base_path();
         $pass_to_script = $request->part_number;
         $response_partsouq = exec("cd $path && node parsing_partsouq $pass_to_script", $out, $err);
         return array('out' => $out, 'err' => $err);
     }
 
-    private function search_transform($parts){
+    private function search_transform($parts)
+    {
         $partsList = array();
-        foreach($parts as $part) {
+        foreach ($parts as $part) {
             $partsList['brand_name'] = $part['brand_name'];
             $partsList['part_number'] = $part['part_number'];
-            foreach($parts as $index => $data) {
+            foreach ($parts as $index => $data) {
                 $partsList['data'][$index]['warehouse'] = $data['warehouse'];
                 $partsList['data'][$index]['available'] = $data['qty'];
                 $partsList['data'][$index]['price'] = $data['price'];
