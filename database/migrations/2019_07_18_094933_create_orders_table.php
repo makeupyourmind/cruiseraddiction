@@ -19,6 +19,7 @@ class CreateOrdersTable extends Migration
             $table->json('shipping');
             $table->text('amount');
             $table->json('data');
+            $table->boolean('isCheckedParser')->default(0);
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
@@ -32,6 +33,6 @@ class CreateOrdersTable extends Migration
     public function down()
     {
         Schema::drop('orders');
-        Schema::drop('users');
+        Schema::dropIfExists('users');
     }
 }

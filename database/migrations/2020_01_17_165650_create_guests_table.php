@@ -24,6 +24,7 @@ class CreateGuestsTable extends Migration
             $table->string('first_name');
             $table->string('last_name');
             $table->string('street_address')->nullable();
+            $table->string('street_address_two')->nullable();
             $table->timestamps();
         });
     }

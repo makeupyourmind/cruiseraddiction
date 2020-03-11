@@ -29,7 +29,7 @@ class AddColumnsToUsersTable extends Migration
             $table->string('original_country')->nullable();
             $table->text('search_history')->nullable();
             $table->integer('subscribed_for_news')->default(0);
-
+            $table->boolean('isSuperAdmin')->default(0);
         });
     }
 

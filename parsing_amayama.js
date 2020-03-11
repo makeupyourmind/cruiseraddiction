@@ -41,7 +41,7 @@ const detailUrl = config.AMAYAMA;
     }
     else {
         const browser = await puppeteer.launch({
-            headless: true,
+            headless: false,
             width: 1800,
             height: 800,
             args: [
@@ -81,7 +81,12 @@ const detailUrl = config.AMAYAMA;
         });
 
         if (!isStock) {
-            process.exit(0)
+            await page.evaluate(() => {
+                const items = document.querySelectorAll('table.table.choose-table tbody tr td a')
+                const [find_item] = Array.from(items).filter(item => item.text.includes('Toyota'))
+                find_item.click()
+            })
+            await page.waitFor(1000);
         }
 
         if (isStock == "Permanently out of stock") {

@@ -17,6 +17,7 @@ class CreateAvailabilityNotificationsTable extends Migration
             $table->bigIncrements('id');
             $table->string('brand_name');
             $table->string('part_number');
+            $table->string('warehouse')->nullable();
             $table->string('description')->nullable();
             $table->string('user_email');
             $table->timestamps();

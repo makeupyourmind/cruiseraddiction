@@ -18,7 +18,7 @@ class CreatePaymentHistoryFilesTable extends Migration
             $table->string('originalFileName');
             $table->string('extension');
             $table->string('unique_hash');
-            $table->bigInteger('user_id')->unsigned();
+            $table->bigInteger('user_id')->nullable()->unsigned();
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });

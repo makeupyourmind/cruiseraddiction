@@ -14,7 +14,6 @@ class AddColumnsToPaymentHistoryFilesTable extends Migration
     public function up()
     {
         Schema::table('payment_history_files', function (Blueprint $table) {
-            $table->bigInteger('user_id')->nullable()->unsigned()->change();
             $table->bigInteger('guest_id')->nullable()->unsigned();
             $table->foreign('guest_id')->references('id')->on('guests')->onDelete('set null');
         });
@@ -27,8 +26,8 @@ class AddColumnsToPaymentHistoryFilesTable extends Migration
      */
     public function down()
     {
-        Schema::table('payment_history_file', function (Blueprint $table) {
-            //
+        Schema::table('payment_history_files', function (Blueprint $table) {
+            Schema::disableForeignKeyConstraints();
         });
     }
 }

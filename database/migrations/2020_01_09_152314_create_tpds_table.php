@@ -16,6 +16,7 @@ class CreateTpdsTable extends Migration
         Schema::create('tpds', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('part_number');
+            $table->string('full_part_number')->nullable();
             $table->string('brand_name');
             $table->string('replaced')->nullable();
             $table->string('retail_price')->nullable();

@@ -24,6 +24,11 @@ class AddColumnInTableParts extends Migration
             // $table->string('location')->nullable();
             $table->longText('fits')->nullable();
             $table->longText('important_general')->nullable();
+            $table->string('weight')->nullable();
+            $table->string('length')->nullable();
+            $table->string('width')->nullable();
+            $table->string('depth')->nullable();
+            $table->string('meta')->nullable();
         });
     }
 

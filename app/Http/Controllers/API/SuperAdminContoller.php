@@ -8,34 +8,39 @@ use App\User;
 use App\Model\Role;
 use Validator;
 use Mail;
+use Hash;
 
 class SuperAdminContoller extends BaseController
 {
     /**
      * @return \Illuminate\Http\Response
      */
-    
-    public function getRoles(){
+
+    public function getRoles()
+    {
         return Role::where('name', '!=', 'SuperAdmin')->get();
     }
 
-    public function index(Request $request){
-        $users = User::with(['roles'])->whereHas('roles', function($query){
-                                        $query->where('name', '!=', 'SuperAdmin');
-                                    })
-                                      ->paginate(10);
+    public function index()
+    {
+        $users = User::with(['roles'])->whereHas('roles', function ($query) {
+            $query->where('name', '!=', 'SuperAdmin');
+        })
+            ->paginate(10);
         return $this->sendResponse($users, 'ok');
     }
 
-    public function show($id){
+    public function show($id)
+    {
         $user = User::with(['roles'])->find($id);
-        if(!$user){
+        if (!$user) {
             return $this->sendError("User with id - $id Not found.", 404);
         }
         return $this->sendResponse($user, 'ok');
     }
 
-    public function update(Request $request, $id){
+    public function update(Request $request, $id)
+    {
         $validator = Validator::make($request->all(), [
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
@@ -55,7 +60,7 @@ class SuperAdminContoller extends BaseController
             'password' => "string"
         ]);
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             return $this->sendError('Validation Error.', $validator->errors(), 422);
         }
 
@@ -64,23 +69,24 @@ class SuperAdminContoller extends BaseController
         $role = Role::find($request->role_id);
 
         $user = User::with('roles')->find($id);
+        $user->makeVisible(['password']);
 
-        if(!$role){
+        if (!$role) {
             return $this->sendError("Role with id - $request->role_id Not found.", 404);
         }
-    
-        if(!$user){
+
+        if (!$user) {
             return $this->sendError("User with id - $id Not found.", 404);
         }
 
         $diff = self::recursive_array_diff($user, $request->except('role_id', 'password'));
 
-        if($user->roles[0]->name != $role->name){
+        if ($user->roles[0]->name != $role->name) {
             $diff['role'] = $role->name;
         }
 
-        if(array_key_exists('password', $input)){
-            $input['password'] = bcrypt($input['password']);
+        if (!Hash::check($input['password'], $user->password)) {
+            $input['password'] = Hash::make($input['password']);
             $diff['password'] = 'password was changed';
         }
 
@@ -91,36 +97,38 @@ class SuperAdminContoller extends BaseController
 
         $user->update($input);
 
-        if(count($diff) > 0){
-            Mail::send("email.changesInAccount", $data , function ($mail) use ($user) {
-                    $mail->to($user->email)
-                         ->subject('Changes In Account');
+        if (count($diff) > 0) {
+            Mail::send("email.changesInAccount", $data, function ($mail) use ($user) {
+                $mail->to($user->email)
+                    ->subject('Changes In Account');
             });
         }
 
-        $oldRoleId = $user->roles[0]->id ;
+        $oldRoleId = $user->roles[0]->id;
         $user->roles()->updateExistingPivot($oldRoleId, ['role_id' => $request->role_id]);
 
         return $this->sendResponse('', 'User modified successfully.');
     }
 
-    public function destroy($id){
+    public function destroy($id)
+    {
         $user = User::find($id);
-        if(!$user){
+        if (!$user) {
             return $this->sendError("User with id - $id Not found.", 404);
         }
         $user->delete();
         return $this->sendResponse('', 'Deleted successfully');
     }
 
-    public function recursive_array_diff($user, $request) { 
-        $result_diff = array(); 
+    public function recursive_array_diff($user, $request)
+    {
+        $result_diff = array();
         $user = $user->toArray();
         foreach ($request as $key => $value) {
-            if($user[$key] != $request[$key]){
+            if ($user[$key] != $request[$key]) {
                 $result_diff[$key] = $value;
             }
         }
-        return $result_diff; 
+        return $result_diff;
     }
 }

@@ -17,6 +17,7 @@ class CreateAmayamasTable extends Migration
             $table->bigIncrements('id');
             $table->string('name')->nullable();
             $table->string('part_number')->nullable();
+            $table->string('full_part_number')->nullable();
             $table->float('weight')->nullable();
             $table->string('description')->nullable();
             $table->string('catalog')->nullable();

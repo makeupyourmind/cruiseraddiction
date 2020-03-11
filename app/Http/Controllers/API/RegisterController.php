@@ -124,6 +124,7 @@ class RegisterController extends BaseController
 
             if($user->isVerified){
                 $success['token'] = $user->createToken('New token')->accessToken;
+                $success['user_id'] = $user->id;
                 $success['user_role'] = $user->roles[0]->name;
                 return $this->sendResponse($success, 'User authorized successfully.');
             }

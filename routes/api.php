@@ -12,8 +12,10 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
 Route::group([
-    'namespace' => 'API'], function () {
+    'namespace' => 'API'
+], function () {
     Route::get('test', 'TestController@test');
     Route::post('register', 'RegisterController@register');
     Route::get('verifyRegistration', 'RegisterController@verifyRegistration');
@@ -47,17 +49,18 @@ Route::group([
     Route::get('doc', 'DocumentationController@index');
     Route::post('send-email', 'SendEmailController@sendEmail');
 
-    Route::post('paypal', array('as' => 'addmoney.paypal','uses' => 'PayPalController@post'));
+    Route::post('paypal', array('as' => 'addmoney.paypal', 'uses' => 'PayPalController@post'));
 
     Route::post('parser-tpd', 'ParserController@parser_tpd');
     Route::post('parser-emex', 'ParserController@parser_emex');
     Route::post('parser-amayama', 'ParserController@parser_amayama');
     Route::post('parser-partsouq', 'ParserController@parser_partsouq');
 });
-// 'middleware' => ['auth:api','role:User,Admin']
+// 'middleware' => ['auth:api','role:User,Admin,SuperAdmin']
 Route::group([
     'namespace' => 'API',
-    'middleware' => ['auth:api', 'role:User,Admin,SuperAdmin']], function () { //, 'role:User,Admin' - add then
+    'middleware' => ['auth:api', 'role:User,Admin,SuperAdmin']
+], function () { //, 'role:User,Admin,SuperAdmin' - add then
 
     Route::post('logout', 'RegisterController@logout');
     Route::get('user', 'UsersController@show');
@@ -67,31 +70,33 @@ Route::group([
     Route::post('availability_notification', 'AvailabilityNotificationController@subscribe');
     Route::delete('unsubscribe_availability_notification/{id}', 'AvailabilityNotificationController@unSubscribe');
 
-    Route::group(['prefix' => 'user-files'], function(){
+    Route::group(['prefix' => 'user-files'], function () {
         Route::get('/', 'PaymentHistoryFileController@getUserPaymentFiles');
         Route::get('/{id}', 'PaymentHistoryFileController@downloadUserPaymentFile');
         Route::delete('/{id}', 'PaymentHistoryFileController@destroyUserPaymentFiles');
     });
-    
+
     Route::get('bundles/{id}', 'BundlesController@show');
 });
 
 Route::group([
     'namespace' => 'API',
-    'middleware' => ['auth:api', 'role:Admin']], function () { //, 'role:Admin' - add then
+    'middleware' => ['auth:api', 'role:Admin']
+], function () { //, 'role:Admin' - add then
 
     Route::post('add-parts', 'PartsController@store');
     Route::put('update-parts', 'PartsController@update');
     Route::delete('delete-parts', 'PartsController@destroy');
     Route::get('parts/images', 'PartsController@images');
-    
+
     Route::post('bundles', 'BundlesController@store');
 });
 
 Route::group([
     'namespace' => 'API',
     'middleware' => ['auth:api', 'role:SuperAdmin'],
-    'prefix' => 'superadmin'], function () {
+    'prefix' => 'superadmin'
+], function () {
 
     Route::get('/', 'SuperAdminContoller@index');
     Route::get('/roles', 'SuperAdminContoller@getRoles');

@@ -86,6 +86,8 @@ class UsersController extends BaseController
             'changes' => $diff
         );
 
+        $user->update($request->all());
+
         if(count($diff) > 0){
             Mail::send("email.changesInAccount", $data , function ($mail) use ($user) {
                     $mail->to($user->email)
@@ -93,7 +95,7 @@ class UsersController extends BaseController
             });
         }
 
-        User::where('id', $id)->update($request->all());
+        // User::where('id', $id)->update($request->all());
 
         return $this->sendResponse(array('user' => $user, 'changes' => $diff), 'User modified successfully.');
     }
