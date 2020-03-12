@@ -161,7 +161,7 @@ class PartsSearchController extends BaseController
             } else {
                 $response['amayama'] = [
                     'exist' => false,
-                    'data' => "Not in stock"
+                    'data' => "Not available in the amayama table"
                 ];
             }
 
@@ -205,7 +205,7 @@ class PartsSearchController extends BaseController
             } else {
                 $response['toyota_parts_deal'] = [
                     'exist' => false,
-                    'data' => "Not in stock"
+                    'data' => "Not available in the tpd table"
                 ];
             }
         }

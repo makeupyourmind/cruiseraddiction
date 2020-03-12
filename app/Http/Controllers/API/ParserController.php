@@ -94,7 +94,7 @@ class ParserController
                 ->first();
             if ($model) {
                 if (count($model['original_replacements']) > 0) {
-                    $part_in_our_amayama = str_replace("-", "", $model[0]["original_number"]);
+                    $part_in_our_amayama = str_replace("-", "", $model['original_replacements'][0]["original_number"]);
                     $parts = Part::select(
                         'description_english',
                         'weight_physical',

@@ -41,7 +41,7 @@ const detailUrl = config.AMAYAMA;
     }
     else {
         const browser = await puppeteer.launch({
-            headless: false,
+            headless: true,
             width: 1800,
             height: 800,
             args: [
@@ -81,12 +81,24 @@ const detailUrl = config.AMAYAMA;
         });
 
         if (!isStock) {
-            await page.evaluate(() => {
+            const check = await page.evaluate(() => {
                 const items = document.querySelectorAll('table.table.choose-table tbody tr td a')
                 const [find_item] = Array.from(items).filter(item => item.text.includes('Toyota'))
-                find_item.click()
+                if (find_item) {
+                    find_item.click()
+                    return true
+                }
+                else {
+                    return false
+                }
             })
-            await page.waitFor(1000);
+
+            if (check) {
+                await page.waitFor(1000)
+            } else {
+                console.log("This part is not a Toyota brand.")
+                process.exit(0)
+            }
         }
 
         if (isStock == "Permanently out of stock") {

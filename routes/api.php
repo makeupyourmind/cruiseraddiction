@@ -94,6 +94,18 @@ Route::group([
 
 Route::group([
     'namespace' => 'API',
+    'middleware' => ['auth:api', 'role:Admin'],
+    'prefix' => 'admin'
+], function () {
+
+    Route::get('/', 'AdminController@index');
+    Route::get('/{id}', 'AdminController@show');
+    Route::put('/{id}', 'AdminController@update');
+    Route::delete('/{id}', 'AdminController@destroy');
+});
+
+Route::group([
+    'namespace' => 'API',
     'middleware' => ['auth:api', 'role:SuperAdmin'],
     'prefix' => 'superadmin'
 ], function () {
