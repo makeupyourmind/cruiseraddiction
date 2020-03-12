@@ -15,6 +15,8 @@ Vue.use(VueResource);
 window.http = Vue.http;
 Vue.http.options.root = 'https://testback.cruiseraddiction.com/' //http://127.0.0.1:8000/';
 
+// https://testback.cruiseraddiction.com/
+
 // Vuesax Component Framework
 import Vuesax from 'vuesax'
 

@@ -85,12 +85,14 @@
 
 <script>
 import {baseURL} from "../../main"
+import axios from 'axios';
 
 export default {
     data:() => ({
         email: "qwert@a.com",
         password: "lalalalala",
-        checkbox_remember_me: false
+        checkbox_remember_me: false,
+        baseURL: http.options.root,
 
     }),
     computed: {
@@ -100,12 +102,14 @@ export default {
         // profile(){
         //     return
         // }
+
     },
     methods:{
         registerUser() {
             this.$router.push('/pages/register');
         },
         login(){
+          
            return this.$validator.validateAll()
                .then(result => {
                 if(result){
@@ -117,12 +121,48 @@ export default {
                 }
                 return false;
 
-            }).then(res => res ? this.$router.push('/') : this.$vs.notify({
-                   title:'Error',
-                   text:'Incorrect email or password.',
-                   color:'danger'}))
+            }).then(response => { 
+                if (response) {
+                    this.$router.push('/');
+                }
+                else{
+                    this.$vs.notify({
+                       title:'Error',
+                       text:'Incorrect email or password.',
+                       color:'danger'})
+                }
+            });
+
+
+
+          // this.$router.push('/')
+          //   let payload={
+          //       email:this.email,
+          //       password: this.password
+          //   };
+
+          //   axios.post(`${this.baseURL}api/login`, payload )
+          //     .then(response => { 
+          //       if (response.data.success) {
+          //           this.$store.dispatch("updateToken", response.data.data.token)
+          //           this.$router.push({ name:'Stock_management'});
+          //       }
+          //       else{
+          //           this.$vs.notify({
+          //              title:'Error',
+          //              text:'Incorrect email or password.',
+          //              color:'danger'})
+          //       } 
+          //   });
+
+
         }
     }
+
+    // .then(res => res ? this.$router.push('/') : this.$vs.notify({
+    //                title:'Error',
+    //                text:'Incorrect email or password.',
+    //                color:'danger'}))
 }
 </script>
 
