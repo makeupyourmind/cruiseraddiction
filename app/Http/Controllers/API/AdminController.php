@@ -34,7 +34,7 @@ class AdminController extends BaseController
     {
         $user = $this->user::with(['roles'])->find($id);
         if (!$user) {
-            return $this->sendError("User with id - $id Not found.", 404);
+            return $this->sendError("User with id - $id Not found.", '');
         }
         return $this->sendResponse($user, 'ok');
     }
@@ -66,13 +66,18 @@ class AdminController extends BaseController
         $input = $request->all();
 
         $user = $this->user::with('roles')->find($id);
-        $user->makeVisible(['password']);
 
         if (!$user) {
-            return $this->sendError("User with id - $id Not found.", 404);
+            return $this->sendError("User with id - $id Not found.", '', 404);
         }
 
-        $diff = self::recursive_array_diff($user, $request->except('password'));
+        $cantModifyResponse = $this->cantModify($user);
+        if ($cantModifyResponse) {
+            return $this->sendError($cantModifyResponse, '', 403);
+        }
+
+        $user->makeVisible(['password']);
+        $diff = $this->recursive_array_diff($user, $request->except('password'));
 
         if (array_key_exists('password', $input) && !Hash::check($input['password'], $user->password)) {
             $input['password'] = Hash::make($input['password']);
@@ -80,6 +85,8 @@ class AdminController extends BaseController
         } else {
             unset($input['password']);
         }
+
+        $user->makeHidden(['password']);
 
         $data = array(
             'user' => $user,
@@ -102,13 +109,19 @@ class AdminController extends BaseController
     {
         $user = $this->user::find($id);
         if (!$user) {
-            return $this->sendError("User with id - $id Not found.", 404);
+            return $this->sendError("User with id - $id Not found.", '');
         }
+
+        $cantModifyResponse = $this->cantModify($user);
+        if ($cantModifyResponse) {
+            return $this->sendError($cantModifyResponse, '', 403);
+        }
+
         $user->delete();
         return $this->sendResponse('', 'Deleted successfully');
     }
 
-    public function recursive_array_diff($user, $request)
+    private function recursive_array_diff(User $user, $request)
     {
         $result_diff = array();
         $user = $user->toArray();
@@ -118,5 +131,15 @@ class AdminController extends BaseController
             }
         }
         return $result_diff;
+    }
+
+    private function cantModify(User $user)
+    {
+        $roles_array = ['Admin', 'SuperAdmin'];
+
+        if (in_array($user->roles[0]->name, $roles_array)) {
+            $user_role = $user->roles[0]->name;
+            return "You as the Admin can’t modify the $user_role";
+        }
     }
 }

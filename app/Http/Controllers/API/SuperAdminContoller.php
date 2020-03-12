@@ -39,7 +39,7 @@ class SuperAdminContoller extends BaseController
     {
         $user = $this->user::with(['roles'])->find($id);
         if (!$user) {
-            return $this->sendError("User with id - $id Not found.", 404);
+            return $this->sendError("User with id - $id Not found.", '');
         }
         return $this->sendResponse($user, 'ok');
     }
@@ -73,18 +73,24 @@ class SuperAdminContoller extends BaseController
 
         $role = $this->role::find($request->role_id);
 
-        $user = $this->user::with('roles')->find($id);
-        $user->makeVisible(['password']);
-
         if (!$role) {
-            return $this->sendError("Role with id - $request->role_id Not found.", 404);
+            return $this->sendError("Role with id - $request->role_id Not found.", '');
         }
+
+        $user = $this->user::with('roles')->find($id);
 
         if (!$user) {
-            return $this->sendError("User with id - $id Not found.", 404);
+            return $this->sendError("User with id - $id Not found.", '');
         }
 
-        $diff = self::recursive_array_diff($user, $request->except('role_id', 'password'));
+        $cantModifyResponse = $this->cantModify($user);
+        if ($cantModifyResponse) {
+            return $this->sendError($cantModifyResponse, '', 403);
+        }
+
+        $user->makeVisible(['password']);
+
+        $diff = $this->recursive_array_diff($user, $request->except('role_id', 'password'));
 
         if ($user->roles[0]->name != $role->name) {
             $diff['role'] = $role->name;
@@ -93,10 +99,11 @@ class SuperAdminContoller extends BaseController
         if (array_key_exists('password', $input) && !Hash::check($input['password'], $user->password)) {
             $input['password'] = Hash::make($input['password']);
             $diff['password'] = 'password was changed';
-        } 
-        else {
+        } else {
             unset($input['password']);
         }
+
+        $user->makeHidden(['password']);
 
         $data = array(
             'user' => $user,
@@ -122,13 +129,19 @@ class SuperAdminContoller extends BaseController
     {
         $user = $this->user::find($id);
         if (!$user) {
-            return $this->sendError("User with id - $id Not found.", 404);
+            return $this->sendError("User with id - $id Not found.", '');
         }
+
+        $cantModifyResponse = $this->cantModify($user);
+        if ($cantModifyResponse) {
+            return $this->sendError($cantModifyResponse, '', 403);
+        }
+
         $user->delete();
         return $this->sendResponse('', 'Deleted successfully');
     }
 
-    public function recursive_array_diff($user, $request)
+    private function recursive_array_diff(User $user, $request)
     {
         $result_diff = array();
         $user = $user->toArray();
@@ -138,5 +151,15 @@ class SuperAdminContoller extends BaseController
             }
         }
         return $result_diff;
+    }
+
+    private function cantModify(User $user)
+    {
+        $roles_array = ['SuperAdmin'];
+
+        if (in_array($user->roles[0]->name, $roles_array)) {
+            $user_role = $user->roles[0]->name;
+            return "You as the SuperAdmin can’t modify the $user_role";
+        }
     }
 }
