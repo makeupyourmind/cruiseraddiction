@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
@@ -13,7 +14,7 @@ use App\Model\PaymentHistoryFile;
 use App\Model\Order;
 use Mail;
 use Illuminate\Support\Facades\Input;
-Use Redirect;
+use Redirect;
 use Illuminate\Support\Str;
 use App\Model\Role;
 
@@ -34,9 +35,8 @@ class RegisterController extends BaseController
             'c_password' => 'required|same:password',
         ]);
 
-        if($validator->fails()){
-
-            return $this->sendError('Validation Error.', $validator->errors());       
+        if ($validator->fails()) {
+            return $this->sendError('Validation Error.', $validator->errors());
         }
 
         $input = $request->all();
@@ -47,40 +47,41 @@ class RegisterController extends BaseController
         $user->roles()->attach($role);
 
         $token = Str::random();
-        $verify = VerificationToken::create([
+        VerificationToken::create([
             'user_id' => $user->id,
-            'token' => $token 
+            'token' => $token
         ]);
 
-        $url = env('APP_URL_BACK')."/api/verifyRegistration?token=".$token;
+        $url = env('APP_URL_BACK') . "/api/verifyRegistration?token=" . $token;
         $data = array(
-            'url'=> $url,
+            'url' => $url,
         );
 
-        Mail::send("email.registration", $data , function ($mail) use ($user) {
-                $mail->to($user->email)
-                     ->subject('Confirm registration');
+        Mail::send("email.registration", $data, function ($mail) use ($user) {
+            $mail->to($user->email)
+                ->subject('Confirm registration');
         });
 
         return $this->sendResponse("", 'Check your email');
     }
 
-    public function verifyRegistration(Request $request){
+    public function verifyRegistration(Request $request)
+    {
 
         $foundToken = VerificationToken::with(['user'])->where('token', Input::get("token"))->first();
-        
-        if(!$foundToken){
+
+        if (!$foundToken) {
             return response()->json("NOT FOUND TOKEN");
         }
 
-        if($foundToken->user->isVerified){
+        if ($foundToken->user->isVerified) {
             return Redirect::to(env("REDIRECTION_AFTER_VERIFIED_REGISTRATION"));
         }
 
         $user = User::where('email', $foundToken->user->email)->first();
 
         $guest = Guest::where('email', $foundToken->user->email)->first();
-        if($guest){
+        if ($guest) {
             Order::where('guest_id', $guest->id)->update([
                 'user_id' => $user->id
             ]);
@@ -90,17 +91,16 @@ class RegisterController extends BaseController
             $guest->delete();
         }
 
-        $updated = $user->update([
+        $user->update([
             'isVerified' => 1
         ]);
 
-        Mail::send("email.registration_done", [""] , function ($mail) use ($foundToken) {
-                $mail->to($foundToken->user->email)
-                     ->subject('Welcome to our site');
+        Mail::send("email.registration_done", [""], function ($mail) use ($foundToken) {
+            $mail->to($foundToken->user->email)
+                ->subject('Welcome to our site');
         });
 
         return Redirect::to(env('REDIRECTION_AFTER_VERIFIED_REGISTRATION'));
-       
     }
 
     public function login(Request $request)
@@ -110,8 +110,7 @@ class RegisterController extends BaseController
             'password' => 'required',
         ]);
 
-        if($validator->fails()){
-
+        if ($validator->fails()) {
             return $this->sendError('Validation Error.', $validator->errors());
         }
 
@@ -122,13 +121,12 @@ class RegisterController extends BaseController
             $user = Auth::user();
             //$user_role = $user->roles[0]->name;
 
-            if($user->isVerified){
+            if ($user->isVerified) {
                 $success['token'] = $user->createToken('New token')->accessToken;
                 $success['user_id'] = $user->id;
                 $success['user_role'] = $user->roles[0]->name;
                 return $this->sendResponse($success, 'User authorized successfully.');
-            }
-            else{
+            } else {
                 return $this->sendError('You did not confirm email.', '', 400);
             }
             // if(($user->isVerified && $user->isSuperAdmin) || ($user->isVerified && $user_role == $request->role)){
@@ -146,7 +144,8 @@ class RegisterController extends BaseController
         return $this->sendError('Authorization failed. Wrong credentials', '', 400);
     }
 
-    public function logout() {
+    public function logout()
+    {
 
         oauthAccessToken::where('user_id', Auth::user()->id)->delete();
 

@@ -15,15 +15,20 @@ class SuperAdminContoller extends BaseController
     /**
      * @return \Illuminate\Http\Response
      */
+    public function __construct(User $user, Role $role)
+    {
+        $this->user = $user;
+        $this->role = $role;
+    }
 
     public function getRoles()
     {
-        return Role::where('name', '!=', 'SuperAdmin')->get();
+        return $this->role::where('name', '!=', 'SuperAdmin')->get();
     }
 
     public function index()
     {
-        $users = User::with(['roles'])->whereHas('roles', function ($query) {
+        $users = $this->user::with(['roles'])->whereHas('roles', function ($query) {
             $query->where('name', '!=', 'SuperAdmin');
         })
             ->paginate(10);
@@ -32,7 +37,7 @@ class SuperAdminContoller extends BaseController
 
     public function show($id)
     {
-        $user = User::with(['roles'])->find($id);
+        $user = $this->user::with(['roles'])->find($id);
         if (!$user) {
             return $this->sendError("User with id - $id Not found.", 404);
         }
@@ -66,9 +71,9 @@ class SuperAdminContoller extends BaseController
 
         $input = $request->all();
 
-        $role = Role::find($request->role_id);
+        $role = $this->role::find($request->role_id);
 
-        $user = User::with('roles')->find($id);
+        $user = $this->user::with('roles')->find($id);
         $user->makeVisible(['password']);
 
         if (!$role) {
@@ -88,7 +93,8 @@ class SuperAdminContoller extends BaseController
         if (array_key_exists('password', $input) && !Hash::check($input['password'], $user->password)) {
             $input['password'] = Hash::make($input['password']);
             $diff['password'] = 'password was changed';
-        } else {
+        } 
+        else {
             unset($input['password']);
         }
 
@@ -114,7 +120,7 @@ class SuperAdminContoller extends BaseController
 
     public function destroy($id)
     {
-        $user = User::find($id);
+        $user = $this->user::find($id);
         if (!$user) {
             return $this->sendError("User with id - $id Not found.", 404);
         }
