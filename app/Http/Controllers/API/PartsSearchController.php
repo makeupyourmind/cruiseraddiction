@@ -64,7 +64,7 @@ class PartsSearchController extends BaseController
         ];
 
         if (count($partNums) == 1) {
-            $response = self::search_in_parsing_tables($response, $request->partNumber);
+            $response = $this->search_in_parsing_tables($response, $request->partNumber);
         }
         return response()->json($response, 200); //$partsList
     }

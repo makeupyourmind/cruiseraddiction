@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
+use Illuminate\Support\Facades\Gate;
 use App\User;
 use App\Model\Role;
 use Validator;
@@ -71,9 +72,9 @@ class AdminController extends BaseController
             return $this->sendError("User with id - $id Not found.", '', 404);
         }
 
-        $cantModifyResponse = $this->cantModify($user);
-        if ($cantModifyResponse) {
-            return $this->sendError($cantModifyResponse, '', 403);
+        if (!Gate::forUser($user)->allows('admin-modify')) {
+            $role = $user->roles[0]->name;
+            return $this->sendError("You as the Admin can’t modify the $role", '', 403);
         }
 
         $user->makeVisible(['password']);
@@ -112,9 +113,9 @@ class AdminController extends BaseController
             return $this->sendError("User with id - $id Not found.", '');
         }
 
-        $cantModifyResponse = $this->cantModify($user);
-        if ($cantModifyResponse) {
-            return $this->sendError($cantModifyResponse, '', 403);
+        if (!Gate::forUser($user)->allows('admin-modify')) {
+            $role = $user->roles[0]->name;
+            return $this->sendError("You as the Admin can’t modify the $role", '', 403);
         }
 
         $user->delete();
@@ -131,15 +132,5 @@ class AdminController extends BaseController
             }
         }
         return $result_diff;
-    }
-
-    private function cantModify(User $user)
-    {
-        $roles_array = ['Admin', 'SuperAdmin'];
-
-        if (in_array($user->roles[0]->name, $roles_array)) {
-            $user_role = $user->roles[0]->name;
-            return "You as the Admin can’t modify the $user_role";
-        }
     }
 }
