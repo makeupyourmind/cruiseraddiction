@@ -66,7 +66,7 @@ const detailUrl = config.TOYOTA_PARTS_DEAL;
             timeout: 0
         })
 
-        await page.waitFor(2000)
+        // await page.waitFor(2000)
 
         await page.focus('section.e.search_box > input.e.input')
 
@@ -74,7 +74,7 @@ const detailUrl = config.TOYOTA_PARTS_DEAL;
 
         await page.click('section.e.search_box > div.e.submit')
 
-        await page.waitFor(1000)
+        await page.waitFor(1200)
 
         let part_number_in_available = await page.evaluate(() => {
             let check = document.querySelector('section.m_ns_results is_recommend p_clear > div.title > p.total > span')

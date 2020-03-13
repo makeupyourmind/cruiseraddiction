@@ -28,6 +28,15 @@ class AuthServiceProvider extends ServiceProvider
 
         Passport::routes();
 
+        Gate::define('admin-modify', function ($user) {
+            [$role] = $user->roles;
+            return $role->name === "User";
+        });
+
+        Gate::define('superadmin-modify', function ($user) {
+            [$role] = $user->roles;
+            return $role->name === "User" || $role->name === "Admin";
+        });
         // Passport::tokensExpireIn(now()->addSecond(30));
 
         // Passport::refreshTokensExpireIn(now()->addSecond(60));
