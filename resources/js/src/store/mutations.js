@@ -11,12 +11,6 @@ import {Token} from "./tokenStorage";
 
 const mutations = {
 
-    
-
-    UPDATE_TOKEN(state, val) {
-        state.token = val;
-    },
-
     // ////////////////////////////////////////////
     // SIDEBAR & UI UX
     // ////////////////////////////////////////////

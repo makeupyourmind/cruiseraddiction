@@ -10,10 +10,6 @@ import Vue from "vue";
 
 const actions = {
 
-    updateToken({ commit }, val) {
-      commit('UPDATE_TOKEN', val);
-    },
-
     // ////////////////////////////////////////////
     // SIDEBAR & UI UX
     // ////////////////////////////////////////////
@@ -36,7 +32,6 @@ const actions = {
     updateWindowWidth({ commit }, width) {
       commit('UPDATE_WINDOW_WIDTH', width);
     },
-
 
 
     // ////////////////////////////////////////////
