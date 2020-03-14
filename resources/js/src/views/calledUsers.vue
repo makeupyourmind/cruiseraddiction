@@ -1,11 +1,3 @@
-<!-- =========================================================================================
-  File Name: UserList.vue
-  Description: User List page
-  ----------------------------------------------------------------------------------------
-  Item Name: Vuexy - Vuejs, HTML & Laravel Admin Dashboard Template
-  Author: Pixinvent
-  Author URL: http://www.themeforest.net/user/pixinvent
-========================================================================================== -->
 
 <template>
 
@@ -13,17 +5,14 @@
     <div class="vx-card p-6">
       <div class="flex flex-wrap items-center">
 
-
-        <!-- ITEMS PER PAGE -->
         <div class="flex-grow">
           <vs-dropdown vs-trigger-click class="cursor-pointer">
             <div class="p-4 border border-solid d-theme-border-grey-light rounded-full d-theme-dark-bg cursor-pointer flex items-center justify-between font-medium">
               <span class="mr-2">{{ currentPage * paginationPageSize - (paginationPageSize - 1) }} - {{ usersData.length - currentPage * paginationPageSize > 0 ? currentPage * paginationPageSize : usersData.length }} of {{ usersData.length }}</span>
               <feather-icon icon="ChevronDownIcon" svgClasses="h-4 w-4" />
             </div>
-            <!-- <vs-button class="btn-drop" type="line" color="primary" icon-pack="feather" icon="icon-chevron-down"></vs-button> -->
+      
             <vs-dropdown-menu>
-
               <vs-dropdown-item @click="gridApi.paginationSetPageSize(10)">
                 <span>10</span>
               </vs-dropdown-item>
@@ -41,8 +30,6 @@
         </div>
       </div>
 
-
-      <!-- AgGrid Table -->
       <ag-grid-vue
         ref="agGridTable"
         :components="components"
@@ -74,20 +61,14 @@
 <script>
 import { AgGridVue } from "ag-grid-vue"
 import '@sass/vuesax/extraComponents/agGridStyleOverride.scss'
-
-
 import vSelect from 'vue-select'
-import {baseURL} from "././../main"
 // // Store Module
 import moduleUserManagement from '@/store/user-management/moduleUserManagement.js'
-
+import {CalledUsers} from "../api/calledUsers";
 // Cell Renderer
-import CellRendererLink from "../components/cell-renderer/CellRendererLink.vue"
 import CellRendererStatus from "../components/cell-renderer/CellRendererStatus.vue"
 import CellRendererVerified from "../components/cell-renderer/CellRendererVerified.vue"
 import CellRendererActions from "../components/cell-renderer/CellRendererActions.vue"
-
-import axios from 'axios';
 
 export default {
   components: {
@@ -95,31 +76,12 @@ export default {
     vSelect,
 
     // Cell Renderer
-    CellRendererLink,
     CellRendererStatus,
     CellRendererVerified,
     CellRendererActions,
   },
   data() {
     return {
-      baseURL: http.options.root,
-
-      firstName:'',
-      lastName:'', 
-      EMAIL:'', 
-      IH8MUD_USERNAME:'', 
-      streetAddress:'',  
-      streetAddressTwo:'', 
-      city:'', 
-      state:'', 
-      vin:'', 
-      phone:'', 
-      monthAndYearOfProduction:'', 
-      originalCountryOfSale:'', 
-      country:[],  
-      password:'', 
-      confirmPassword:'',
-
 
       arrayUsers:[], 
 
@@ -222,7 +184,6 @@ export default {
 
       // Cell Renderer Components
       components: {
-        CellRendererLink,
         CellRendererStatus,
         CellRendererVerified,
         CellRendererActions,
@@ -244,8 +205,6 @@ export default {
       this.setColumnFilter("department", obj.value)
     },
   },
-
-  
 
 
   computed: {
@@ -272,26 +231,19 @@ export default {
   },
   methods: {
 
-    selectUserData(){
-      var token = localStorage.getItem('token');
-
-      axios({
-        method: 'get', // Or GET
-        url: `${this.baseURL}api/superadmin`,
-        headers: { 'Authorization': 'Bearer ' + token } // Cookies.get('Token')
-      })
-      .then(response => { 
-          response.data.data.data.forEach((element, iterator) => {
+    selectUsers(){
+      CalledUsers.getUser()
+        .then((response)=> {
+            response.data.data.data.forEach((element, iterator) => {
             let phoneNumberArray = JSON.parse(element.phone);
           
             if ( phoneNumberArray != null && typeof phoneNumberArray !== "undefined") {
               element.phone = JSON.parse(element.phone).phoneNumber;
               element.role = element.roles["0"].name;
             }
-          })
-        this.arrayUsers =  response.data.data.data;
-      });
-
+            this.arrayUsers =  response.data.data.data;
+          })  
+        })  
     },
     setColumnFilter(column, val) {
       const filter = this.gridApi.getFilterInstance(column)
@@ -321,23 +273,17 @@ export default {
   mounted() {
     this.gridApi = this.gridOptions.api
 
-    /* =================================================================
-      NOTE:
-      Header is not aligned properly in RTL version of agGrid table.
-      However, we given fix to this issue. If you want more robust solution please contact them at gitHub
-    ================================================================= */
     if(this.$vs.rtl) {
       const header = this.$refs.agGridTable.$el.querySelector(".ag-header-container")
       header.style.left = "-" + String(Number(header.style.transform.slice(11,-3)) + 9) + "px"
     }
-    this.selectUserData();
+    this.selectUsers();
   },
   created() {
     if(!moduleUserManagement.isRegistered) {
       this.$store.registerModule('userManagement', moduleUserManagement)
       moduleUserManagement.isRegistered = true
     }
-    this.$store.dispatch("userManagement/fetchUsers").catch(err => { console.error(err) })
   }
 }
 

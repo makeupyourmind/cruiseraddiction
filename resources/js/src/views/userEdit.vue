@@ -1,25 +1,25 @@
-<!-- =========================================================================================
-  File Name: UserEdit.vue
-  Description: User Edit Page
-  ----------------------------------------------------------------------------------------
-  Item Name: Vuexy - Vuejs, HTML & Laravel Admin Dashboard Template
-  Author: Pixinvent
-  Author URL: http://www.themeforest.net/user/pixinvent
-========================================================================================== -->
 
 <template>
   <div id="page-user-edit">
 
-    <vs-alert color="danger" title="User Not Found" :active.sync="user_not_found">
+    <vs-alert color="danger" 
+              title="User Not Found" 
+              :active.sync="user_not_found">
       <span>User record with id: {{ $route.params.userId }} not found. </span>
       <span>
-        <span>Check </span><router-link :to="{name:'page-user-list'}" class="text-inherit underline">All Users</router-link>
+        <span>Check </span>
+        <router-link :to="{name:'page-user-list'}" 
+                      class="text-inherit underline">
+                       All Users
+        </router-link>
       </span>
     </vs-alert>
     <vx-card v-if="user_data">
       <div slot="no-body" class="tabs-container px-6 pt-6">
         <vs-tabs v-model="activeTab" class="tab-action-btn-fill-conatiner">
-          <vs-tab label="Account" icon-pack="feather" icon="icon-user">
+          <vs-tab label="Account" 
+                  icon-pack="feather" 
+                  icon="icon-user">
             <div class="tab-text">
               <user-edit-tab-account class="mt-4" :data="user_data" />
             </div>
@@ -35,6 +35,7 @@ import UserEditTabAccount from "../components/user-edit/UserEditTabAccount.vue"
 import '@sass/vuesax/extraComponents/agGridStyleOverride.scss'
 // Store Module
 import moduleUserManagement from '@/store/user-management/moduleUserManagement.js'
+
 
 export default {
   components: {
@@ -56,19 +57,13 @@ export default {
 
     fetch_user_data(userId) {
       this.$store.dispatch("userManagement/fetchUser", userId)
-        .then(res => { this.user_data = res.data })
-        .catch(err => {
-          if(err.response.status === 404) {
-            this.user_not_found = true
-            return
-          }
-        console.error(err) })
-    }
-
+        .then(res => { 
+          this.user_data = res.data 
+      })
+    } 
     
   },
   created() {
-    // Register Module UserManagement Module
     if(!moduleUserManagement.isRegistered) {
       this.$store.registerModule('userManagement', moduleUserManagement)
       moduleUserManagement.isRegistered = true

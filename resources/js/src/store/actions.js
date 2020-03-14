@@ -39,10 +39,6 @@ const actions = {
 
 
 
-    // ////////////////////////////////////////////
-    // COMPONENT
-    // ////////////////////////////////////////////
-
     // VxAutoSuggest
     updateStarredPage({ commit }, payload) {
       commit('UPDATE_STARRED_PAGE', payload)
@@ -56,9 +52,8 @@ const actions = {
       commit('ARRANGE_STARRED_PAGES_MORE', list)
     },
 
-    // ////////////////////////////////////////////
-    // FORM
-    // ////////////////////////////////////////////
+
+
     SIGN_UP({commit}, payload) {
         return Vue.http
             .post(`api/register`, payload)
