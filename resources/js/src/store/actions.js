@@ -30,11 +30,7 @@ const actions = {
 
 
 
-<<<<<<< HEAD
-    
-=======
-    // VxAutoSuggest
->>>>>>> e776e319664e01fc700b850edbc15ca1a0ffeb84
+
     updateStarredPage({ commit }, payload) {
       commit('UPDATE_STARRED_PAGE', payload)
     },

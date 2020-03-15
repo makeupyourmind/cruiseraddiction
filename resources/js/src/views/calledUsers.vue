@@ -186,11 +186,8 @@ export default {
   },
   watch: {
 
-<<<<<<< HEAD
   },
 
-=======
->>>>>>> e776e319664e01fc700b850edbc15ca1a0ffeb84
 
   computed: {
     usersData() {
@@ -216,31 +213,20 @@ export default {
     selectUsers(){
       CalledUsers.getUser()
         .then((response)=> {
-<<<<<<< HEAD
-            let data = response.data.data.data;
-            data.forEach((element, iterator) => {
-             try{
-                let phoneNumberArray = JSON.parse(element.phone);
-                element.phone = JSON.parse(element.phone).phoneNumber;
-                element.role = element.roles["0"].name;  
-              } catch(e) {} 
-              this.arrayUsers = data;
-=======
-            response.data.data.data.forEach((element, iterator) => {
-            let phoneNumberArray = JSON.parse(element.phone);
-          
-            if ( phoneNumberArray != null && typeof phoneNumberArray !== "undefined") {
+          let data = response.data.data.data;
+          data.forEach((element, iterator) => {
+           try{
+              let phoneNumberArray = JSON.parse(element.phone);
               element.phone = JSON.parse(element.phone).phoneNumber;
-              element.role = element.roles["0"].name;
-            }
-            this.arrayUsers =  response.data.data.data;
->>>>>>> e776e319664e01fc700b850edbc15ca1a0ffeb84
-          })  
-        })  
+              element.role = element.roles["0"].name;  
+            } catch(e) {} 
+          this.arrayUsers = data;
+        }) 
+      })   
     },
     setColumnFilter(column, val) {
-      const filter = this.gridApi.getFilterInstance(column)
-      let modelObj = null
+      const filter = this.gridApi.getFilterInstance(column);
+      let modelObj = null;
 
       if(val !== "all") {
         modelObj = { type: "equals", filter: val }
@@ -253,9 +239,6 @@ export default {
       // Reset Grid Filter
       this.gridApi.setFilterModel(null)
       this.gridApi.onFilterChanged()
-
-      // Reset Filter Options
-      
 
       this.$refs.filterCard.removeRefreshAnimation()
     },
