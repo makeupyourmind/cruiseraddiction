@@ -38,26 +38,13 @@ const router = new Router({
                 // =============================================================================
                 {
                     path: '/',
-                    name: 'Stock management',
+                    name: 'Stock_management',
                     component: () => import('./views/stockManagement.vue'),
                     meta: {
                         pageTitle: "Stock Management"
                     }
                 },
 
-
-                // {
-                //     path: '/page2',
-                //     name: 'page2',
-                //     component: () => import('./views/Page2.vue'),
-                //     meta: {
-                //         breadcrumb: [
-                //             {title: 'Stock Management', url: '/'},
-                //             {title: 'page2', active: true},
-                //         ],
-                //         pageTitle: 'page2',
-                //     },
-                // },
                 {
                     path: '/orders',
                     name: 'orders',
@@ -78,6 +65,24 @@ const router = new Router({
                         pageTitle: 'reviews',
                     },
                 },
+                {
+                    path: '/called-users',
+                    name: 'user-list',
+                    component: () => import('./views/calledUsers.vue'),
+                    meta: {
+                        pageTitle: 'called-users',
+                    },
+                },
+                {
+                    path: '/user-edit/:userId',
+                    name: 'app-user-edit',
+                    component: () => import('./views/userEdit.vue'),
+                    meta: {
+                        pageTitle: 'User Edit',
+                    },
+                },
+
+
             ],
         },
         {
@@ -99,19 +104,6 @@ const router = new Router({
                     }
                 },
 
-
-                // {
-                //     path: '/page2',
-                //     name: 'page2',
-                //     component: () => import('./views/Page2.vue'),
-                //     meta: {
-                //         breadcrumb: [
-                //             {title: 'Stock Management', url: '/'},
-                //             {title: 'page2', active: true},
-                //         ],
-                //         pageTitle: 'page2',
-                //     },
-                // },
                 {
                     path: '/orders',
                     name: 'orders',

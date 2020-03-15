@@ -38,4 +38,10 @@ export default [
     slug: "reviews",
     icon: "FileIcon",
   },
+  {
+    url: "/called-users",
+    name: "Called users",
+    slug: "Called users",
+    icon: "FileIcon",
+  },
 ]

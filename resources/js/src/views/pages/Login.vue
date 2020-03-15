@@ -33,7 +33,7 @@
 
                                 <vs-input
                                     type="password"
-                                    v-validate="'required|min:6|max:20'"
+                                    v-validate="'required|min:6|max:10'"
                                     ref="password"
                                     placeholder="Password"
                                     laceholder="Your Password"
@@ -84,7 +84,6 @@
 </template>
 
 <script>
-import {baseURL} from "../../main"
 
 export default {
     data:() => ({
@@ -94,12 +93,6 @@ export default {
 
     }),
     computed: {
-        // validateForm() {
-        //     return this.email != '' && this.password != '';
-        // },
-        // profile(){
-        //     return
-        // }
     },
     methods:{
         registerUser() {

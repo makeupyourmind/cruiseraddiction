@@ -12,6 +12,7 @@ import themeConfig from '@/../themeConfig.js'
 import colors from '@/../themeConfig.js'
 
 const state = {
+    token:'',
     isSidebarActive: true,
     breakpoint: null,
     sidebarWidth: "default",

@@ -176,7 +176,7 @@
     }
 
 </script>
-<style>
+<style scope>
     .ag-header-cell-label {
         justify-content: center !important;
     }
@@ -224,13 +224,6 @@
         color: cornflowerblue;
     }
 
-    .ag-header-row:last-child{
-        display: none;
-    }
-    .ag-header{
-        min-height: 50px!important;
-        height: 50px!important;
-    }
     .ag-theme-material .ag-icon-checkbox-checked{
         color: white;
     }
@@ -252,9 +245,6 @@
     }
     .router-view,.router-content, .vx-card__body,.content-area__content{
         height: 100%!important;
-    }
-     #ag-grid-demo, .vx-card, .vx-card__collapsible-content, .ag-grid-table{
-        height: 96%!important;
     }
     .router-content{
         margin-top: 3em!important;
