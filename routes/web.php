@@ -22,7 +22,7 @@ Route::group([
 });
 
 Route::group([
-    'middleware' => ['auth:api', 'role:Admin']
+    // 'middleware' => ['auth:api', 'role:Admin']
 ], function () {
     Route::get('/', function () {
         return view('application');

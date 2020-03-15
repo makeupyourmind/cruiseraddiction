@@ -171,7 +171,11 @@ export default {
       this.userData.user.username = this.data_local.last_name;
       this.userData.user.name = this.data_local.first_name;  
       this.userData.user.email = this.data_local.email;
+<<<<<<< HEAD
       this.userData.user.phone = JSON.parse(this.data_local.phone).phoneNumber;
+=======
+      this.userData.user.phone = this.data_local.phone;
+>>>>>>> e776e319664e01fc700b850edbc15ca1a0ffeb84
       this.userData.user.role = this.data_local.roles["0"].id; 
       this.userData.user.street_address = this.data_local.street_address;
       this.userData.user.street_address_two = this.data_local.street_address_two; 

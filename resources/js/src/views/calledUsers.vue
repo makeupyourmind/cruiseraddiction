@@ -186,8 +186,11 @@ export default {
   },
   watch: {
 
+<<<<<<< HEAD
   },
 
+=======
+>>>>>>> e776e319664e01fc700b850edbc15ca1a0ffeb84
 
   computed: {
     usersData() {
@@ -213,6 +216,7 @@ export default {
     selectUsers(){
       CalledUsers.getUser()
         .then((response)=> {
+<<<<<<< HEAD
             let data = response.data.data.data;
             data.forEach((element, iterator) => {
              try{
@@ -221,6 +225,16 @@ export default {
                 element.role = element.roles["0"].name;  
               } catch(e) {} 
               this.arrayUsers = data;
+=======
+            response.data.data.data.forEach((element, iterator) => {
+            let phoneNumberArray = JSON.parse(element.phone);
+          
+            if ( phoneNumberArray != null && typeof phoneNumberArray !== "undefined") {
+              element.phone = JSON.parse(element.phone).phoneNumber;
+              element.role = element.roles["0"].name;
+            }
+            this.arrayUsers =  response.data.data.data;
+>>>>>>> e776e319664e01fc700b850edbc15ca1a0ffeb84
           })  
         })  
     },
