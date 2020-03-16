@@ -10,5 +10,4 @@ export default class editTab {
     country = '';  
     state = ''; 
     city = '';
-
 }
