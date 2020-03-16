@@ -217,7 +217,7 @@ export default {
       ${this.usersData.length - this.currentPage * this.paginationPageSize > 0 ? this.currentPage * this.paginationPageSize : this.usersData.length } "of" 
       ${ this.usersData.length}`
     },
-    selectUsers(){
+    async selectUsers(){
       CalledUsers.getUser()
         .then((response)=> {
           let data = response.data.data.data;

@@ -6,9 +6,6 @@ const actions = {
     updateToken({ commit }, val) {
       commit('UPDATE_TOKEN', val);
     },
-
-
-
     updateSidebarWidth({ commit }, width) {
       commit('UPDATE_SIDEBAR_WIDTH', width);
     },
@@ -27,22 +24,15 @@ const actions = {
     updateWindowWidth({ commit }, width) {
       commit('UPDATE_WINDOW_WIDTH', width);
     },
-
-
-
     updateStarredPage({ commit }, payload) {
       commit('UPDATE_STARRED_PAGE', payload)
     },
-
-    
     arrangeStarredPagesLimited({ commit }, list) {
       commit('ARRANGE_STARRED_PAGES_LIMITED', list)
     },
     arrangeStarredPagesMore({ commit }, list) {
       commit('ARRANGE_STARRED_PAGES_MORE', list)
     },
-
-
 
     SIGN_UP({commit}, payload) {
         return Vue.http
