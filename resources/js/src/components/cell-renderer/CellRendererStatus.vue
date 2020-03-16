@@ -9,11 +9,15 @@
         name: 'CellRendererStatus',
         computed: {
           chipColor() {
-            return (value) => {
-              if(value === "active") return "success"
-              else if(value === "blocked") return "danger"
-              else if(value === "deactivated") return "warning"
-              else "primary"
+            switch(value) {
+              case "active":
+                return "success";
+              case "blocked":
+                return "danger";
+              case "deactivated":
+                return "warning";  
+              default:
+                return "primary";
             }
           }
         }

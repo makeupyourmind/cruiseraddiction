@@ -1,11 +1,4 @@
-/*=========================================================================================
-  File Name: actions.js
-  Description: Vuex Store - actions
-  ----------------------------------------------------------------------------------------
-  Item Name: Vuesax Admin - VueJS Dashboard Admin Template
-  Author: Pixinvent
-  Author URL: http://www.themeforest.net/user/pixinvent
-==========================================================================================*/
+
 import Vue from "vue";
 
 const actions = {
@@ -14,9 +7,7 @@ const actions = {
       commit('UPDATE_TOKEN', val);
     },
 
-    // ////////////////////////////////////////////
-    // SIDEBAR & UI UX
-    // ////////////////////////////////////////////
+
 
     updateSidebarWidth({ commit }, width) {
       commit('UPDATE_SIDEBAR_WIDTH', width);
@@ -39,16 +30,11 @@ const actions = {
 
 
 
-    // ////////////////////////////////////////////
-    // COMPONENT
-    // ////////////////////////////////////////////
-
-    // VxAutoSuggest
     updateStarredPage({ commit }, payload) {
       commit('UPDATE_STARRED_PAGE', payload)
     },
 
-    //  The Navbar
+    
     arrangeStarredPagesLimited({ commit }, list) {
       commit('ARRANGE_STARRED_PAGES_LIMITED', list)
     },
@@ -56,9 +42,8 @@ const actions = {
       commit('ARRANGE_STARRED_PAGES_MORE', list)
     },
 
-    // ////////////////////////////////////////////
-    // FORM
-    // ////////////////////////////////////////////
+
+
     SIGN_UP({commit}, payload) {
         return Vue.http
             .post(`api/register`, payload)
