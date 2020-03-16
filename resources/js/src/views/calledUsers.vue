@@ -62,7 +62,6 @@
 
 <script>
 import { AgGridVue } from "ag-grid-vue"
-import '@sass/vuesax/extraComponents/agGridStyleOverride.scss'
 import vSelect from 'vue-select'
 // // Store Module
 import moduleUserManagement from '@/store/user-management/moduleUserManagement.js'

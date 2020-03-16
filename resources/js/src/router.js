@@ -67,7 +67,7 @@ const router = new Router({
                 },
                 {
                     path: '/called-users',
-                    name: 'user-list',
+                    name: 'called-users',
                     component: () => import('./views/calledUsers.vue'),
                     meta: {
                         pageTitle: 'called-users',
@@ -114,6 +114,18 @@ const router = new Router({
                             {title: 'orders', active: true},
                         ],
                         pageTitle: 'orders',
+                    },
+                },
+                {
+                    path: '/called-users',
+                    name: 'called-users',
+                    component: () => import('./views/calledUsers.vue'),
+                    meta: {
+                        breadcrumb: [
+                            {title: 'called-userst', url: '/'},
+                            {title: 'called-users', active: true},
+                        ],
+                        pageTitle: 'called-users',
                     },
                 },
             ],

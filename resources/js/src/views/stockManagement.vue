@@ -311,7 +311,7 @@
 
             totalPages() {
                 const store = this.getDataStock;
-                return store ? store.last_page : 1
+                return store.length ? store.last_page : 1
             },
 
             order(){

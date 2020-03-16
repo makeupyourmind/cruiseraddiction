@@ -157,7 +157,7 @@
             },
 
             totalPages() {
-                return this.dataPaginate ? this.dataPaginate.last_page : 1
+                return this.dataPaginate.length ? this.dataPaginate.last_page : 1
             },
 
         },
