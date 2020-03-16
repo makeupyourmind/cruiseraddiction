@@ -63,10 +63,8 @@
 <script>
 import { AgGridVue } from "ag-grid-vue"
 import vSelect from 'vue-select'
-// // Store Module
 import moduleUserManagement from '@/store/user-management/moduleUserManagement.js'
 import {CalledUsers} from "../api/calledUsers";
-// Cell Renderer
 import CellRendererStatus from "../components/cell-renderer/CellRendererStatus.vue"
 import CellRendererVerified from "../components/cell-renderer/CellRendererVerified.vue"
 import CellRendererActions from "../components/cell-renderer/CellRendererActions.vue"
