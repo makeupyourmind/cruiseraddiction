@@ -18,7 +18,6 @@ class ForgotPassword extends Mailable
      */
     public function __construct($content)
     {
-        //
         $this->content = $content;
     }
 
@@ -31,6 +30,6 @@ class ForgotPassword extends Mailable
     {
         return $this->subject('Forgot Password')
                     ->markdown('email.forgotPassword')
-                    ->with('content',$this->content);
+                    ->with('content', $this->content);
     }
 }

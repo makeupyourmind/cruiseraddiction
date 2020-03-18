@@ -3,21 +3,22 @@
 namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use App\Http\Controllers\API\BaseController;
+use App\Jobs\SendEmailMessage;
 use Validator;
-use Mail;
 
 class SendEmailController extends BaseController
 {
-    public function sendEmail(Request $request){
+    public function sendEmail(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'email' => 'required|email',
-            'message' => 'required'
+            'message' => 'required',
+            'phone' => 'required'
         ]);
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             return $this->sendError('Validation Error.', $validator->errors(), 422);
         }
 
@@ -25,14 +26,9 @@ class SendEmailController extends BaseController
             'variables' => $request->all(),
             'user_email' => $request->email
         ];
-        $email = $request->email;
 
-        Mail::send("email.contact_us", $data , function ($mail) use ($email){
-            $mail->to(env('SEND_EMAIL_TO'))
-                 ->replyTo($email)
-                 ->subject('Contact us');
-        });
+        SendEmailMessage::dispatch($request->email, $data);
 
-        return $this->sendResponse('', 'Ok');
+        return $this->sendResponse('', 'Email was sent successfully');
     }
 }

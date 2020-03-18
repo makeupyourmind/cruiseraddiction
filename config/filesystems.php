@@ -51,7 +51,7 @@ return [
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'/storage',
+            'url' => env('APP_URL_BACK') . '/storage',
             'visibility' => 'public',
         ],
 
@@ -59,7 +59,7 @@ return [
             'driver' => 'local',
             'root'   => public_path(),
         ],
-        
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),
@@ -69,19 +69,19 @@ return [
             'url' => env('AWS_URL'),
         ],
 
-	'ftp' => [
-	    'driver'   => 'ftp',
-	    'host'     => 'ftp.vivat-uae.com',
-	    'username' => 'CANLON',
-	    'password' => 'sl78TyIo1A',
+        'ftp' => [
+            'driver'   => 'ftp',
+            'host'     => 'ftp.vivat-uae.com',
+            'username' => 'CANLON',
+            'password' => 'sl78TyIo1A',
 
-	    // Optional FTP Settings...
-	    // 'port'     => 21,
-	    // 'root'     => '',
-	    // 'passive'  => true,
-	    // 'ssl'      => true,
-	    // 'timeout'  => 30,
-	],
+            // Optional FTP Settings...
+            // 'port'     => 21,
+            // 'root'     => '',
+            // 'passive'  => true,
+            // 'ssl'      => true,
+            // 'timeout'  => 30,
+        ],
 
     ],
 

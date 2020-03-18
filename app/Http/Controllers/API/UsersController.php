@@ -4,20 +4,21 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
+use App\Jobs\ChangesInAccountMessage;
 use App\User;
-// use App\Model\Guest;
 use Illuminate\Support\Facades\Auth;
 use Validator;
-use Mail;
 
 class UsersController extends BaseController
 {
-    public function show() {
+    public function show()
+    {
         $user = Auth::user();
         return response()->json($user, 200);
     }
 
-    public function update(Request $request, $id) {
+    public function update(Request $request, $id)
+    {
         $validator = Validator::make($request->all(), [
             'email' => 'required|string|email',
             'first_name' => 'required|string|max:255',
@@ -37,7 +38,7 @@ class UsersController extends BaseController
 
         ]);
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             return $this->sendError('Validation Error.', $validator->errors(), 422);
         }
 
@@ -88,39 +89,38 @@ class UsersController extends BaseController
 
         $user->update($request->all());
 
-        if(count($diff) > 0){
-            Mail::send("email.changesInAccount", $data , function ($mail) use ($user) {
-                    $mail->to($user->email)
-                         ->subject('Changes In Account');
-            });
+        if (count($diff) > 0) {
+            ChangesInAccountMessage::dispatch($user->email, $data);
+            // Mail::send("email.changesInAccount", $data, function ($mail) use ($user) {
+            //     $mail->to($user->email)
+            //         ->subject('Changes In Account');
+            // });
         }
-
-        // User::where('id', $id)->update($request->all());
 
         return $this->sendResponse(array('user' => $user, 'changes' => $diff), 'User modified successfully.');
     }
 
-    public function recursive_array_diff($user, $request) { 
-        $result_diff = array(); 
+    public function recursive_array_diff($user, $request)
+    {
+        $result_diff = array();
         $user = $user->toArray();
         foreach ($request as $key => $value) {
-            if($user[$key] != $request[$key]){
+            if ($user[$key] != $request[$key]) {
                 $result_diff[$key] = $value;
             }
         }
-        return $result_diff; 
+        return $result_diff;
     }
 
-    public function checkEmail(Request $request) {
+    public function checkEmail(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'email' => 'required|email|unique:users,email',
-	    ]);
+        ]);
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             return $this->sendError('Validation Error.', $validator->errors(), 422);
         }
         return $this->sendResponse('Success', 'Email not used');
-
     }
-
 }

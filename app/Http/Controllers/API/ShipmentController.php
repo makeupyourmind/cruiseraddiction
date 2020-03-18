@@ -4,13 +4,10 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use GuzzleHttp\Client;
+use App\Jobs\SendRegistrationMessage;
+use App\Model\Role;
 use App\User;
-use Illuminate\Support\Facades\Auth;
 use Validator;
-use App\Model\oauthAccessToken;
-use Exception;
-use Mail;
 use App\VerificationToken;
 use Illuminate\Support\Str;
 
@@ -68,8 +65,8 @@ class ShipmentController extends Controller
         $postResponse = $postRequest->getBody();
         //return $postResponse;
         $postResponse = json_decode($postResponse);
-        if($request->create_ac){
-        
+        if ($request->create_ac) {
+
             $validator = Validator::make($request->user, [
                 'first_name' => 'required',
                 'last_name' => 'required',
@@ -77,29 +74,29 @@ class ShipmentController extends Controller
                 'password' => 'required',
                 'c_password' => 'required|same:password',
             ]);
-            
-            if($validator->fails()){
-                return  response()->json(  $validator->errors(), 422) ;
+
+            if ($validator->fails()) {
+                return  response()->json($validator->errors(), 422);
             }
             $input = $request->user;
             $input['password'] = bcrypt($input['password']);
+            $role = Role::where('name', 'User')->first();
             $user = User::create($input);
+            $user->roles()->attach($role);
 
             $token = Str::random();
-            $verify = VerificationToken::create([
+            VerificationToken::create([
                 'user_id' => $user->id,
-                'token' => $token 
+                'token' => $token
             ]);
-            $url = env('APP_URL_BACK')."/api/verifyRegistration?token=".$token;
-            
+            $url = env('APP_URL_BACK') . "/api/verifyRegistration?token=" . $token;
+
             $data = array(
-                'url'=> $url,
+                'url' => $url,
             );
 
-            Mail::send("email.registration", $data , function ($mail) use ($input) {
-                $mail->to($input['email'])
-                    ->subject('Confirm registration');
-            });
+            SendRegistrationMessage::dispatch($email, $data);
+
             return response()->json(['shipping' => $postResponse], 201);
         }
         return response()->json(['count' => count($postResponse->rates), 'shipping' => $postResponse], 200);

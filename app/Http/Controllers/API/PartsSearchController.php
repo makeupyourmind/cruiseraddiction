@@ -73,7 +73,7 @@ class PartsSearchController extends BaseController
     {
         $sub_days = 30;
         $from = Carbon::today()->subDays($sub_days);
-        $to = Carbon::now(env("TIMEZONE"));
+        $to = Carbon::now(); //env("TIMEZONE") for localhost only
 
         $search_parsers = str_replace("-", "", $part_number);
         $amayama_part = Amayama::select('original_replacements', 'part_number')
