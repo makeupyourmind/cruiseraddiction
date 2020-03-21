@@ -31,5 +31,20 @@ export class StockManagment{
     static getImage () {
         return window.http.get(`api/parts/images`)
     }
+    static getQtyZero (data) {
+        return window.http.get(`api/stock-ca-parts?qty=${data}`)
+    }
+    static getQtyAbove () {
+        return window.http.get(`api/stock-ca-parts?qty_above=10`)
+    }
+    static getQtyBollow () {
+        return window.http.get(`api/stock-ca-parts?qty_bello_min_stock=1`)
+    }
+    static getBundelsOnly () {
+        return window.http.get(`api/stock-ca-parts?bundels_only=1`)
+    }
+    static getQtyFilter (params) {
+        return window.http.get(`api/stock-ca-parts?qty_above=${params.qty_above}&qty_bello_min_stock${params.qty_bello_min_stock}&bundels_only=${params.bundels_only}`)
+    }
 
 }
