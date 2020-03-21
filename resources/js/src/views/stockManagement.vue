@@ -30,6 +30,31 @@
                     <singlebundle :select="select"></singlebundle>
 
                     <vs-button color="primary" style="margin-left: 20px" @click="getImage()" type="flat">RELOAD IMAGE</vs-button>
+                   <div >
+                    <vs-dropdown vs-trigger-click class="cursor-pointer">
+                    <a href="#">
+                        Product Filter {{drop}}
+                    </a>
+                    <vs-dropdown-menu class="examplex">
+                        <vs-dropdown-item class="examplex" @click="getQtyZero">
+                        Quantity 0
+                        </vs-dropdown-item>
+                        <vs-dropdown-item  class="examplex" divider @click="getQtyAbove">
+                        Quantity Above 10
+                        </vs-dropdown-item>
+                        <vs-dropdown-item class="examplex"
+                        divider @click="getQtyBellowMinStock">
+                        Quantity Below Min Stock
+                        </vs-dropdown-item>
+                        <vs-dropdown-item  class="examplex" divider @click="getBundelsOnly">
+                        Bundles Only
+                        </vs-dropdown-item>
+                        <vs-dropdown-item  class="examplex" divider @click="getWithoutFilters">
+                        Without filters
+                        </vs-dropdown-item>
+                    </vs-dropdown-menu>
+                    </vs-dropdown>
+                   </div>
                 </div>
                 <!-- TABLE ACTION COL-2: SEARCH & EXPORT AS CSV -->
                 <div class="flex flex-wrap items-center justify-between ag-grid-table-actions-right">
@@ -117,7 +142,6 @@
             },
         },
         mounted() {
-
         },
         methods: {
             onSortChanged() {
@@ -182,7 +206,12 @@
                 context: null,
                 timeout:null,
                 isNoActive: false,
-                groupItem: {}
+                groupItem: {},
+                drop:'',
+                qty_above: 10,
+                qty_bello_min_stock: 1,
+                bundels_only:1
+        
             }
         },
 
@@ -295,13 +324,11 @@
 
         },
         computed: {
-
             getDataStock() {
-                return this.$store.getters['stockCaModule/GET_STOCK_DATA'];
+                return JSON.parse(JSON.stringify(this.$store.getters['stockCaModule/GET_STOCK_DATA']));
             },
-
             getData() {
-                const store = JSON.parse(JSON.stringify(this.getDataStock));
+                const store = this.getDataStock;
                 return store  && store.data? store.data.map(i => {
                     // debugger
                     i.price = (Number(i.price) || 0 ).toFixed(2);
@@ -326,10 +353,9 @@
                 set(val) {
                     this.getDataStockCa(val)
                 }
-            },
+            }
         },
         methods: {
-
             updateSearchQuery() {
                 clearTimeout(this.timeout);
                 this.timeout = setTimeout( () => {
@@ -391,10 +417,71 @@
                 this.$store.commit('isNoActive', true);
                 StockManagment.getImage()
                     .then(()=> this.$store.commit('isNoActive', false))
+            },
+
+             getQtyZero(){
+                 this.drop="by quantity 0"
+                StockManagment.getQtyZero(0)
+                .then(response => {
+                    this.$store.dispatch('stockCaModule/GET_DATA', response.data)
+                })
+                .catch(er => {
+                    console.log(er)
+                })
+            },
+
+            getQtyAbove(){
+                this.drop="by quantity above 10"
+                // StockManagment.getQtyFilter({
+                //         qty_above: this.qty_above
+                    
+                // })
+                StockManagment.getQtyAbove()
+                .then(response => {
+                    this.$store.dispatch('stockCaModule/GET_DATA_ABOVE', response.data)
+                console.log(response.data)
+                })
+                .catch(er => {
+                    console.log(er)
+                })
+            },
+            getQtyBellowMinStock(){
+                this.drop="by quantity bellow min stock"
+                // StockManagment.getQtyFilter({
+                // qty_bello_min_stock:this.qty_bello_min_stock})
+                StockManagment.getQtyBellowMinStock()
+                .then(response => {
+                    this.$store.dispatch('stockCaModule/GET_DATA_BELLOW', response.data)
+                console.log(response.data)
+                })
+                .catch(er => {
+                    console.log(er)
+                })
+            },
+            getBundelsOnly(){
+            this.drop="by bundels only"
+            // StockManagment.getQtyFilter({
+            //     bundels_only:this.bundels_only
+            // })
+            StockManagment.getBundelsOnly()
+                .then(response => {
+                    this.$store.dispatch('stockCaModule/GET_DATA_BUNDELS', response.data)
+                console.log(response.data)
+                })
+                .catch(er => {
+                    console.log(er)
+                })
+            },
+            getWithoutFilters(){
+                this.drop = ''
+                this.updateSearchQuery()
+                console.log(this.getData)
             }
+
         },
         mounted() {
             this.gridApi = this.gridOptions.api;
+            console.log(this.getDataStock)
         }
     }
 
@@ -481,5 +568,8 @@
     }
     .router-content{
         margin-top: 3em!important;
+    }
+    .examplex{
+        font-size: 18px;
     }
 </style>

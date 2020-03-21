@@ -16,6 +16,22 @@ const actions = {
     DELETE_DATA_STOCK({ commit, dispatch, state }, data) {
         return StockManagment.deletePart(data).then(() => state.current_page)
     },
+    GET_DATA: ({commit},data) => {
+        return StockManagment.getQtyZero(data).then(res => commit('SET_STOCK_DATA_IN_STORE', res.data))
+        .catch(error => commit('SET_ERROR', error))
+    },
+    GET_DATA_ABOVE: ({commit},data) => {
+        return StockManagment.getQtyAbove(data).then(res => commit('SET_STOCK_DATA_IN_STORE', res.data))
+    },
+    GET_DATA_BELLOW: ({commit},data) => {
+        return StockManagment.getQtyBellow().then(res => commit('SET_STOCK_DATA_IN_STORE', res.data))
+    },
+    GET_DATA_BUNDELS: ({commit},data) => {
+        return StockManagment.getBundelsOnly().then(res => commit('SET_STOCK_DATA_IN_STORE', res.data))
+    },
+    // GET_DATA_FILTER: ({commit},data) => {
+    //     return StockManagment.getQtyFilter(data).then(res => commit('SET_STOCK_DATA_IN_STORE', res.data))
+    // },
 };
 
 export default actions
