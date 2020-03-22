@@ -371,7 +371,7 @@ class PayPalController extends Controller
             $pdf->setOptions(['isPhpEnabled' => true, "enable_php" => true]);
             $content_pdf = $pdf->download()->getOriginalContent();
             $unique_hash_string = Str::random(22);
-            $stored_path = Storage::disk('public_uploads')->putFileAs("payment_file_history", $content_pdf, "{$unique_hash_string}.pdf");
+            Storage::disk('public_uploads')->put("payment_file_history/{$unique_hash_string}.pdf", $content_pdf);
             PaymentHistoryFile::create([
                 'originalFileName' => "Payment_{$newOrder->id}.pdf",
                 'extension' => 'pdf',
@@ -379,9 +379,11 @@ class PayPalController extends Controller
                 'user_id' => array_key_exists('id', $customersOrder['user']) ? $customersOrder['user']['id'] : null,
                 'guest_id' => $guest ? $guest->id : null
             ]);
-            // $pathToFile = Storage::disk('public_uploads')->path("payment_file_history/${unique_hash_string}.pdf");
-            $pathToFile = "public/$stored_path";
+            $pathToFile = Storage::disk('public_uploads')->path("payment_file_history/${unique_hash_string}.pdf");
+            // $pathToFile = "public/$stored_path";
+            //$pathToFile = "public/payment_file_history/{$unique_hash_string}.pdf";
             PaypalMessage::dispatch($user_email, $pathToFile);
+            // $pathToFile = "payment_file_history/{$unique_hash_string}.pdf";
             // Mail::send('email.payment_done', [''], function ($message) use ($user_email, $pathToFile) {
             //     $message->to($user_email)
             //         ->subject('Thank you for your business!')
