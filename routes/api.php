@@ -36,7 +36,7 @@ Route::group([
     Route::post('shipping-rates', 'ShipmentController@rates');
 
     Route::get('orders', 'OrdersController@index');
-    Route::get('stock-ca', 'PartsController@stock_ca');
+    //Route::get('stock-ca', 'PartsController@stock_ca');
     Route::get('countries', 'CountryController@get_countries');
 
     Route::get('reviews', 'ReviewsController@index');
