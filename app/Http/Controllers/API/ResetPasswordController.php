@@ -4,43 +4,38 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
+use App\Jobs\ResetPasswordMessage;
 use Illuminate\Support\Facades\Hash;
-use Mail;
 use Validator;
 use App\User;
 use App\Model\PasswordResets;
 
 class ResetPasswordController extends BaseController
 {
-    public function resetPassword(Request $request){
+    public function resetPassword(Request $request)
+    {
 
         $validator = Validator::make($request->all(), [
-            'newPassword' => 'required'
+            'newPassword' => 'required',
+            'token' => 'required'
         ]);
 
-        if($validator->fails()){
-
-            return $this->sendError('Validation Error.', $validator->errors());       
+        if ($validator->fails()) {
+            return $this->sendError('Validation Error.', $validator->errors());
         }
 
-        // $user_exist = User::where('email', $request->email)->get();
         $user_exist = PasswordResets::where('token', $request->token)->first();
 
-        if(!$user_exist){
+        if (!$user_exist) {
             return $this->sendError("Hash is not available");
         }
 
         User::where('email', $user_exist->email)->update(['password' => Hash::make($request->newPassword)]);
-        
-        // PasswordResets::where('token', $request->token)->delete();
+
         $user_exist->delete();
+        // $data = ['user' => $user_exist];
+        ResetPasswordMessage::dispatch($email);
 
-        Mail::send("email.resetPassword", ['user' => $user_exist], function ($mail) use ($user_exist) {
-                $mail->to( $user_exist->email)
-                     ->subject('Reset password');
-        });
-
-        return $this->sendResponse("Ok",'Your password was changed successfully');
+        return $this->sendResponse("Ok", 'Your password was changed successfully');
     }
-
 }

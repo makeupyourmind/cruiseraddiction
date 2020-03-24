@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
+use App\Jobs\ChangesInAccountMessage;
 use Illuminate\Support\Facades\Gate;
 use App\User;
 use App\Model\Role;
@@ -97,10 +98,7 @@ class AdminController extends BaseController
         $user->update($input);
 
         if (count($diff) > 0) {
-            Mail::send("email.changesInAccount", $data, function ($mail) use ($user) {
-                $mail->to($user->email)
-                    ->subject('Changes In Account');
-            });
+            ChangesInAccountMessage::dispatch($user->email, $data);
         }
 
         return $this->sendResponse(array('user' => $user, 'changes' => $diff), 'User modified successfully.');

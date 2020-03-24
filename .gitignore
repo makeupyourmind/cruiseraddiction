@@ -1,12 +1,6 @@
 /node_modules
-/get_access_token/*
-/public/hot
-/public/storage
-/public/images/parts/*
 /public
-/storage/*.key
-/storage/images/
-/storage/app/orders/
+/storage/*
 /parser/*
 /vendor
 .env

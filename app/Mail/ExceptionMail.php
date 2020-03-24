@@ -7,9 +7,16 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class ForgotPassword extends Mailable
+class ExceptionMail extends Mailable
 {
     use Queueable, SerializesModels;
+
+    /**
+     * The body of the message.
+     *
+     * @var string
+     */
+    public $content;
 
     /**
      * Create a new message instance.
@@ -28,8 +35,7 @@ class ForgotPassword extends Mailable
      */
     public function build()
     {
-        return $this->subject('Forgot Password')
-                    ->markdown('email.forgotPassword')
-                    ->with('content', $this->content);
+        return $this->view('email.exception_email')
+            ->with('content', $this->content);
     }
 }

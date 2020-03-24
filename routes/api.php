@@ -21,7 +21,7 @@ Route::group([
     Route::get('verifyRegistration', 'RegisterController@verifyRegistration');
     Route::post('login', 'RegisterController@login');
     Route::post('forgot', 'ForgotPasswordController@forgotPassword');
-    Route::get('forgot/{token}', 'ForgotPasswordController@checkToken');
+    Route::get('forgot', 'ForgotPasswordController@checkToken');
     Route::post('resetPassword', 'ResetPasswordController@resetPassword');
 
     Route::post('parts-search', 'PartsSearchController@index');
@@ -36,7 +36,7 @@ Route::group([
     Route::post('shipping-rates', 'ShipmentController@rates');
 
     Route::get('orders', 'OrdersController@index');
-    Route::get('stock-ca', 'PartsController@stock_ca');
+    //Route::get('stock-ca', 'PartsController@stock_ca');
     Route::get('countries', 'CountryController@get_countries');
 
     Route::get('reviews', 'ReviewsController@index');

@@ -2,9 +2,12 @@
 
 namespace App\Exceptions;
 
+use App\Jobs\ExceptionMessage;
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Auth\AuthenticationException;
+use Symfony\Component\Debug\Exception\FlattenException;
+use Symfony\Component\Debug\ExceptionHandler as SymfonyExceptionHandler;
 
 class Handler extends ExceptionHandler
 {
@@ -47,13 +50,31 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        if ($this->shouldReport($exception)) {
+            $this->sendEmail($exception);
+        }
         return parent::render($request, $exception);
     }
 
     protected function unauthenticated($request, AuthenticationException $exception)
     {
-        if(!$request->expectsJson() || !$request->user()){
-            return response()->json(['message' => $exception->getMessage()." Token required."], 401);
+        if (!$request->expectsJson() || !$request->user()) {
+            return response()->json(['message' => $exception->getMessage() . " Token required."], 401);
+        }
+    }
+
+    public function sendEmail(Exception $exception)
+    {
+        try {
+            $e = FlattenException::create($exception);
+
+            $handler = new SymfonyExceptionHandler();
+
+            $html = $handler->getHtml($e);
+
+            ExceptionMessage::dispatch(env("SEND_EMAIL_TO"), $html);
+        } catch (Exception $ex) {
+            dd($ex);
         }
     }
 }

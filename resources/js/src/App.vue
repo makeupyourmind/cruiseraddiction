@@ -25,7 +25,7 @@
         watch: {
             '$route'(to, from) {
                 const block_route = to.path;
-                this.block_route(block_route)
+                // this.block_route(block_route)
                 // debugger
             },
             isNoActive(val) {
@@ -50,7 +50,7 @@
             }
         },
         created() {
-            this.block_route(this.$router.history.current.path)
+            // this.block_route(this.$router.history.current.path)
         },
         methods: {
             toggleClassInBody(className) {
