@@ -180,6 +180,7 @@ export default {
     async selectRoles(){
        UserEditTabAccount.selectRoles()
         .then((response)=> {
+          // debugger
           this.roleOptions =  response.data;
       })
     },

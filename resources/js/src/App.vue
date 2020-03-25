@@ -73,7 +73,7 @@
                         case '/pages/login':
                             return this.$router.replace('/');
                         case '/called-users':
-                            if(localStorage.setItem('role') !== 'SuperAdmin'){
+                            if(localStorage.getItem('role') !== 'SuperAdmin'){
                                 this.$router.replace('/')
                             }
                     }
