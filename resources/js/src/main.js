@@ -11,9 +11,11 @@
 import Vue from 'vue'
 import App from './App.vue'
 import VueResource from 'vue-resource';
+import config from './config'
 Vue.use(VueResource);
 window.http = Vue.http;
-Vue.http.options.root = 'https://testback.cruiseraddiction.com/' //http://127.0.0.1:8000/';
+const env = process.env.NODE_ENV || 'development'
+Vue.http.options.root = config[env].url //http://127.0.0.1:8000/';
 
 // Vuesax Component Framework
 import Vuesax from 'vuesax'
@@ -46,7 +48,7 @@ Vue.use(VeeValidate);
 
 //Axios
 
-import {request, response} from './api/interceptors';
+import { request, response } from './api/interceptors';
 Vue.http.interceptors.push(request);
 Vue.http.interceptors.push(response);
 
@@ -57,7 +59,7 @@ import 'prismjs'
 Vue.config.productionTip = false;
 
 new Vue({
-    router,
-    store,
-    render: h => h(App)
+  router,
+  store,
+  render: h => h(App)
 }).$mount('#app');

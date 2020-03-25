@@ -81,7 +81,7 @@ Route::group([
 
 Route::group([
     'namespace' => 'API',
-    'middleware' => ['auth:api', 'role:Admin']
+    'middleware' => ['auth:api', 'role:Admin,SuperAdmin']
 ], function () { //, 'role:Admin' - add then
 
     Route::post('add-parts', 'PartsController@store');
