@@ -50,7 +50,7 @@ const actions = {
         return Vue.http.post(`api/login`, payload)
             .then(response =>{
                 commit("SET_SIGN_IN", response);
-                return true;
+                return response;
             })
             .catch(() => false )
     },

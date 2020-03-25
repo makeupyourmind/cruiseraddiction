@@ -81,6 +81,7 @@
 					type="line"
 					v-for="item in sidebarItems"
 					@click="current !== item.url && $router.push(item.url)"
+					v-if="checkRole(item)"
 					:class="{active:current === item.url}"
                     :key="item.url"
 			>
@@ -305,6 +306,9 @@ export default {
         showNavbarSearch() {
             this.showFullSearch = true;
         },
+		checkRole(item){
+			return typeof item.role === 'string' ? item.role === localStorage.getItem('role') : true
+		},
         showSearchbar() {
             this.showFullSearch = true;
         },

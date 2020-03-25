@@ -356,7 +356,8 @@
                     module && delete module.action;
                     module && delete module.id;
                     module && delete module.unique_hash;
-                    module && (module.tags = JSON.stringify(module.tags));
+                    module && delete module.tags;
+                    // module && (module.tags = JSON.stringify(module.tags));
 
                     this.$store.dispatch("stockCaModule/UPDATE_DATA_STOCK", module)
                         .then(() => {

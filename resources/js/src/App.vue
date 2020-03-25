@@ -20,12 +20,13 @@
 <script>
     import themeConfig from '@/../themeConfig.js'
     import {Token} from "./store/tokenStorage";
+    import sidebarItems from "./layouts/components/vx-sidebar/sidebarItems";
 
     export default {
         watch: {
             '$route'(to, from) {
                 const block_route = to.path;
-                // this.block_route(block_route)
+                this.block_route(block_route)
                 // debugger
             },
             isNoActive(val) {
@@ -46,11 +47,12 @@
         data() {
             return {
                 time: 0,
-                interval: null
+                interval: null,
+                sidebarItems: Array.from(sidebarItems)
             }
         },
         created() {
-            // this.block_route(this.$router.history.current.path)
+            this.block_route(this.$router.history.current.path)
         },
         methods: {
             toggleClassInBody(className) {
@@ -69,7 +71,11 @@
                 if (Token.getToken()) {
                     switch (block_route) {
                         case '/pages/login':
-                            this.$router.replace('/')
+                            return this.$router.replace('/');
+                        case '/called-users':
+                            if(localStorage.setItem('role') !== 'SuperAdmin'){
+                                this.$router.replace('/')
+                            }
                     }
                 } else {
                     switch (block_route) {
@@ -80,11 +86,11 @@
             }
         },
         mounted() {
-            window.document.body.style.zoom = 0.7;
+            window.document.body.style.trasform = 'scale(0.7)';
             this.toggleClassInBody(themeConfig.theme)
         },
         destroyed(){
-            window.document.body.style.zoom = 1;
+            window.document.body.style.trasform = 'scale(1)';
         }
     }
 </script>

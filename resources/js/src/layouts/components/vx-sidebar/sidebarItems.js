@@ -43,5 +43,6 @@ export default [
     name: "Called users",
     slug: "Called users",
     icon: "FileIcon",
+    role: 'SuperAdmin'
   },
 ]

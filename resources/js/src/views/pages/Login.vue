@@ -110,10 +110,27 @@ export default {
                 }
                 return false;
 
-            }).then(res => res ? this.$router.push('/') : this.$vs.notify({
-                   title:'Error',
-                   text:'Incorrect email or password.',
-                   color:'danger'}))
+            }).then(res => {
+                if(res) {
+                    if (res.body.data.user_role === 'Admin' || res.body.data.user_role === 'SuperAdmin'){
+                        localStorage.setItem('role',res.body.data.user_role);
+                        this.$router.push('/')
+                    } else {
+                        this.$vs.notify({
+                            title:'Error',
+                            text:'You are not admin',
+                            color:'danger'
+                        })
+                    }
+
+                } else {
+                    this.$vs.notify({
+                        title:'Error',
+                        text:'Incorrect email or password.',
+                        color:'danger'
+                    })
+                }
+               })
         }
     }
 }
