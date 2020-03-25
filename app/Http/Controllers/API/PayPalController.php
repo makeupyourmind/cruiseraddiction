@@ -394,7 +394,7 @@ class PayPalController extends Controller
                 $insertedId = $newOrder->id;
                 $customersOrder['order_id'] = $insertedId;
                 $customersOrder['data'] = $newOrder->data;
-                $customersOrder['pdf_url'] = $pathToFile;
+                $customersOrder['pdf_url'] = "payment_file_history/${unique_hash_string}.pdf";
                 $url = base64_encode(json_encode($customersOrder));
                 return Redirect::away(env("APP_URL_FRONT") . '/final?result=' . $url);
             } catch (Exception $e) {
