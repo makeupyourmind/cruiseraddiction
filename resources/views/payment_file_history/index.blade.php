@@ -65,24 +65,24 @@
 
 @foreach(json_decode($orderInfo, true) as $order)
     <tr>
-        <td style="border-bottom: 1px solid black">{{ $order["brand_name"] }}</td>
-        <td style="border-bottom: 1px solid black;">{{ $order["part_number"] }}</td>
-        <td style="border-bottom: 1px solid black">{{ $order["description"] }}</td>
-        <td style="border-bottom: 1px solid black">{{ $order["qty"] }}</td>
-        <td style="border-bottom: 1px solid black">${{ round($order["price"] * $exchange, 2) }}</td>
-        <td style="border-bottom: 1px solid black">${{ round($order["total_price"] * $exchange, 2) }}</td>
-        <td style="border-bottom: 1px solid black"> W{{ $order["warehouse"] }}</td>
+        <td style="border-bottom: 1px solid black;white-space: pre-wrap;">{{ $order["brand_name"] }}</td>
+        <td style="border-bottom: 1px solid black;white-space: pre-wrap;">{{ $order["part_number"] }}</td>
+        <td style="border-bottom: 1px solid black;white-space: pre-wrap;">{{ $order["description"] }}</td>
+        <td style="border-bottom: 1px solid black;white-space: pre-wrap;">{{ $order["qty"] }}</td>
+        <td style="border-bottom: 1px solid black;white-space: pre-wrap;">${{ round($order["price"] * $exchange, 2) }}</td>
+        <td style="border-bottom: 1px solid black;white-space: pre-wrap;">${{ round($order["total_price"] * $exchange, 2) }}</td>
+        <td style="border-bottom: 1px solid black;white-space: pre-wrap;"> W{{ $order["warehouse"] }}</td>
     </tr>
 @endforeach
 
     <tr>
-        <td style="border-bottom: 1px solid white;border-top:1px solid black"><span style="color:white">tt</span></td>
-        <td style="border-bottom: 1px solid white;border-top:1px solid black"><span style="color:white">tt</span></td>
-        <td style="border-bottom: 1px solid white;border-left:1px solid black;border-top:1px solid black">Subtotal</td>
-        <td style="border-bottom: 1px solid white;border-top:1px solid black">{{ $total_quantity_ordered }}</td>
-        <td style="border-bottom: 1px solid white;border-top:1px solid black"></td>
-        <td style="border-bottom: 1px solid white;border-top:1px solid black">${{ $subtotal }}</td>
-        <td style="border-bottom: 1px solid white;border-top:1px solid black;border-right:1px solid black"></td>
+        <td style="border-bottom: 1px solid white;border-top:1px solid black;white-space: pre-wrap;"><span style="color:white">tt</span></td>
+        <td style="border-bottom: 1px solid white;border-top:1px solid black;white-space: pre-wrap;"><span style="color:white">tt</span></td>
+        <td style="border-bottom: 1px solid white;border-left:1px solid black;border-top:1px solid black;white-space: pre-wrap;">Subtotal</td>
+        <td style="border-bottom: 1px solid white;border-top:1px solid black;white-space: pre-wrap;">{{ $total_quantity_ordered }}</td>
+        <td style="border-bottom: 1px solid white;border-top:1px solid black;white-space: pre-wrap;"></td>
+        <td style="border-bottom: 1px solid white;border-top:1px solid black;white-space: pre-wrap;">${{ round($subtotal, 2) }}</td>
+        <td style="border-bottom: 1px solid white;border-top:1px solid black;border-right:1px solid black;white-space: pre-wrap;"></td>
     </tr>
     <tr>
         <td style="border-bottom: 1px solid white"><span style="color:white">tt</span></td>

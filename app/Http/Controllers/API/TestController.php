@@ -23,7 +23,8 @@ class TestController
         //     $query->where('id', 16);
         // })->get();
         $a = 4;
-        return response()->json($a, 404);
+        // return response()->json($a, 500);
+        return response('Error', 500);
         // return http_response_code(500);
         // return response()->json($a);
         $order = Order::with([
