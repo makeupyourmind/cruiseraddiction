@@ -94,7 +94,7 @@ Route::group([
 
 Route::group([
     'namespace' => 'API',
-    'middleware' => ['auth:api', 'role:Admin'],
+    'middleware' => ['auth:api', 'role:Admin,SuperAdmin'],
     'prefix' => 'admin'
 ], function () {
 
