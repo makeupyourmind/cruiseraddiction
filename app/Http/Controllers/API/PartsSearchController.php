@@ -68,16 +68,15 @@ class PartsSearchController extends BaseController
         }
 
         $available_warehouses = AvailableWarehouse::where('isAvailable', true)->get();
-
+        $array = [];
         foreach ($partsList[0]['data'] as $index => $part) {
             foreach ($available_warehouses as $available) {
-                if ($part['warehouses'] === $available['warehouse']) {
-                    unset($partsList[0]['data'][$index]);
+                if ($part['warehouses'] == $available['warehouse']) {
+                    $array[$index] = $part;
                 }
             }
         }
-
-        $partsList[0]['data'] = array_values($partsList[0]['data']);
+        $partsList[0]['data'] = array_values($array);
 
         $response = [
             'parts' => $partsList,
