@@ -7,7 +7,7 @@
   Author URL: http://www.themeforest.net/user/pixinvent
 ==========================================================================================*/
 import Vue from "vue";
-
+import { AvailableWarehouses } from "../api/available_warehouses";
 const actions = {
 
     // ////////////////////////////////////////////
@@ -80,8 +80,21 @@ const actions = {
     GET_SHOW_BUNDLE_SINGLE({commit}, payload){
         commit("SET_SHOW_BUNDLE_SINGLE", payload)
     },
+    GET_SHOW_WAREHOUSE_SINGLE({commit}, payload){
+      commit("SET_SHOW_WAREHOUSE_SINGLE", payload)
+    },
     GET_EDIT_STORE({commit}, payload){
         commit("SET_EDIT_STORE", payload)
+    },
+    async GET_ALL_AVAILABLE_WAREHOUSES({commit}){
+      const response = await AvailableWarehouses.receive();
+      const json = await response.json();
+      commit('GET_AVAILABLE_WAREHOUSES', json)
+    },
+    async DELETE_AVAILABLE_WAREHOUSE({dispatch, commit}, payload){
+      await AvailableWarehouses.deleteWarehouse(payload)
+      dispatch('GET_ALL_AVAILABLE_WAREHOUSES')
+      // commit("DELETE_AVAILABLE_WAREHOUSE", payload)
     }
 }
 

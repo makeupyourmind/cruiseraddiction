@@ -102,6 +102,14 @@ Route::group([
     Route::get('/{id}', 'AdminController@show');
     Route::put('/{id}', 'AdminController@update');
     Route::delete('/{id}', 'AdminController@destroy');
+
+    Route::group([
+        'prefix' => '/available/warehouses'
+    ], function () {
+        Route::get('/', 'AvailableWarehouseController@index');
+        Route::put('/{id}', 'AvailableWarehouseController@update');
+        Route::delete('/', 'AvailableWarehouseController@destroy');
+    });
 });
 
 Route::group([

@@ -7,7 +7,7 @@
   Author URL: http://www.themeforest.net/user/pixinvent
 ==========================================================================================*/
 
-import {Token} from "./tokenStorage";
+import { Token } from "./tokenStorage";
 
 const mutations = {
 
@@ -45,7 +45,7 @@ const mutations = {
         localStorage.setItem('userRole', val)
     },
     UPDATE_WINDOW_WIDTH(state, width) {
-      state.windowWidth = width;
+        state.windowWidth = width;
     },
 
 
@@ -61,9 +61,9 @@ const mutations = {
         state.navbarSearchAndPinList.data[index].highlightAction = payload.val;
 
         // if val is true add it to starred else remove
-        if(payload.val) {
+        if (payload.val) {
             state.starredPages.push(state.navbarSearchAndPinList.data[index])
-        }else {
+        } else {
             // find item index from starred pages
             const index = state.starredPages.findIndex((item) => item.index == payload.index)
             // remove item using index
@@ -82,10 +82,10 @@ const mutations = {
         const starredPagesLimited = state.starredPages.slice(0, 10);
         state.starredPages = starredPagesLimited.concat(list);
 
-        state.starredPages.slice(0,10).map((i) => {
-            if(list.indexOf(i) > -1) downToUp = true
+        state.starredPages.slice(0, 10).map((i) => {
+            if (list.indexOf(i) > -1) downToUp = true
         })
-        if(!downToUp) {
+        if (!downToUp) {
             state.starredPages.splice(10, 0, lastItemInStarredLimited);
         }
     },
@@ -94,26 +94,45 @@ const mutations = {
     // MY MUTATIONS
     // ////////////////////////////////////////////
 
-    SET_SIGN_IN(state, payload){
+    SET_SIGN_IN(state, payload) {
         Token.saveToken(payload.body.data.token)
+        const { user_id, user_role } = payload.body.data
+        state.user = { authenticated: true, id: user_id, role: user_role }
     },
-    SET_DELETE_MODULE(state, payload){
+    SET_DELETE_MODULE(state, payload) {
         state.showDelete = payload
     },
-    SET_SHOW_BUNDLE_SINGLE(state, payload){
+    SET_SHOW_BUNDLE_SINGLE(state, payload) {
         state.module = payload.module;
         state.showTable = payload.showTable;
-        if(payload.module === false){
+        if (payload.module === false) {
             state.moduleStock = Object.assign({}, state.moduleStockDef)
         }
         // debugger
     },
-    SET_EDIT_STORE(state, payload){
+    SET_SHOW_WAREHOUSE_SINGLE(state, payload){
+        console.log("PAYLOAD", payload)
+        state.module = payload.module;
+        state.showTable = payload.showTable;
+        if (payload.module === false) {
+            state.moduleStock = Object.assign({}, state.moduleWarehouse)
+        }
+        console.log("STATE ", state)
+    },
+    SET_EDIT_STORE(state, payload) {
         state.moduleStock = payload;
     },
-    isNoActive(state, payload){
+    isNoActive(state, payload) {
         state.isNoActive = payload;
     },
+
+    GET_AVAILABLE_WAREHOUSES(state, payload){
+        state.available_warehouses = payload
+    },
+
+    // DELETE_AVAILABLE_WAREHOUSE(state, payload){
+    //     state.available_warehouses = state.available_warehouses.filter(warehouse => warehouse.id != payload)
+    // }
 
 }
 

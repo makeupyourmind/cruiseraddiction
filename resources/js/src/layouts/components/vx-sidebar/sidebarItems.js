@@ -38,4 +38,10 @@ export default [
     slug: "reviews",
     icon: "FileIcon",
   },
+  {
+    url: "/available-warehouses",
+    name: "Available warehouses",
+    slug: "available-warehouses",
+    icon: "FileIcon"
+  }
 ]

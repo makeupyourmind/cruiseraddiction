@@ -104,7 +104,7 @@
     import {AgGridVue} from "ag-grid-vue"
     import contacts from './data.json'
     import singlebundle from '../components/SingleBundle/singleBundle'
-    import test from '../components/SingleBundle/cellRenderer'
+    //import test from '../components/SingleBundle/cellRenderer'
     import Vue from 'vue'
     import {StockManagment} from "../api/stockManagment";
     import VxSidebarItem from "../layouts/components/vx-sidebar/VxSidebarItem";
@@ -113,7 +113,7 @@
         template: '<vs-chip color="primary" @click="test(params)">{{params.valueFormatted}}</vs-chip>',
         methods:{
             test(dd){
-                console.log(dd)
+                console.log("aaaa", dd)
             }
         }
     });

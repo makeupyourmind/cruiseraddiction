@@ -91,7 +91,6 @@ export default {
         email: "qwert@a.com",
         password: "lalalalala",
         checkbox_remember_me: false
-
     }),
     computed: {
         // validateForm() {
@@ -100,8 +99,36 @@ export default {
         // profile(){
         //     return
         // }
+        test(){
+             console.log("MOUNTED2")
+        }
+    },
+    mounted(){
+        // console.log("MOUNTED")
+        // const access =  this.$route.query.access ? this.$route.query.access === "true" : true
+        // console.log(access)
+        // if(!access){
+        //     this.$vs.notify({
+        //            title:'Error',
+        //            text:'Incorrect email or password.',
+        //            color:'danger'
+        //         })
+        // }
+        this.checkQuery()
     },
     methods:{
+        checkQuery(){
+            console.log("MOUNTED")
+            const access =  this.$route.query.access ? this.$route.query.access === "true" : true
+            console.log(access)
+            if(!access){
+                this.$vs.notify({
+                    title:'Error',
+                    text:'Incorrect email or password.',
+                    color:'danger'
+                    })
+            }
+        },
         registerUser() {
             this.$router.push('/pages/register');
         },

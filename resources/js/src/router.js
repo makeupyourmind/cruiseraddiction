@@ -19,7 +19,9 @@
 
 import Vue from 'vue'
 import Router from 'vue-router'
-
+import Auth from './middleware/authenticated'
+import middlewarePipeline from './middleware/middlewarePipeline'
+import store from './store/store'
 Vue.use(Router)
 
 const router = new Router({
@@ -41,7 +43,8 @@ const router = new Router({
                     name: 'Stock management',
                     component: () => import('./views/stockManagement.vue'),
                     meta: {
-                        pageTitle: "Stock Management"
+                        pageTitle: "Stock Management",
+                        // middleware: [Auth]
                     }
                 },
 
@@ -64,8 +67,8 @@ const router = new Router({
                     component: () => import('./views/orders.vue'),
                     meta: {
                         breadcrumb: [
-                            {title: 'Stock Management', url: '/'},
-                            {title: 'orders', active: true},
+                            { title: 'Stock Management', url: '/' },
+                            { title: 'orders', active: true },
                         ],
                         pageTitle: 'orders',
                     },
@@ -78,6 +81,14 @@ const router = new Router({
                         pageTitle: 'reviews',
                     },
                 },
+                {
+                    path: '/available-warehouses',
+                    name: 'available-warehouses',
+                    component: () => import('./views/available-warehouses.vue'),
+                    meta: {
+                        pageTitle: 'available-warehouses',
+                    }
+                }
             ],
         },
         {
@@ -118,8 +129,8 @@ const router = new Router({
                     component: () => import('./views/orders.vue'),
                     meta: {
                         breadcrumb: [
-                            {title: 'Stock Management', url: '/'},
-                            {title: 'orders', active: true},
+                            { title: 'Stock Management', url: '/' },
+                            { title: 'orders', active: true },
                         ],
                         pageTitle: 'orders',
                     },
@@ -183,6 +194,24 @@ const router = new Router({
             redirect: '/pages/error-404'
         }
     ],
+})
+
+router.beforeEach((to, from, next) => {
+    if (!to.meta.middleware) {
+        return next()
+    }
+    const middleware = to.meta.middleware
+    const context = {
+        to,
+        from,
+        next,
+        store,
+        router
+    }
+    return middleware[0]({
+        ...context,
+        next: middlewarePipeline(context, middleware, 1)
+    })
 })
 
 export default router
