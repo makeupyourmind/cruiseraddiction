@@ -22,6 +22,22 @@ class AvailableWarehouseController extends BaseController
         return $this->sendResponse($data, 'Success');
     }
 
+    public function store(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'warehouse' => 'required|string',
+            'isAvailable' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return $this->sendError('Validation Error.', $validator->errors(), 422);
+        }
+
+        $this->available_warehouse::create($request->all());
+
+        return $this->sendResponse('', 'Created successfully.');
+    }
+
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [

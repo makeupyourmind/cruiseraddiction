@@ -107,6 +107,7 @@ Route::group([
         'prefix' => '/available/warehouses'
     ], function () {
         Route::get('/', 'AvailableWarehouseController@index');
+        Route::post('/', 'AvailableWarehouseController@store');
         Route::put('/{id}', 'AvailableWarehouseController@update');
         Route::delete('/', 'AvailableWarehouseController@destroy');
     });
