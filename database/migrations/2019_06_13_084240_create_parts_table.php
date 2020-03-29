@@ -33,9 +33,11 @@ class CreatePartsTable extends Migration
             // $table->integer('subst_for')->default('0');
             // $table->string('modified_by')->nullable();
             $table->text('full_part_number')->nullable();
-	    // $table->text('notes')->nullable();
-	        $table->string('bundle_id', '512')->default(0);
-	        $table->integer('bundle_qty')->default(0);
+            // $table->text('notes')->nullable();
+            $table->string('bundle_id', '512')->default(0);
+            $table->integer('bundle_qty')->default(0);
+            $table->boolean('discontinued')->default(0);
+            $table->boolean('not_available')->default(0);
             $table->timestamps();
         });
     }
