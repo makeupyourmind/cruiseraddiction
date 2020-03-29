@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Model\Tpd;
 use App\Model\Amayama;
+use App\Model\AvailableWarehouse;
 use App\Model\Part;
 
 class ParserController
@@ -169,6 +170,17 @@ class ParserController
                 $partsList['data'][$index]['image'] = $data['image'];
             }
         }
-        return $partsList;
+
+        $available_warehouses = AvailableWarehouse::where('isAvailable', true)->get();
+        $array = [];
+        foreach ($partsList['data'] as $index => $part) {
+            foreach ($available_warehouses as $available) {
+                if ($part['warehouse'] == $available['warehouse']) {
+                    $array[$index] = $part;
+                }
+            }
+        }
+
+        return $array;
     }
 }

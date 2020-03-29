@@ -70,15 +70,20 @@ class PartsSearchController extends BaseController
 
         $available_warehouses = AvailableWarehouse::where('isAvailable', true)->get();
         $array = [];
-        foreach ($partsList[0]['data'] as $index => $part) {
-            foreach ($available_warehouses as $available) {
-                if ($part['warehouses'] == $available['warehouse']) {
-                    $array[$index] = $part;
+        foreach ($partsList as $key => $value) {
+            foreach ($value['data'] as $index => $part) {
+                foreach ($available_warehouses as $available) {
+                    if ($part['warehouses'] == $available['warehouse']) {
+                        // $array[$index] = $part;
+                        $array[$key]['data'][$index] = $part;
+                        $array[$key]['data'] = array_values($array[$key]['data']);
+                    }
                 }
             }
         }
-        $partsList[0]['data'] = array_values($array);
-        $response['parts'] = $partsList;
+        // $partsList[0]['data'] = array_values($array);
+        $response['parts'] = $array;
+        // $response['parts'] = $partsList;
         $response['requested_part_number'] = $request->partNumber;
 
         return response()->json($response, 200); //$partsList
@@ -291,7 +296,18 @@ class PartsSearchController extends BaseController
                 $partsList['data'][$index]['image'] = $data['image'];
             }
         }
-        return $partsList;
+
+        $available_warehouses = AvailableWarehouse::where('isAvailable', true)->get();
+        $array = [];
+        foreach ($partsList['data'] as $index => $part) {
+            foreach ($available_warehouses as $available) {
+                if ($part['warehouse'] == $available['warehouse']) {
+                    $array[$index] = $part;
+                }
+            }
+        }
+
+        return $array;
     }
 
     // function remove_mark($value)
