@@ -192,7 +192,7 @@
             },
 
             totalPages() {
-                return this.dataPaginate ? this.dataPaginate.last_page : 1
+                return this.dataPaginate.length ? this.dataPaginate.last_page : 1
             },
         },
         methods: {
@@ -214,14 +214,8 @@
 
                 }
             },
-            ll(e){
-                console.log(e)
-            },
             select(){
                 const selectedNodes = this.gridApi.getSelectedNodes();
-                console.log('ssss',selectedNodes)
-                // debugger;
-                // console.log(this.columnDefs.filter(item => item.checkboxSelection).map(item => ))
             },
             prepered(row){
 
@@ -242,7 +236,6 @@
                             item.order.attachments = item.attachments;
                             return item.order;
                         });
-                        console.log(this.contacts)
                     });
             }
         },

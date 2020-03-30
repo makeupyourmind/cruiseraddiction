@@ -3,6 +3,7 @@ import {Token} from "../store/tokenStorage";
 
 export const request = (request, next) => {
     request.url = `${request.root}${request.url}`;
+    // debugger
     const asdf= Token.getToken();
     asdf && request.headers.set('Authorization', `Bearer ${Token.getToken()}`);
     return next();

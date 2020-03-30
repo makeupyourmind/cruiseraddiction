@@ -39,6 +39,14 @@ export default [
     icon: "FileIcon",
   },
   {
+    url: "/called-users",
+    name: "Called users",
+    slug: "Called users",
+    icon: "FileIcon",
+    reload:true,
+    role: 'SuperAdmin'
+  },
+  {
     url: "/available-warehouses",
     name: "Available warehouses",
     slug: "available-warehouses",

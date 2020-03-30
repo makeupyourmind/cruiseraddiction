@@ -1,6 +1,6 @@
 export default {
     development: {
-        url: "http://127.0.0.1:8000/"
+        url: 'https://testback.cruiseraddiction.com/'//"http://127.0.0.1:8000/"
     },
     test: {
         url: 'https://testback.cruiseraddiction.com/'

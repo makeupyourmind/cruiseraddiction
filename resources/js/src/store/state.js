@@ -14,6 +14,7 @@ import colors from '@/../themeConfig.js'
 const state = {
     user: { authenticated: false },
     available_warehouses: [],
+    token:'',
     isSidebarActive: true,
     breakpoint: null,
     sidebarWidth: "default",

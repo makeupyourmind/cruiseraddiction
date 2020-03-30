@@ -1,19 +1,11 @@
-/*=========================================================================================
-  File Name: actions.js
-  Description: Vuex Store - actions
-  ----------------------------------------------------------------------------------------
-  Item Name: Vuesax Admin - VueJS Dashboard Admin Template
-  Author: Pixinvent
-  Author URL: http://www.themeforest.net/user/pixinvent
-==========================================================================================*/
+
 import Vue from "vue";
 import { AvailableWarehouses } from "../api/available_warehouses";
 const actions = {
 
-    // ////////////////////////////////////////////
-    // SIDEBAR & UI UX
-    // ////////////////////////////////////////////
-
+    updateToken({ commit }, val) {
+      commit('UPDATE_TOKEN', val);
+    },
     updateSidebarWidth({ commit }, width) {
       commit('UPDATE_SIDEBAR_WIDTH', width);
     },
@@ -32,18 +24,9 @@ const actions = {
     updateWindowWidth({ commit }, width) {
       commit('UPDATE_WINDOW_WIDTH', width);
     },
-
-
-    // ////////////////////////////////////////////
-    // COMPONENT
-    // ////////////////////////////////////////////
-
-    // VxAutoSuggest
     updateStarredPage({ commit }, payload) {
       commit('UPDATE_STARRED_PAGE', payload)
     },
-
-    //  The Navbar
     arrangeStarredPagesLimited({ commit }, list) {
       commit('ARRANGE_STARRED_PAGES_LIMITED', list)
     },
@@ -51,9 +34,6 @@ const actions = {
       commit('ARRANGE_STARRED_PAGES_MORE', list)
     },
 
-    // ////////////////////////////////////////////
-    // FORM
-    // ////////////////////////////////////////////
     SIGN_UP({commit}, payload) {
         return Vue.http
             .post(`api/register`, payload)
@@ -70,7 +50,7 @@ const actions = {
         return Vue.http.post(`api/login`, payload)
             .then(response =>{
                 commit("SET_SIGN_IN", response);
-                return true;
+                return response;
             })
             .catch(() => false )
     },
@@ -86,15 +66,14 @@ const actions = {
     GET_EDIT_STORE({commit}, payload){
         commit("SET_EDIT_STORE", payload)
     },
-    async GET_ALL_AVAILABLE_WAREHOUSES({commit}){
-      const response = await AvailableWarehouses.receive();
-      const json = await response.json();
-      commit('GET_AVAILABLE_WAREHOUSES', json)
-    },
-    async DELETE_AVAILABLE_WAREHOUSE({dispatch, commit}, payload){
-      await AvailableWarehouses.deleteWarehouse(payload)
-      dispatch('GET_ALL_AVAILABLE_WAREHOUSES')
-      // commit("DELETE_AVAILABLE_WAREHOUSE", payload)
+     GET_ALL_AVAILABLE_WAREHOUSES({commit}){
+      return AvailableWarehouses.receive()
+          .then((response) => response.json())
+          .then((json) =>  {
+              commit('GET_AVAILABLE_WAREHOUSES', json)
+              return json;
+          })
+      ;
     }
 }
 
