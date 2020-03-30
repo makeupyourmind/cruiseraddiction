@@ -74,7 +74,11 @@ class PartsSearchController extends BaseController
             foreach ($value['data'] as $index => $part) {
                 foreach ($available_warehouses as $available) {
                     if ($part['warehouses'] == $available['warehouse']) {
-                        // $array[$index] = $part;
+                        $array[$key]['brand_name'] = $value["brand_name"];
+                        $array[$key]['part_number'] = $value["part_number"];
+                        $array[$key]['description_english'] = $value["description_english"];
+                        $array[$key]['weight_physical'] = $value["weight_physical"];
+                        $array[$key]['images'] = $value["images"];
                         $array[$key]['data'][$index] = $part;
                         $array[$key]['data'] = array_values($array[$key]['data']);
                     }
