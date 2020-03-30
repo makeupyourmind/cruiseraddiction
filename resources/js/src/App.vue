@@ -19,9 +19,12 @@
 
 <script>
     import themeConfig from '@/../themeConfig.js'
+    import Vue from 'vue'
     import {Token} from "./store/tokenStorage";
     import sidebarItems from "./layouts/components/vx-sidebar/sidebarItems";
+    import WarehouseCellRendererActions from "./components/warehouse-action/WarehouseCellRendererActions";
 
+    Vue.component('warehouse-cell-renderer-actions', WarehouseCellRendererActions);
     export default {
         watch: {
             '$route'(to, from) {
@@ -86,11 +89,11 @@
             }
         },
         mounted() {
-            window.document.body.style.trasform = 'scale(0.7)';
+            window.document.body.style.zoom = '70%';
             this.toggleClassInBody(themeConfig.theme)
         },
         destroyed(){
-            window.document.body.style.trasform = 'scale(1)';
+
         }
     }
 </script>
@@ -106,6 +109,7 @@
     }
 
     .loading {
+        top: 0;
         width: 100%;
         height: 100%;
         position: fixed;

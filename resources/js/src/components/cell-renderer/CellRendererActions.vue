@@ -1,10 +1,10 @@
 <template>
     <div :style="{'direction': $vs.rtl ? 'rtl' : 'ltr'}">
-      <feather-icon icon="Edit3Icon" 
-                    svgClasses="h-5 w-5 mr-4 hover:text-primary cursor-pointer" 
+      <feather-icon icon="Edit3Icon"
+                    svgClasses="h-5 w-5 mr-4 hover:text-primary cursor-pointer"
                     @click="editRecord" />
-      <feather-icon icon="Trash2Icon" 
-                    svgClasses="h-5 w-5 hover:text-danger cursor-pointer" 
+      <feather-icon icon="Trash2Icon"
+                    svgClasses="h-5 w-5 hover:text-danger cursor-pointer"
                     @click="confirmDeleteRecord" />
     </div>
 </template>
@@ -14,7 +14,8 @@
         name: 'CellRendererActions',
         methods: {
           editRecord() {
-            this.$router.push("user-edit/" + this.params.data.id);
+              // debugger
+            this.$router.push("/user-edit/" + this.params.data.id);
           },
           confirmDeleteRecord() {
             this.$vs.dialog({
@@ -28,9 +29,9 @@
           },
           deleteRecord() {
             this.$store.dispatch("userManagement/removeRecord", this.params.data.id)
-              .then(()   => { 
+              .then(()   => {
                 this.selectUserData();
-                this.showDeleteSuccess() 
+                this.showDeleteSuccess()
               })
           },
           showDeleteSuccess() {

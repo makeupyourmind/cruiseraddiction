@@ -78,6 +78,7 @@ class ShipmentController extends Controller
             if ($validator->fails()) {
                 return  response()->json($validator->errors(), 422);
             }
+            
             $input = $request->user;
             $input['password'] = bcrypt($input['password']);
             $role = Role::where('name', 'User')->first();

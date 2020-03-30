@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Hash;
 use Excel;
 use Illuminate\Support\Facades\Input;
 use App\Http\Controllers\API\UserFilter;
+use App\Model\AvailableWarehouse;
 use Illuminate\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use DB;
@@ -285,6 +286,17 @@ class PartsController extends BaseController
                 $partsList['data'][$index]['image'] = $data['image'];
             }
         }
+
+        $available_warehouses = AvailableWarehouse::where('isAvailable', true)->get();
+        $array = [];
+        foreach ($partsList['data'] as $index => $part) {
+            foreach ($available_warehouses as $available) {
+                if ($part['warehouses'] == $available['warehouse']) {
+                    $array[$index] = $part;
+                }
+            }
+        }
+        $partsList['data'] = array_values($array);
 
         return response()->json($partsList, 200);
     }

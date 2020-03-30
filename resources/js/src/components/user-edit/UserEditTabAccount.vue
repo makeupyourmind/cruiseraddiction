@@ -39,7 +39,7 @@
                   label="Country"
                   v-model="userData.country"
                   v-validate="'required|numeric'"
-                  name="post_code" />
+                  name="country" />
         <span class="text-danger text-sm"
               v-show="errors.has('userData.country')">
               {{ errors.first('userData.country') }}
@@ -70,7 +70,8 @@
       <div class="vx-col md:w-1/2 w-full">
         <vs-input class="w-full mt-4"
                   label="Phone"
-                  v-model="userData.phone"
+                  disabled
+                  :value="userData.phone"
                   v-validate="'numeric'"
                   name="phone" />
         <span class="text-danger text-sm"
@@ -169,7 +170,12 @@ export default {
       this.userData.username = this.data_local.last_name;
       this.userData.name = this.data_local.first_name;
       this.userData.email = this.data_local.email;
-      this.userData.phone = JSON.parse(this.data_local.phone).formattedNumber;
+      try{
+        this.userData.phone = JSON.parse(this.data_local.phone).formattedNumber;
+      } catch (e) {
+        this.userData.phone = this.data_local.phone;
+      }
+
       this.userData.role = this.data_local.roles["0"].id;
       this.userData.street_address = this.data_local.street_address;
       this.userData.street_address_two = this.data_local.street_address_two;
@@ -190,7 +196,7 @@ export default {
         last_name: this.userData.username,
         first_name: this.userData.name,
         email: this.userData.email,
-        phone: this.userData.phone,
+        phone: this.data_local.phone,
         role_id: String(this.userData.role),
         password: this.userData.newPassword,
         street_address: this.userData.street_address,

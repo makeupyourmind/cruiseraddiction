@@ -81,7 +81,7 @@ Route::group([
 
 Route::group([
     'namespace' => 'API',
-    'middleware' => ['auth:api', 'role:Admin']
+    'middleware' => ['auth:api', 'role:Admin,SuperAdmin']
 ], function () { //, 'role:Admin' - add then
 
     Route::post('add-parts', 'PartsController@store');
@@ -102,6 +102,14 @@ Route::group([
     Route::get('/{id}', 'AdminController@show');
     Route::put('/{id}', 'AdminController@update');
     Route::delete('/{id}', 'AdminController@destroy');
+
+    Route::group([
+        'prefix' => '/available/warehouses'
+    ], function () {
+        Route::get('/', 'AvailableWarehouseController@index');
+        Route::put('/{id}', 'AvailableWarehouseController@update');
+        Route::delete('/', 'AvailableWarehouseController@destroy');
+    });
 });
 
 Route::group([

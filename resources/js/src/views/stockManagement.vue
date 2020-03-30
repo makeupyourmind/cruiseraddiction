@@ -104,7 +104,7 @@
     import {AgGridVue} from "ag-grid-vue"
     import contacts from './data.json'
     import singlebundle from '../components/SingleBundle/singleBundle'
-    import test from '../components/SingleBundle/cellRenderer'
+    //import test from '../components/SingleBundle/cellRenderer'
     import Vue from 'vue'
     import {StockManagment} from "../api/stockManagment";
     import VxSidebarItem from "../layouts/components/vx-sidebar/VxSidebarItem";
@@ -113,7 +113,7 @@
         template: '<vs-chip color="primary" @click="test(params)">{{params.valueFormatted}}</vs-chip>',
         methods:{
             test(dd){
-                console.log(dd)
+                console.log("aaaa", dd)
             }
         }
     });
@@ -211,7 +211,7 @@
                 qty_above: 10,
                 qty_bello_min_stock: 1,
                 bundels_only:1
-        
+
             }
         },
 
@@ -434,7 +434,7 @@
                 this.drop="by quantity above 10"
                 // StockManagment.getQtyFilter({
                 //         qty_above: this.qty_above
-                    
+
                 // })
                 StockManagment.getQtyAbove()
                 .then(response => {

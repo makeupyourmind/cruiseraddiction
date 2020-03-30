@@ -1,6 +1,6 @@
 
 import Vue from "vue";
-
+import { AvailableWarehouses } from "../api/available_warehouses";
 const actions = {
 
     updateToken({ commit }, val) {
@@ -60,8 +60,20 @@ const actions = {
     GET_SHOW_BUNDLE_SINGLE({commit}, payload){
         commit("SET_SHOW_BUNDLE_SINGLE", payload)
     },
+    GET_SHOW_WAREHOUSE_SINGLE({commit}, payload){
+      commit("SET_SHOW_WAREHOUSE_SINGLE", payload)
+    },
     GET_EDIT_STORE({commit}, payload){
         commit("SET_EDIT_STORE", payload)
+    },
+     GET_ALL_AVAILABLE_WAREHOUSES({commit}){
+      return AvailableWarehouses.receive()
+          .then((response) => response.json())
+          .then((json) =>  {
+              commit('GET_AVAILABLE_WAREHOUSES', json)
+              return json;
+          })
+      ;
     }
 }
 

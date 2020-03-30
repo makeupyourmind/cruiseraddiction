@@ -15,7 +15,7 @@
               case "blocked":
                 return "danger";
               case "deactivated":
-                return "warning";  
+                return "warning";
               default:
                 return "primary";
             }
@@ -24,7 +24,7 @@
     }
 </script>
 
-<style lang="scss" scpoped>
+<style lang="scss" scoped>
 .ag-grid-cell-chip {
   &.vs-chip-success {
     background: rgba(var(--vs-success),.15);

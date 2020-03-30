@@ -367,8 +367,13 @@ class PayPalController extends Controller
             ];
 
             // PDF::setOptions(['isPhpEnabled' => true, "enable_php" => true]);
-            $pdf = PDF::loadView('payment_file_history/index', $pass_data_to_pdf);
-            $pdf->setOptions(['isPhpEnabled' => true, "enable_php" => true]);
+            $pdf = \PDF::setOptions([
+                'logOutputFile' => storage_path('logs/log.htm'),
+                'tempDir' => storage_path('logs/')
+            ])
+                ->loadView('payment_file_history/index', $pass_data_to_pdf);
+            // $pdf = PDF::loadView('payment_file_history/index', $pass_data_to_pdf);
+            // $pdf->setOptions(['isPhpEnabled' => true, "enable_php" => true]);
             $content_pdf = $pdf->download()->getOriginalContent();
             $unique_hash_string = Str::random(22);
             Storage::disk('public_uploads')->put("payment_file_history/{$unique_hash_string}.pdf", $content_pdf);
@@ -394,7 +399,7 @@ class PayPalController extends Controller
                 $insertedId = $newOrder->id;
                 $customersOrder['order_id'] = $insertedId;
                 $customersOrder['data'] = $newOrder->data;
-                $customersOrder['pdf_url'] = $pathToFile;
+                $customersOrder['pdf_url'] = "payment_file_history/${unique_hash_string}.pdf";
                 $url = base64_encode(json_encode($customersOrder));
                 return Redirect::away(env("APP_URL_FRONT") . '/final?result=' . $url);
             } catch (Exception $e) {

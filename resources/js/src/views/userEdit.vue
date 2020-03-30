@@ -1,22 +1,23 @@
 <template>
   <div id="page-user-edit">
-    <vs-alert color="danger" 
-              title="User Not Found" 
-              :active.sync="user_not_found">
-      <span>User record with id: {{ $route.params.userId }} not found. </span>
-      <span>
-        <span>Check </span>
-        <router-link :to="{name:'page-user-list'}" 
-                      class="text-inherit underline">
-                       All Users
-        </router-link>
-      </span>
-    </vs-alert>
+<!--    <vs-alert color="danger"-->
+<!--              ref="alert"-->
+<!--              v-if="user_not_found"-->
+<!--              title="User Not Found">-->
+<!--      <span> </span>-->
+<!--      <span>-->
+<!--        <span>Check </span>-->
+<!--        <router-link :to="{name:'page-user-list'}"-->
+<!--                      class="text-inherit underline">-->
+<!--                       All Users-->
+<!--        </router-link>-->
+<!--      </span>-->
+<!--    </vs-alert>-->
     <vx-card v-if="user_data">
       <div slot="no-body" class="tabs-container px-6 pt-6">
         <vs-tabs v-model="activeTab" class="tab-action-btn-fill-conatiner">
-          <vs-tab label="Account" 
-                  icon-pack="feather" 
+          <vs-tab label="Account"
+                  icon-pack="feather"
                   icon="icon-user">
             <div class="tab-text">
               <user-edit-tab-account class="mt-4" :data="user_data" />
@@ -25,6 +26,9 @@
         </vs-tabs>
       </div>
     </vx-card>
+    <div v-if="user_not_found">
+      User record with id: {{ $route.params.userId }} not found.
+    </div>
   </div>
 </template>
 
@@ -42,6 +46,7 @@ export default {
   data() {
     return {
       user_data: null,
+      ok: false,
       user_not_found: false,
       activeTab: 0,
     }
@@ -54,18 +59,15 @@ export default {
   methods: {
     async fetch_user_data(userId) {
       this.$store.dispatch("userManagement/fetchUser", userId)
-        .then(res => { 
-          this.user_data = res.data 
-      })
-    } 
-    
-  },
-  created() {
-    if(!moduleUserManagement.isRegistered) {
-      this.$store.registerModule('userManagement', moduleUserManagement)
-      moduleUserManagement.isRegistered = true
+        .then(res => {
+          this.user_data = res.data
+      }).catch(() => this.user_not_found = true)
     }
+
+  },
+  mounted() {
     this.fetch_user_data(this.$route.params.userId)
+    // this.ok = true;
   }
 }
 

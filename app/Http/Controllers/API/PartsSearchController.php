@@ -7,6 +7,7 @@ use App\Http\Controllers\API\BaseController as BaseController;
 use Validator;
 use App\Model\Part;
 use App\Model\Amayama;
+use App\Model\AvailableWarehouse;
 use App\Model\AvailabilityNotification;
 use App\Model\Tpd;
 use Carbon\Carbon;
@@ -25,9 +26,17 @@ class PartsSearchController extends BaseController
 
         $partNums = explode(',', str_replace(" ", '', $request->partNumber));
         $partsList = [];
+
+        // $partNumsTransformed = array_map(function ($value) {
+        //     return str_replace("-", '', str_replace('"', '', str_replace("'", '', $value)));
+        // }, $partNums);
+        // $parts = Part::whereIn('part_number', $partNumsTransformed)->get();
+        // unset($partNumsTransformed[1]);
+        // return $parts;
         foreach ($partNums as $index => $part) {
             $part_number = str_replace("-", '', str_replace('"', '', str_replace("'", '', $part)));
             $parts = Part::where('part_number', $part_number)->get();
+            // return $parts;
             if (count($parts) > 0) {
                 $partsList[$index]['brand_name'] = $parts[0]->brand_name;
                 $partsList[$index]['part_number'] = $parts[0]->part_number;
@@ -57,6 +66,17 @@ class PartsSearchController extends BaseController
                 }
             }
         }
+
+        $available_warehouses = AvailableWarehouse::where('isAvailable', true)->get();
+        $array = [];
+        foreach ($partsList[0]['data'] as $index => $part) {
+            foreach ($available_warehouses as $available) {
+                if ($part['warehouses'] == $available['warehouse']) {
+                    $array[$index] = $part;
+                }
+            }
+        }
+        $partsList[0]['data'] = array_values($array);
 
         $response = [
             'parts' => $partsList,
@@ -232,4 +252,9 @@ class PartsSearchController extends BaseController
         }
         return $partsList;
     }
+
+    // function remove_mark($value)
+    // {
+    //     return \str_replace("-", "", $value);
+    // }
 }

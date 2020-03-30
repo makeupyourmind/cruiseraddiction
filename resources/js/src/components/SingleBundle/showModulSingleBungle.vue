@@ -56,7 +56,7 @@
                         <vs-input
                                 name="description"
                                 label-placeholder="weight"
-                                v-model="moduleStock.weight"
+                                v-model="moduleStock.weight_physical"
                                 class="w-full mb-6" />
                         <vs-input
                                 name="length"

@@ -16,13 +16,15 @@ import getters from "./getters"
 import mutations from "./mutations"
 import actions from "./actions"
 import orderModule from "./stockCaModule/module";
+import moduleUserManagement from "./user-management/moduleUserManagement";
 
 Vue.use(Vuex)
 
 
 export default new Vuex.Store({
     modules:{
-        stockCaModule: orderModule
+        stockCaModule: orderModule,
+        userManagement: moduleUserManagement
     },
     getters,
     mutations,

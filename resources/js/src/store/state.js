@@ -12,6 +12,8 @@ import themeConfig from '@/../themeConfig.js'
 import colors from '@/../themeConfig.js'
 
 const state = {
+    user: { authenticated: false },
+    available_warehouses: [],
     token:'',
     isSidebarActive: true,
     breakpoint: null,
@@ -40,40 +42,44 @@ const state = {
     // ////////////////////////////////////////////
     // MY STATES
     // ////////////////////////////////////////////
-    showDelete:false,
+    showDelete: false,
     module: false,
     showTable: false,
     moduleStock: {
-        brand:"",
-        partNum:"",
-        description:"",
-        descriptionFull:"",
-        minStock:"",
-        current:"",
+        brand: "",
+        partNum: "",
+        description: "",
+        descriptionFull: "",
+        minStock: "",
+        current: "",
         listPrice: "",
         maxPrice: "",
-        minPrice:"",
-        location:"",
-        categories:"",
+        minPrice: "",
+        location: "",
+        categories: "",
         chips: [],
         chip: "",
         stores: [],
     },
     moduleStockDef: {
-        brand:"",
-        partNum:"",
-        description:"",
-        descriptionFull:"",
-        minStock:"",
-        current:"",
+        brand: "",
+        partNum: "",
+        description: "",
+        descriptionFull: "",
+        minStock: "",
+        current: "",
         listPrice: "",
         maxPrice: "",
-        minPrice:"",
-        location:"",
-        categories:"",
+        minPrice: "",
+        location: "",
+        categories: "",
         chips: [],
         chip: "",
         stores: [],
+    },
+    moduleWarehouse: {
+        warehouse: "",
+        isAvailable: ""
     },
     isNoActive: false
 }
