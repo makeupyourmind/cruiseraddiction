@@ -176,7 +176,10 @@ class ParserController
         foreach ($partsList['data'] as $index => $part) {
             foreach ($available_warehouses as $available) {
                 if ($part['warehouse'] == $available['warehouse']) {
-                    $array[$index] = $part;
+                    $array['brand_name'] = $partsList['brand_name'];
+                    $array['part_number'] = $partsList['part_number'];
+                    $array['data'][$index] = $part;
+                    $array['data'] = array_values($array['data']);
                 }
             }
         }
