@@ -303,13 +303,16 @@ class PartsSearchController extends BaseController
 
         $available_warehouses = AvailableWarehouse::where('isAvailable', true)->get();
         $array = [];
-        foreach ($partsList['data'] as $index => $part) {
-            foreach ($available_warehouses as $available) {
-                if ($part['warehouse'] == $available['warehouse']) {
-                    $array['brand_name'] = $partsList['brand_name'];
-                    $array['part_number'] = $partsList['part_number'];
-                    $array['data'][$index] = $part;
-                    $array['data'] = array_values($array['data']);
+
+        if (count($partsList) > 0 && count($partsList['data']) > 0) {
+            foreach ($partsList['data'] as $index => $part) {
+                foreach ($available_warehouses as $available) {
+                    if ($part['warehouse'] == $available['warehouse']) {
+                        $array['brand_name'] = $partsList['brand_name'];
+                        $array['part_number'] = $partsList['part_number'];
+                        $array['data'][$index] = $part;
+                        $array['data'] = array_values($array['data']);
+                    }
                 }
             }
         }
