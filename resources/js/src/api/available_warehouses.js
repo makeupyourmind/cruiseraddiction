@@ -2,24 +2,22 @@ import { Token } from '../store/tokenStorage'
 
 export class AvailableWarehouses {
     static receive() {
-        return fetch(`api/admin/available/warehouses`, {
-            headers: {
-                "Authorization": `Bearer ${Token.getToken()}`
-            }
-        })
+        return  window.http.get(`api/admin/available/warehouses`)
     }
 
     static deleteWarehouse(payload) {
-        return fetch(`api/admin/available/warehouses`, {
-            method: 'DELETE',
-            headers: {
-                "Authorization": `Bearer ${Token.getToken()}`,
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                payload
-            })
-        })
+        debugger
+        payload = [payload]
+        return  window.http.delete(`api/admin/available/warehouses`,{body:{payload}})
+    }
+
+    static createWarehouse(payload) {
+        payload.isAvailable = payload.isAvailable ? 1 : 0;
+        return  window.http.post(`api/admin/available/warehouses`, payload)
+    }
+
+    static updateWarehouse(payload) {
+        payload.isAvailable = payload.isAvailable ? 1 : 0;
+        return  window.http.put(`api/admin/available/warehouses/${payload.id}`, payload)
     }
 }

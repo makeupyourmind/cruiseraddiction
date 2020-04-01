@@ -19,13 +19,17 @@
 
 <script>
     import themeConfig from '@/../themeConfig.js'
+    import Vue from 'vue'
     import {Token} from "./store/tokenStorage";
+    import sidebarItems from "./layouts/components/vx-sidebar/sidebarItems";
+    import WarehouseCellRendererActions from "./components/warehouse-action/WarehouseCellRendererActions";
 
+    Vue.component('warehouse-cell-renderer-actions', WarehouseCellRendererActions);
     export default {
         watch: {
             '$route'(to, from) {
                 const block_route = to.path;
-                // this.block_route(block_route)
+                this.block_route(block_route)
                 // debugger
             },
             isNoActive(val) {
@@ -46,11 +50,12 @@
         data() {
             return {
                 time: 0,
-                interval: null
+                interval: null,
+                sidebarItems: Array.from(sidebarItems)
             }
         },
         created() {
-            // this.block_route(this.$router.history.current.path)
+            this.block_route(this.$router.history.current.path)
         },
         methods: {
             toggleClassInBody(className) {
@@ -69,7 +74,11 @@
                 if (Token.getToken()) {
                     switch (block_route) {
                         case '/pages/login':
-                            this.$router.replace('/')
+                            return this.$router.replace('/');
+                        case '/called-users':
+                            if(localStorage.getItem('role') !== 'SuperAdmin'){
+                                this.$router.replace('/')
+                            }
                     }
                 } else {
                     switch (block_route) {
@@ -80,11 +89,11 @@
             }
         },
         mounted() {
-            window.document.body.style.zoom = 0.7;
+            window.document.body.style.zoom = '70%';
             this.toggleClassInBody(themeConfig.theme)
         },
         destroyed(){
-            window.document.body.style.zoom = 1;
+
         }
     }
 </script>
@@ -100,6 +109,7 @@
     }
 
     .loading {
+        top: 0;
         width: 100%;
         height: 100%;
         position: fixed;

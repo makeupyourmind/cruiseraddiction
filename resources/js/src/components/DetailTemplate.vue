@@ -170,8 +170,8 @@
         methods: {
             getSource() {
                 return [...this.templateData.data.data].map(item => {
-                    item.total = (item.count * Number(item.price)* Number(item.exchange || 1)).toFixed(2);
-                    item.price = (Number(item.price)).toFixed(2);
+                    item.total = (item.count * Number(item.price) * Number(item.exchange || 1)).toFixed(2);
+                    item.price = (Number(item.price)* Number(item.exchange || 1)).toFixed(2);
                     item.order = this.templateData.data.id;
                     return item;
                 })

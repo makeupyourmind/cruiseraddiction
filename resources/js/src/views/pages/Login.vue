@@ -84,51 +84,17 @@
 </template>
 
 <script>
-import {baseURL} from "../../main"
 
 export default {
     data:() => ({
         email: "qwert@a.com",
         password: "lalalalala",
         checkbox_remember_me: false
+
     }),
     computed: {
-        // validateForm() {
-        //     return this.email != '' && this.password != '';
-        // },
-        // profile(){
-        //     return
-        // }
-        test(){
-             console.log("MOUNTED2")
-        }
-    },
-    mounted(){
-        // console.log("MOUNTED")
-        // const access =  this.$route.query.access ? this.$route.query.access === "true" : true
-        // console.log(access)
-        // if(!access){
-        //     this.$vs.notify({
-        //            title:'Error',
-        //            text:'Incorrect email or password.',
-        //            color:'danger'
-        //         })
-        // }
-        this.checkQuery()
     },
     methods:{
-        checkQuery(){
-            console.log("MOUNTED")
-            const access =  this.$route.query.access ? this.$route.query.access === "true" : true
-            console.log(access)
-            if(!access){
-                this.$vs.notify({
-                    title:'Error',
-                    text:'Incorrect email or password.',
-                    color:'danger'
-                    })
-            }
-        },
         registerUser() {
             this.$router.push('/pages/register');
         },
@@ -144,10 +110,27 @@ export default {
                 }
                 return false;
 
-            }).then(res => res ? this.$router.push('/') : this.$vs.notify({
-                   title:'Error',
-                   text:'Incorrect email or password.',
-                   color:'danger'}))
+            }).then(res => {
+                if(res) {
+                    if (res.body.data.user_role === 'Admin' || res.body.data.user_role === 'SuperAdmin'){
+                        localStorage.setItem('role',res.body.data.user_role);
+                        this.$router.push('/')
+                    } else {
+                        this.$vs.notify({
+                            title:'Error',
+                            text:'You are not admin',
+                            color:'danger'
+                        })
+                    }
+
+                } else {
+                    this.$vs.notify({
+                        title:'Error',
+                        text:'Incorrect email or password.',
+                        color:'danger'
+                    })
+                }
+               })
         }
     }
 }

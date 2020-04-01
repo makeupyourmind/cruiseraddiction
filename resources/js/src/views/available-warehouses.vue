@@ -3,7 +3,7 @@
     <div></div>
     <vx-card>
       <div class="nav">
-        <singlewarehouse :select="select"></singlewarehouse>
+        <vs-button @click="create()">create</vs-button>
         <vs-pagination style="margin-right: 20px" :total="totalPages" v-model="currentPage" />
       </div>
       <ag-grid-vue
@@ -21,6 +21,24 @@
         :context="context"
       ></ag-grid-vue>
     </vx-card>
+    <vs-prompt
+
+            color="danger"
+            @cancel="valueWarehouse={}"
+            @vs-accept="acceptAlert"
+            @close="modal = false"
+            :vs-is-valid="validName"
+            :vs-active.sync="modal">
+      <div class="con-exemple-prompt" style="width: 200px;">
+        <vs-checkbox v-model="valueWarehouse.isAvailable">Available</vs-checkbox><br>
+        <vs-input style="width: 100%" placeholder="warehouse" v-model="valueWarehouse.warehouse"/><br>
+        <div v-if="!validName" color="danger"
+             style="color: #f54758;box-shadow: 0 0 25px 0 rgba(233,76,94,0.15);background: rgba(233,76,94,0.15); padding: 10px; width: 100%"
+             icon="new_releases" >
+          Fields can not be empty please enter the data
+        </div>
+      </div>
+    </vs-prompt>
   </div>
 </template>
 
@@ -30,6 +48,7 @@ import { mapGetters } from "vuex";
 import { AvailableWarehouses } from "../api/available_warehouses";
 import singlewarehouse from "../components/SingleWarehouse/singleWarehouse";
 import test from "../components/SingleWarehouse/cellRenderer";
+import WarehouseCellRendererActions from "../components/warehouse-action/WarehouseCellRendererActions";
 
 export default {
   components: { AgGridVue, singlewarehouse },
@@ -48,7 +67,10 @@ export default {
         resizable: true,
         suppressMenu: true
       },
+      components: null,
       timeout: null,
+      modal: false,
+      valueWarehouse:{},
       frameworkComponents: null
     };
   },
@@ -58,42 +80,48 @@ export default {
         headerName: "Id",
         field: "id",
         suppressMenu: true,
-        width: 500
+        // width: 100
       },
       {
         headerName: "Warehouse",
         field: "warehouse",
         suppressMenu: true,
-        width: 500
+        // width: 100
       },
       {
         headerName: "isAvailable",
         field: "isAvailable",
         suppressMenu: true,
-        width: 500
+        // width: 100
       },
-      {
-        width: 75,
-        pinned: "left",
-        suppressMenu: true,
-        headerCheckboxSelection: true,
-        headerCheckboxSelectionFilteredOnly: true,
-        checkboxSelection: true
-      },
+      // {
+      //   // width: 75,
+      //   pinned: "left",
+      //   suppressMenu: true,
+      //   headerCheckboxSelection: true,
+      //   headerCheckboxSelectionFilteredOnly: true,
+      //   checkboxSelection: true
+      // },
       {
         headerName: "Created",
         field: "created_at",
-        pinned: "left",
+        // pinned: "left",
         suppressMenu: true,
-        width: 250
+        // width: 100
       },
       {
         headerName: "Updated",
         field: "updated_at",
-        pinned: "left",
+        // pinned: "left",
         suppressMenu: true,
-        width: 250
-      }
+        // width: 100
+      },
+      {
+        headerName: 'Actions',
+        field: 'transactions',
+        width: 150,
+        cellRendererFramework: 'warehouse-cell-renderer-actions',
+      },
     ];
     this.autoGroupColumnDef = {
       headerName: "D",
@@ -113,14 +141,42 @@ export default {
       return Object.keys(this.dataPaginate).length > 0
         ? this.dataPaginate.last_page
         : 1;
+    },
+    validName(){
+      return !!(this.valueWarehouse && this.valueWarehouse.warehouse)
     }
   },
   created() {
     this.fetchWarehouses();
   },
   methods: {
+    create(){
+      this.valueWarehouse = {};
+      this.modal = true;
+    },
+    acceptAlert(){
+      this.$store.commit('isNoActive', true);
+      AvailableWarehouses.createWarehouse(this.valueWarehouse)
+        .then(()   => this.$store.dispatch("GET_ALL_AVAILABLE_WAREHOUSES"))
+        .then(() => {
+          this.valueWarehouse = {};
+          this.modal = false;
+          this.$store.commit('isNoActive', false);
+        })
+        .catch(() => {
+          this.$vs.notify({
+            color: 'error',
+            title: 'Error warehouse Deleted',
+            text: 'The selected warehouse was wrong create'
+          })
+          this.$store.commit('isNoActive', false);
+        })
+    },
     fetchWarehouses() {
-      this.$store.dispatch("GET_ALL_AVAILABLE_WAREHOUSES");
+      this.$store.commit('isNoActive', true);
+      this.$store.dispatch("GET_ALL_AVAILABLE_WAREHOUSES")
+      .then(() => this.$store.commit('isNoActive', false))
+      .catch(() => this.$store.commit('isNoActive', false))
     },
     test(event) {
       if (event.colDef.headerName === "Updated") {

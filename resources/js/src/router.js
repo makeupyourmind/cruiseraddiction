@@ -40,7 +40,7 @@ const router = new Router({
                 // =============================================================================
                 {
                     path: '/',
-                    name: 'Stock management',
+                    name: 'Stock_management',
                     component: () => import('./views/stockManagement.vue'),
                     meta: {
                         pageTitle: "Stock Management",
@@ -48,19 +48,6 @@ const router = new Router({
                     }
                 },
 
-
-                // {
-                //     path: '/page2',
-                //     name: 'page2',
-                //     component: () => import('./views/Page2.vue'),
-                //     meta: {
-                //         breadcrumb: [
-                //             {title: 'Stock Management', url: '/'},
-                //             {title: 'page2', active: true},
-                //         ],
-                //         pageTitle: 'page2',
-                //     },
-                // },
                 {
                     path: '/orders',
                     name: 'orders',
@@ -88,7 +75,22 @@ const router = new Router({
                     meta: {
                         pageTitle: 'available-warehouses',
                     }
-                }
+                },{
+                    path: '/called-users',
+                    name: 'called-users',
+                    component: () => import('./views/calledUsers.vue'),
+                    meta: {
+                        pageTitle: 'called-users',
+                    },
+                },
+                {
+                    path: '/user-edit/:userId',
+                    name: 'app-user-edit',
+                    component: () => import('./views/userEdit.vue'),
+                    meta: {
+                        pageTitle: 'User Edit',
+                    },
+                },
             ],
         },
         {
@@ -133,6 +135,18 @@ const router = new Router({
                             { title: 'orders', active: true },
                         ],
                         pageTitle: 'orders',
+                    },
+                },
+                {
+                    path: '/called-users',
+                    name: 'called-users',
+                    component: () => import('./views/calledUsers.vue'),
+                    meta: {
+                        breadcrumb: [
+                            {title: 'called-userst', url: '/'},
+                            {title: 'called-users', active: true},
+                        ],
+                        pageTitle: 'called-users',
                     },
                 },
             ],

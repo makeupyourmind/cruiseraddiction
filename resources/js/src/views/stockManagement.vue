@@ -211,7 +211,7 @@
                 qty_above: 10,
                 qty_bello_min_stock: 1,
                 bundels_only:1
-        
+
             }
         },
 
@@ -338,7 +338,7 @@
 
             totalPages() {
                 const store = this.getDataStock;
-                return store ? store.last_page : 1
+                return store.length ? store.last_page : 1
             },
 
             order(){
@@ -434,7 +434,7 @@
                 this.drop="by quantity above 10"
                 // StockManagment.getQtyFilter({
                 //         qty_above: this.qty_above
-                    
+
                 // })
                 StockManagment.getQtyAbove()
                 .then(response => {
@@ -486,7 +486,7 @@
     }
 
 </script>
-<style>
+<style scope>
     .ag-header-cell-label {
         justify-content: center !important;
     }
@@ -533,14 +533,6 @@
     .active {
         color: cornflowerblue;
     }
-
-    .ag-header-row:last-child{
-        display: none;
-    }
-    .ag-header{
-        min-height: 50px!important;
-        height: 50px!important;
-    }
     .ag-theme-material .ag-icon-checkbox-checked{
         color: white;
     }
@@ -562,9 +554,6 @@
     }
     .router-view,.router-content, .vx-card__body,.content-area__content{
         height: 100%!important;
-    }
-     #ag-grid-demo, .vx-card, .vx-card__collapsible-content, .ag-grid-table{
-        height: 96%!important;
     }
     .router-content{
         margin-top: 3em!important;
