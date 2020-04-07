@@ -19,7 +19,7 @@ class AvailableWarehouseController extends BaseController
 
     public function index()
     {
-        $data = $this->available_warehouse::paginate(15);
+        $data = $this->available_warehouse::orderBy('position', 'desc')->paginate(15);
         return $this->sendResponse($data, 'Success');
     }
 
@@ -34,7 +34,16 @@ class AvailableWarehouseController extends BaseController
             return $this->sendError('Validation Error.', $validator->errors(), 422);
         }
 
-        $this->available_warehouse::create($request->all());
+        $max = $this->available_warehouse::max('position');
+        $input = $request->all();
+
+        if ($max === null) {
+            $input['position'] = 1;
+        } else {
+            $input['position'] = ++$max;
+        }
+
+        $this->available_warehouse::create($input);
 
         return $this->sendResponse('', 'Created successfully.');
     }

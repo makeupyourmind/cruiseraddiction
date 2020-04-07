@@ -80,6 +80,7 @@ class PartsSearchController extends BaseController
                         $array[$key]['weight_physical'] = $value["weight_physical"];
                         $array[$key]['images'] = $value["images"];
                         $array[$key]['data'][$index] = $part;
+                        $array[$key]['data'][$index]['position'] = $available['position'];
                         $array[$key]['data'] = array_values($array[$key]['data']);
                     }
                 }
@@ -311,6 +312,7 @@ class PartsSearchController extends BaseController
                         $array['brand_name'] = $partsList['brand_name'];
                         $array['part_number'] = $partsList['part_number'];
                         $array['data'][$index] = $part;
+                        $array['data'][$index]['position'] = $available['position'];
                         $array['data'] = array_values($array['data']);
                     }
                 }
@@ -318,6 +320,5 @@ class PartsSearchController extends BaseController
         }
 
         return $array;
-        // return $partsList;
     }
 }
