@@ -162,125 +162,125 @@ class PartsSearchController extends BaseController
                     'replaced' => ['part_number' => "---------------"]
                 ];
             }
-        }
+        } else {
 
-        if ($amayama_part) {
-            //3 case checked
-            if ($amayama_part['discontinued'] && $toyota_parts_deal) {
-                Part::where('part_number', $search_parsers)
-                    ->where(function ($query) {
-                        $query->where('warehouse', 'canada')
-                            ->orWhere('warehouse', 'O 1 d.')
-                            ->orWhere('warehouse', 'E 1 d.');
-                    })->update([
-                        'discontinued' => 1, 'qty' => 0, 'price' => 0,
-                        'bundle_qty' => 0, 'min_price' => 0, 'max_price' => 0,
-                        'min_stock' => 0
-                    ]);
-            }
+            if ($amayama_part) {
+                //3 case checked
+                if ($amayama_part['discontinued'] && $toyota_parts_deal) {
+                    Part::where('part_number', $search_parsers)
+                        ->where(function ($query) {
+                            $query->where('warehouse', 'canada')
+                                ->orWhere('warehouse', 'O 1 d.')
+                                ->orWhere('warehouse', 'E 1 d.');
+                        })->update([
+                            'discontinued' => 1, 'qty' => 0, 'price' => 0,
+                            'bundle_qty' => 0, 'min_price' => 0, 'max_price' => 0,
+                            'min_stock' => 0
+                        ]);
+                }
 
-            if (count($amayama_part['original_replacements']) > 0) {
-                $part_in_our_amayama = str_replace("-", "", $amayama_part->original_replacements[0]["original_number"]);
-                $parts = Part::select(
-                    'description_english',
-                    'weight_physical',
-                    'weight_volumetric',
-                    'qty',
-                    'price',
-                    'part_number',
-                    'brand_name',
-                    'unique_hash',
-                    'warehouse',
-                    'image'
-                )
-                    ->where('part_number', $part_in_our_amayama)
-                    ->get();
+                if (count($amayama_part['original_replacements']) > 0) {
+                    $part_in_our_amayama = str_replace("-", "", $amayama_part->original_replacements[0]["original_number"]);
+                    $parts = Part::select(
+                        'description_english',
+                        'weight_physical',
+                        'weight_volumetric',
+                        'qty',
+                        'price',
+                        'part_number',
+                        'brand_name',
+                        'unique_hash',
+                        'warehouse',
+                        'image'
+                    )
+                        ->where('part_number', $part_in_our_amayama)
+                        ->get();
 
-                $partsList = self::search_transform($parts);
+                    $partsList = self::search_transform($parts);
 
-                if (count($parts) > 0) {
-                    $response['amayama'] = [
-                        'exist' => true,
-                        'replaced' => $partsList
-                    ];
+                    if (count($parts) > 0) {
+                        $response['amayama'] = [
+                            'exist' => true,
+                            'replaced' => $partsList
+                        ];
+                    } else {
+                        $response['amayama'] = [
+                            'exist' => true,
+                            'replaced' => ['part_number' => "---------------"]
+                        ];
+                    }
                 } else {
                     $response['amayama'] = [
-                        'exist' => true,
-                        'replaced' => ['part_number' => "---------------"]
+                        'exist' => false,
+                        'data' => "Replaced null"
                     ];
                 }
             } else {
                 $response['amayama'] = [
                     'exist' => false,
-                    'data' => "Replaced null"
+                    'data' => "Not available in the amayama table"
                 ];
             }
-        } else {
-            $response['amayama'] = [
-                'exist' => false,
-                'data' => "Not available in the amayama table"
-            ];
-        }
 
-        if ($toyota_parts_deal) {
-            //1 case proof checked
-            if ($toyota_parts_deal['discontinued']) {
-                $searchPart = Part::where([
-                    ['part_number', $search_parsers],
-                    ['warehouse', 'usa']
-                ])->first();
-                if ($searchPart) {
-                    $searchPart->update([
-                        'discontinued' => 1, 'qty' => 0, 'price' => 0,
-                        'bundle_qty' => 0, 'min_price' => 0, 'max_price' => 0,
-                        'min_stock' => 0
-                    ]);
+            if ($toyota_parts_deal) {
+                //1 case proof checked
+                if ($toyota_parts_deal['discontinued']) {
+                    $searchPart = Part::where([
+                        ['part_number', $search_parsers],
+                        ['warehouse', 'usa']
+                    ])->first();
+                    if ($searchPart) {
+                        $searchPart->update([
+                            'discontinued' => 1, 'qty' => 0, 'price' => 0,
+                            'bundle_qty' => 0, 'min_price' => 0, 'max_price' => 0,
+                            'min_stock' => 0
+                        ]);
+                    }
                 }
-            }
 
-            if ($toyota_parts_deal['replaced']) {
-                $part_in_our_toyota = str_replace("-", "", $toyota_parts_deal['replaced']);
-                $parts = Part::select(
-                    'description_english',
-                    'weight_physical',
-                    'weight_volumetric',
-                    'qty',
-                    'price',
-                    'part_number',
-                    'brand_name',
-                    'unique_hash',
-                    'warehouse',
-                    'image'
-                )
-                    ->where('part_number', $part_in_our_toyota)
-                    ->get();
+                if ($toyota_parts_deal['replaced']) {
+                    $part_in_our_toyota = str_replace("-", "", $toyota_parts_deal['replaced']);
+                    $parts = Part::select(
+                        'description_english',
+                        'weight_physical',
+                        'weight_volumetric',
+                        'qty',
+                        'price',
+                        'part_number',
+                        'brand_name',
+                        'unique_hash',
+                        'warehouse',
+                        'image'
+                    )
+                        ->where('part_number', $part_in_our_toyota)
+                        ->get();
 
-                $partsList = self::search_transform($parts);
+                    $partsList = self::search_transform($parts);
 
-                if (count($parts) > 0) {
+                    if (count($parts) > 0) {
+                        $response['toyota_parts_deal'] = [
+                            'exist' => true,
+                            'replaced' => $partsList
+                        ];
+                    } else { ///okay
+                        $response['toyota_parts_deal'] = [
+                            'exist' => true,
+                            'replaced' => ['part_number' => "---------------"]
+                        ];
+                    }
+                } else {
                     $response['toyota_parts_deal'] = [
-                        'exist' => true,
-                        'replaced' => $partsList
-                    ];
-                } else { ///okay
-                    $response['toyota_parts_deal'] = [
-                        'exist' => true,
-                        'replaced' => ['part_number' => "---------------"]
+                        'exist' => false,
+                        'data' => "Replaced null"
                     ];
                 }
             } else {
                 $response['toyota_parts_deal'] = [
                     'exist' => false,
-                    'data' => "Replaced null"
+                    'data' => "Not available in the tpd table"
                 ];
             }
-        } else {
-            $response['toyota_parts_deal'] = [
-                'exist' => false,
-                'data' => "Not available in the tpd table"
-            ];
         }
-
         return $response;
     }
 
