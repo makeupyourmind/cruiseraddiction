@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddColumnsToPaymentHistoryFilesTable extends Migration
+class AddColumnForeignKeyToPhotosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,9 @@ class AddColumnsToPaymentHistoryFilesTable extends Migration
      */
     public function up()
     {
-        Schema::table('payment_history_files', function (Blueprint $table) {
-            $
+        Schema::table('photos', function (Blueprint $table) {
+            $table->bigInteger('jp_wh_id')->nullable()->unsigned();
+            $table->foreign('jp_wh_id')->references('id')->on('jp_whs')->onDelete('cascade');
         });
     }
 
@@ -25,8 +26,8 @@ class AddColumnsToPaymentHistoryFilesTable extends Migration
      */
     public function down()
     {
-        Schema::table('payment_history_files', function (Blueprint $table) {
-            Schema::disableForeignKeyConstraints();
+        Schema::table('photos', function (Blueprint $table) {
+            //
         });
     }
 }

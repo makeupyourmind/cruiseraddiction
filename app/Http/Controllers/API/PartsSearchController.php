@@ -68,12 +68,12 @@ class PartsSearchController extends BaseController
             }
         }
 
-        $available_warehouses = AvailableWarehouse::where('isAvailable', true)->get();
+        $available_warehouses = AvailableWarehouse::all();
         $array = [];
         foreach ($partsList as $key => $value) {
             foreach ($value['data'] as $index => $part) {
                 foreach ($available_warehouses as $available) {
-                    if ($part['warehouses'] == $available['warehouse']) {
+                    if ($part['warehouses'] === $available['warehouse'] && $available['isAvailable']) {
                         $array[$key]['brand_name'] = $value["brand_name"];
                         $array[$key]['part_number'] = $value["part_number"];
                         $array[$key]['description_english'] = $value["description_english"];
@@ -82,10 +82,27 @@ class PartsSearchController extends BaseController
                         $array[$key]['data'][$index] = $part;
                         $array[$key]['data'][$index]['position'] = $available['position'];
                         $array[$key]['data'] = array_values($array[$key]['data']);
+                    } else if (!$available['isAvailable']) {
+                        $array[$key]['brand_name'] = $value["brand_name"];
+                        $array[$key]['part_number'] = $value["part_number"];
+                        $array[$key]['description_english'] = $value["description_english"];
+                        $array[$key]['weight_physical'] = $value["weight_physical"];
+                        $array[$key]['images'] = $value["images"];
+                        $array[$key]['data'][$index] = $part;
+                        $array[$key]['data'][$index]['available'] = 0;
+                        $array[$key]['data'][$index]['clear'] = 1;
+                        $array[$key]['data'][$index]['position'] = $available['position'];
+                        $array[$key]['data'] = array_values($array[$key]['data']);
                     }
                 }
             }
         }
+
+        foreach ($array as $index => $arr) {
+            usort($arr['data'], "self::cmp");
+            $array[$index]['data'] = $arr['data'];
+        }
+
         // $partsList[0]['data'] = array_values($array);
         $response['parts'] = $array;
         // $response['parts'] = $partsList;
@@ -302,16 +319,24 @@ class PartsSearchController extends BaseController
             }
         }
 
-        $available_warehouses = AvailableWarehouse::where('isAvailable', true)->get();
+        $available_warehouses = AvailableWarehouse::all();
         $array = [];
 
         if (count($partsList) > 0 && count($partsList['data']) > 0) {
             foreach ($partsList['data'] as $index => $part) {
                 foreach ($available_warehouses as $available) {
-                    if ($part['warehouse'] == $available['warehouse']) {
+                    if ($part['warehouse'] == $available['warehouse'] && $available['isAvailable']) {
                         $array['brand_name'] = $partsList['brand_name'];
                         $array['part_number'] = $partsList['part_number'];
                         $array['data'][$index] = $part;
+                        $array['data'][$index]['position'] = $available['position'];
+                        $array['data'] = array_values($array['data']);
+                    } else if (!$available['isAvailable']) {
+                        $array['brand_name'] = $partsList['brand_name'];
+                        $array['part_number'] = $partsList['part_number'];
+                        $array['data'][$index] = $part;
+                        $array['data'][$index]['available'] = 0;
+                        $array['data'][$index]['clear'] = 1;
                         $array['data'][$index]['position'] = $available['position'];
                         $array['data'] = array_values($array['data']);
                     }
@@ -319,6 +344,13 @@ class PartsSearchController extends BaseController
             }
         }
 
+        usort($array['data'], "self::cmp");
+
         return $array;
+    }
+
+    function cmp($a, $b)
+    {
+        return strcmp($a["position"], $b["position"]);
     }
 }

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddColumnsToPaymentHistoryFilesTable extends Migration
+class CreateBrandsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,10 @@ class AddColumnsToPaymentHistoryFilesTable extends Migration
      */
     public function up()
     {
-        Schema::table('payment_history_files', function (Blueprint $table) {
-            $
+        Schema::create('brands', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('BrandName');
+            $table->timestamps();
         });
     }
 
@@ -25,8 +27,6 @@ class AddColumnsToPaymentHistoryFilesTable extends Migration
      */
     public function down()
     {
-        Schema::table('payment_history_files', function (Blueprint $table) {
-            Schema::disableForeignKeyConstraints();
-        });
+        Schema::dropIfExists('table_brands');
     }
 }

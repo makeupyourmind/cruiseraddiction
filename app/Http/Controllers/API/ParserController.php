@@ -171,15 +171,23 @@ class ParserController
             }
         }
 
-        $available_warehouses = AvailableWarehouse::where('isAvailable', true)->get();
+        $available_warehouses = AvailableWarehouse::all();
         $array = [];
         if (count($partsList) > 0 && count($partsList['data']) > 0) {
             foreach ($partsList['data'] as $index => $part) {
                 foreach ($available_warehouses as $available) {
-                    if ($part['warehouse'] == $available['warehouse']) {
+                    if ($part['warehouse'] == $available['warehouse'] && $available['isAvailable']) {
                         $array['brand_name'] = $partsList['brand_name'];
                         $array['part_number'] = $partsList['part_number'];
                         $array['data'][$index] = $part;
+                        $array['data'][$index]['position'] = $available['position'];
+                        $array['data'] = array_values($array['data']);
+                    } else if (!$available['isAvailable']) {
+                        $array['brand_name'] = $partsList['brand_name'];
+                        $array['part_number'] = $partsList['part_number'];
+                        $array['data'][$index] = $part;
+                        $array['data'][$index]['available'] = 0;
+                        $array['data'][$index]['clear'] = 1;
                         $array['data'][$index]['position'] = $available['position'];
                         $array['data'] = array_values($array['data']);
                     }
@@ -187,6 +195,13 @@ class ParserController
             }
         }
 
+        usort($array['data'], "self::cmp");
+
         return $array;
+    }
+
+    function cmp($a, $b)
+    {
+        return strcmp($a["position"], $b["position"]);
     }
 }
