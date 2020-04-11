@@ -68,29 +68,18 @@ class PartsSearchController extends BaseController
             }
         }
 
-        $available_warehouses = AvailableWarehouse::all();
+        $available_warehouses = AvailableWarehouse::where('isAvailable', 1)->get();
         $array = [];
         foreach ($partsList as $key => $value) {
             foreach ($value['data'] as $index => $part) {
                 foreach ($available_warehouses as $available) {
-                    if ($part['warehouses'] === $available['warehouse'] && $available['isAvailable']) {
+                    if ($part['warehouses'] === $available['warehouse']) {
                         $array[$key]['brand_name'] = $value["brand_name"];
                         $array[$key]['part_number'] = $value["part_number"];
                         $array[$key]['description_english'] = $value["description_english"];
                         $array[$key]['weight_physical'] = $value["weight_physical"];
                         $array[$key]['images'] = $value["images"];
                         $array[$key]['data'][$index] = $part;
-                        $array[$key]['data'][$index]['position'] = $available['position'];
-                        $array[$key]['data'] = array_values($array[$key]['data']);
-                    } else if (!$available['isAvailable']) {
-                        $array[$key]['brand_name'] = $value["brand_name"];
-                        $array[$key]['part_number'] = $value["part_number"];
-                        $array[$key]['description_english'] = $value["description_english"];
-                        $array[$key]['weight_physical'] = $value["weight_physical"];
-                        $array[$key]['images'] = $value["images"];
-                        $array[$key]['data'][$index] = $part;
-                        $array[$key]['data'][$index]['available'] = 0;
-                        $array[$key]['data'][$index]['clear'] = 1;
                         $array[$key]['data'][$index]['position'] = $available['position'];
                         $array[$key]['data'] = array_values($array[$key]['data']);
                     }
@@ -99,6 +88,23 @@ class PartsSearchController extends BaseController
         }
 
         foreach ($array as $index => $arr) {
+            foreach ($available_warehouses as $available) {
+                $index = array_search($available['warehouse'], array_column($arr['data'], 'warehouses'));
+                if ($index === false) {
+                    array_push($arr['data'], [
+                        'available' => 0,
+                        'warehouses' => $available['warehouse'],
+                        'position' => $available['position'],
+                        'discontinued' => 0,
+                        'not_available' => 1,
+                        'prices' => 0,
+                        'unique_hashes' => 0,
+                        'weight_physical' => 0,
+                        'description_english' => '',
+                        'images' => null
+                    ]);
+                }
+            }
             usort($arr['data'], "self::cmp");
             $array[$index]['data'] = $arr['data'];
         }
@@ -319,28 +325,38 @@ class PartsSearchController extends BaseController
             }
         }
 
-        $available_warehouses = AvailableWarehouse::all();
+        $available_warehouses = AvailableWarehouse::where('isAvailable', 1)->get();
         $array = [];
 
         if (count($partsList) > 0 && count($partsList['data']) > 0) {
             foreach ($partsList['data'] as $index => $part) {
                 foreach ($available_warehouses as $available) {
-                    if ($part['warehouse'] == $available['warehouse'] && $available['isAvailable']) {
+                    if ($part['warehouse'] == $available['warehouse']) {
                         $array['brand_name'] = $partsList['brand_name'];
                         $array['part_number'] = $partsList['part_number'];
                         $array['data'][$index] = $part;
-                        $array['data'][$index]['position'] = $available['position'];
-                        $array['data'] = array_values($array['data']);
-                    } else if (!$available['isAvailable']) {
-                        $array['brand_name'] = $partsList['brand_name'];
-                        $array['part_number'] = $partsList['part_number'];
-                        $array['data'][$index] = $part;
-                        $array['data'][$index]['available'] = 0;
-                        $array['data'][$index]['clear'] = 1;
                         $array['data'][$index]['position'] = $available['position'];
                         $array['data'] = array_values($array['data']);
                     }
                 }
+            }
+        }
+
+        foreach ($available_warehouses as $available) {
+            $index = array_search($available['warehouse'], array_column($array['data'], 'warehouse'));
+            if ($index === false) {
+                array_push($array['data'], [
+                    'available' => 0,
+                    'warehouse' => $available['warehouse'],
+                    'position' => $available['position'],
+                    'discontinued' => 0,
+                    'not_available' => 1,
+                    'prices' => 0,
+                    'unique_hashes' => 0,
+                    'weight_physical' => 0,
+                    'description_english' => '',
+                    'images' => null
+                ]);
             }
         }
 
@@ -349,7 +365,7 @@ class PartsSearchController extends BaseController
         return $array;
     }
 
-    function cmp($a, $b)
+    public function cmp($a, $b)
     {
         return strcmp($a["position"], $b["position"]);
     }

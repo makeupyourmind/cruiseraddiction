@@ -171,27 +171,38 @@ class ParserController
             }
         }
 
-        $available_warehouses = AvailableWarehouse::all();
+        $available_warehouses = AvailableWarehouse::where('isAvailable', 1)->get();
         $array = [];
+
         if (count($partsList) > 0 && count($partsList['data']) > 0) {
             foreach ($partsList['data'] as $index => $part) {
                 foreach ($available_warehouses as $available) {
-                    if ($part['warehouse'] == $available['warehouse'] && $available['isAvailable']) {
+                    if ($part['warehouse'] == $available['warehouse']) {
                         $array['brand_name'] = $partsList['brand_name'];
                         $array['part_number'] = $partsList['part_number'];
                         $array['data'][$index] = $part;
-                        $array['data'][$index]['position'] = $available['position'];
-                        $array['data'] = array_values($array['data']);
-                    } else if (!$available['isAvailable']) {
-                        $array['brand_name'] = $partsList['brand_name'];
-                        $array['part_number'] = $partsList['part_number'];
-                        $array['data'][$index] = $part;
-                        $array['data'][$index]['available'] = 0;
-                        $array['data'][$index]['clear'] = 1;
                         $array['data'][$index]['position'] = $available['position'];
                         $array['data'] = array_values($array['data']);
                     }
                 }
+            }
+        }
+
+        foreach ($available_warehouses as $available) {
+            $index = array_search($available['warehouse'], array_column($array['data'], 'warehouse'));
+            if ($index === false) {
+                array_push($array['data'], [
+                    'available' => 0,
+                    'warehouse' => $available['warehouse'],
+                    'position' => $available['position'],
+                    'discontinued' => 0,
+                    'not_available' => 1,
+                    'prices' => 0,
+                    'unique_hashes' => 0,
+                    'weight_physical' => 0,
+                    'description_english' => '',
+                    'images' => null
+                ]);
             }
         }
 
