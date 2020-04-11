@@ -253,7 +253,7 @@ class PartsController extends BaseController
             ->get();
         $partsList = array();
 
-        $partsList = $this->search_in_parsing_tables($partsList, $request->partNumber);
+        $partsList = $this->search_in_parsing_tables($partsList, $request->part_number);
 
         foreach ($parts as $part) {
             $partsList['brand_name'] = $part['brand_name'];
