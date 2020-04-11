@@ -19,7 +19,9 @@ use App\Http\Controllers\API\UserFilter;
 use App\Model\AvailableWarehouse;
 use Illuminate\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
-use DB;
+use App\Model\Tpd;
+use App\Model\Amayama;
+use Carbon\Carbon;
 
 class PartsController extends BaseController
 {
@@ -75,8 +77,6 @@ class PartsController extends BaseController
             ->paginate(100);
         return response()->json($parts, 200);
     }
-
-
 
     public function stock_ca()
     {
@@ -253,6 +253,8 @@ class PartsController extends BaseController
             ->get();
         $partsList = array();
 
+        $partsList = $this->search_in_parsing_tables($partsList, $request->partNumber);
+
         foreach ($parts as $part) {
             $partsList['brand_name'] = $part['brand_name'];
             $partsList['part_number'] = $part['part_number'];
@@ -293,12 +295,289 @@ class PartsController extends BaseController
             foreach ($available_warehouses as $available) {
                 if ($part['warehouses'] == $available['warehouse']) {
                     $array[$index] = $part;
+                    $array[$index]['position'] = $available['position'];
                 }
             }
         }
+
+        foreach ($available_warehouses as $available) {
+            $index = array_search($available['warehouse'], array_column($array, 'warehouses'));
+            if ($index === false) {
+                array_push($array, [
+                    'available' => 0,
+                    'warehouse' => $available['warehouse'],
+                    'position' => $available['position'],
+                    'discontinued' => 0,
+                    'not_available' => 1,
+                    'prices' => 0,
+                    'unique_hashes' => 0,
+                    'weight_physical' => 0,
+                    'description_english' => '',
+                    'images' => null
+                ]);
+            }
+        }
+
+        usort($array, "self::cmp");
+
         $partsList['data'] = array_values($array);
+        $partsList['requested_part_number'] = $request->part_number;
 
         return response()->json($partsList, 200);
+    }
+
+    private function search_in_parsing_tables($response, $part_number)
+    {
+        $sub_days = 30;
+        $from = Carbon::today()->subDays($sub_days);
+        $to = Carbon::now(); //env("TIMEZONE") for localhost only
+
+        $search_parsers = str_replace("-", "", $part_number);
+        $amayama_part = Amayama::select('original_replacements', 'part_number', 'discontinued')
+            ->where('part_number', $search_parsers)
+            ->whereBetween('created_at', [$from, $to])
+            ->first();
+
+        $toyota_parts_deal = Tpd::select('replaced', 'part_number', 'discontinued')
+            ->where('part_number', $search_parsers)
+            ->whereBetween('created_at', [$from, $to])
+            ->first();
+
+        //4 case checked
+        if (($amayama_part && $toyota_parts_deal) && ($amayama_part['discontinued'] && $toyota_parts_deal['discontinued'])) {
+            Part::where('part_number', $search_parsers)
+                ->update(['discontinued' => 1]);
+        }
+        //2 case checked
+        if (!$toyota_parts_deal && $amayama_part) {
+            Part::where([
+                ['part_number', $search_parsers],
+                ['warehouse', 'usa']
+            ])->update([
+                'discontinued' => 1, 'not_available' => 1, 'qty' => 0,
+                'price' => 0, 'bundle_qty' => 0, 'min_price' => 0,
+                'max_price' => 0, 'min_stock' => 0
+            ]);
+        }
+
+        if (($amayama_part && $toyota_parts_deal)
+            && ($toyota_parts_deal['replaced'] && count($amayama_part['original_replacements']) > 0)
+            && (str_replace("-", "", $amayama_part->original_replacements[0]["original_number"])
+                == str_replace("-", "", $toyota_parts_deal->replaced))
+        ) {
+            $part_both = str_replace("-", "", $toyota_parts_deal->replaced);
+            $parts = Part::select(
+                'description_english',
+                'weight_physical',
+                'weight_volumetric',
+                'qty',
+                'price',
+                'part_number',
+                'brand_name',
+                'unique_hash',
+                'warehouse',
+                'image'
+            )
+                ->where('part_number', $part_both)
+                ->get();
+
+            $partsList = self::search_transform($parts);
+
+            if (count($parts) > 0) {
+                $response['parser'] = [
+                    'exist' => true,
+                    'replaced' => $partsList
+                ];
+            } else {
+                $response['parser'] = [
+                    'exist' => true,
+                    'replaced' => ['part_number' => "---------------"]
+                ];
+            }
+        } else {
+
+            if ($amayama_part) {
+                //3 case checked
+                if ($amayama_part['discontinued'] && $toyota_parts_deal) {
+                    Part::where('part_number', $search_parsers)
+                        ->where(function ($query) {
+                            $query->where('warehouse', 'canada')
+                                ->orWhere('warehouse', 'O 1 d.')
+                                ->orWhere('warehouse', 'E 1 d.');
+                        })->update([
+                            'discontinued' => 1, 'qty' => 0, 'price' => 0,
+                            'bundle_qty' => 0, 'min_price' => 0, 'max_price' => 0,
+                            'min_stock' => 0
+                        ]);
+                }
+
+                if (count($amayama_part['original_replacements']) > 0) {
+                    $part_in_our_amayama = str_replace("-", "", $amayama_part->original_replacements[0]["original_number"]);
+                    $parts = Part::select(
+                        'description_english',
+                        'weight_physical',
+                        'weight_volumetric',
+                        'qty',
+                        'price',
+                        'part_number',
+                        'brand_name',
+                        'unique_hash',
+                        'warehouse',
+                        'image'
+                    )
+                        ->where('part_number', $part_in_our_amayama)
+                        ->get();
+
+                    $partsList = self::search_transform($parts);
+
+                    if (count($parts) > 0) {
+                        $response['amayama'] = [
+                            'exist' => true,
+                            'replaced' => $partsList
+                        ];
+                    } else {
+                        $response['amayama'] = [
+                            'exist' => true,
+                            'replaced' => ['part_number' => "---------------"]
+                        ];
+                    }
+                } else {
+                    $response['amayama'] = [
+                        'exist' => false,
+                        'data' => "Replaced null"
+                    ];
+                }
+            } else {
+                $response['amayama'] = [
+                    'exist' => false,
+                    'data' => "Not available in the amayama table"
+                ];
+            }
+
+            if ($toyota_parts_deal) {
+                //1 case proof checked
+                if ($toyota_parts_deal['discontinued']) {
+                    $searchPart = Part::where([
+                        ['part_number', $search_parsers],
+                        ['warehouse', 'usa']
+                    ])->first();
+                    if ($searchPart) {
+                        $searchPart->update([
+                            'discontinued' => 1, 'qty' => 0, 'price' => 0,
+                            'bundle_qty' => 0, 'min_price' => 0, 'max_price' => 0,
+                            'min_stock' => 0
+                        ]);
+                    }
+                }
+
+                if ($toyota_parts_deal['replaced']) {
+                    $part_in_our_toyota = str_replace("-", "", $toyota_parts_deal['replaced']);
+                    $parts = Part::select(
+                        'description_english',
+                        'weight_physical',
+                        'weight_volumetric',
+                        'qty',
+                        'price',
+                        'part_number',
+                        'brand_name',
+                        'unique_hash',
+                        'warehouse',
+                        'image'
+                    )
+                        ->where('part_number', $part_in_our_toyota)
+                        ->get();
+
+                    $partsList = self::search_transform($parts);
+
+                    if (count($parts) > 0) {
+                        $response['toyota_parts_deal'] = [
+                            'exist' => true,
+                            'replaced' => $partsList
+                        ];
+                    } else { ///okay
+                        $response['toyota_parts_deal'] = [
+                            'exist' => true,
+                            'replaced' => ['part_number' => "---------------"]
+                        ];
+                    }
+                } else {
+                    $response['toyota_parts_deal'] = [
+                        'exist' => false,
+                        'data' => "Replaced null"
+                    ];
+                }
+            } else {
+                $response['toyota_parts_deal'] = [
+                    'exist' => false,
+                    'data' => "Not available in the tpd table"
+                ];
+            }
+        }
+        return $response;
+    }
+
+
+    private function search_transform($parts)
+    {
+        $partsList = array();
+        foreach ($parts as $part) {
+            $partsList['brand_name'] = $part['brand_name'];
+            $partsList['part_number'] = $part['part_number'];
+            foreach ($parts as $index => $data) {
+                $partsList['data'][$index]['warehouse'] = $data['warehouse'];
+                $partsList['data'][$index]['available'] = $data['qty'];
+                $partsList['data'][$index]['price'] = $data['price'];
+                $partsList['data'][$index]['unique_hash'] = $data['unique_hash'];
+                $partsList['data'][$index]['weight_physical'] = $data['weight_physical'];
+                $partsList['data'][$index]['description_english'] = $data['description_english'];
+                $partsList['data'][$index]['image'] = $data['image'];
+            }
+        }
+
+        $available_warehouses = AvailableWarehouse::where('isAvailable', 1)->get();
+        $array = [];
+
+        if (count($partsList) > 0 && count($partsList['data']) > 0) {
+            foreach ($partsList['data'] as $index => $part) {
+                foreach ($available_warehouses as $available) {
+                    if ($part['warehouse'] == $available['warehouse']) {
+                        $array['brand_name'] = $partsList['brand_name'];
+                        $array['part_number'] = $partsList['part_number'];
+                        $array['data'][$index] = $part;
+                        $array['data'][$index]['position'] = $available['position'];
+                        $array['data'] = array_values($array['data']);
+                    }
+                }
+            }
+        }
+
+        foreach ($available_warehouses as $available) {
+            $index = array_search($available['warehouse'], array_column($array['data'], 'warehouse'));
+            if ($index === false) {
+                array_push($array['data'], [
+                    'available' => 0,
+                    'warehouse' => $available['warehouse'],
+                    'position' => $available['position'],
+                    'discontinued' => 0,
+                    'not_available' => 1,
+                    'prices' => 0,
+                    'unique_hashes' => 0,
+                    'weight_physical' => 0,
+                    'description_english' => '',
+                    'images' => null
+                ]);
+            }
+        }
+
+        usort($array['data'], "self::cmp");
+
+        return $array;
+    }
+
+
+    public function cmp($a, $b)
+    {
+        return strcmp($a["position"], $b["position"]);
     }
 
     public function getStockCa(Request $request)
