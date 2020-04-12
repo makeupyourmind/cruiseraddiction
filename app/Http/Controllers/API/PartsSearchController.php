@@ -89,8 +89,8 @@ class PartsSearchController extends BaseController
 
         foreach ($array as $index => $arr) {
             foreach ($available_warehouses as $available) {
-                $index = array_search($available['warehouse'], array_column($arr['data'], 'warehouses'));
-                if ($index === false) {
+                $position = array_search($available['warehouse'], array_column($arr['data'], 'warehouses'));
+                if ($position === false) {
                     array_push($arr['data'], [
                         'available' => 0,
                         'warehouses' => $available['warehouse'],
