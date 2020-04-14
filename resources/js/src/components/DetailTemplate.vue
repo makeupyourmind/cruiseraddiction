@@ -31,9 +31,9 @@
                 </div>
             </div>
             <div class="info">
-                <h3>User</h3>
+                <h3>{{whoIs()}}</h3>
                 <div>
-                    <div>User:</div>
+                    <div>{{whoIs()}}:</div>
                     <div>{{(user.first_name + ' ' + user.last_name )|| '-----'}}</div>
                 </div>
                 <div>
@@ -176,7 +176,9 @@
                     return item;
                 })
             },
-
+            whoIs(){
+                return typeof this.templateData.data.guest === 'object' ? 'Quest' : 'User'
+            },
             phone(phone){
                 try{
                     const parse = JSON.parse(phone);

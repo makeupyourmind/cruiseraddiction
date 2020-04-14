@@ -32,7 +32,7 @@ class PartsController extends BaseController
         $count_total = Part::distinct('part_number')->count('part_number');
 
         $parts = Part::orderBy('id', 'desc')
-            ->select('id', 'part_number', 'brand_name', 'price', 'qty', 'description_english')
+            ->select('id', 'part_number', 'brand_name', 'price', 'qty', 'description_english',  'weight_physical')
             ->whereIn('brand_name', ['TOYOTA', 'KOYO', 'AISIN', 'TAIHO', 'NSK', 'HKT', '555', 'TOYO', 'NACHI', 'MITSUBOSHI'])
             ->paginate(100);
         // ->get('part_number');

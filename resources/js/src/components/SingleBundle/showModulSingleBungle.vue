@@ -355,6 +355,7 @@
                     module && delete module.brand;
                     module && delete module.action;
                     module && delete module.id;
+                    module && delete module.color;
                     module && delete module.unique_hash;
                     module && delete module.tags;
                     // module && (module.tags = JSON.stringify(module.tags));
@@ -378,7 +379,7 @@
                 } else {
 
                     module && (module.tags = JSON.stringify(module.tags));
-
+                    module && delete module.color;
                     this.$store.dispatch(`stockCaModule/${ !this.moduleStock.is_bundle ? 'CREATE_DATA_STOCK' : 'CREATE_DATA_STOCK_BUNDLE'}`, module)
                         .then(() => {
                             return this.$store.dispatch('stockCaModule/GET_DATA_STOCK_FROM_SERVER', {

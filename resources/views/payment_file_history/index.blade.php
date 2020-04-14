@@ -54,23 +54,23 @@
 <br>
 <table style="width: 100%;border-collapse: collapse">
     <tr>
-        <th style="background: lightgray;border-bottom: 1px solid black;border-top: 1px solid black;width: 70px;border-left: 1px solid black;">Brand</th>
-        <th style="background: lightgray;border-bottom: 1px solid black;border-top: 1px solid black;width: 120px;">Part number</th>
-        <th style="background: lightgray;border-bottom: 1px solid black;border-top: 1px solid black;">Description</th>
-        <th style="background: lightgray;border-bottom: 1px solid black;border-top: 1px solid black;">Quantity</th>
-        <th style="background: lightgray;border-bottom: 1px solid black;border-top: 1px solid black;">Price</th>
-        <th style="background: lightgray;border-bottom: 1px solid black;border-top: 1px solid black;">Amount</th>
-        <td style="background: lightgray;border-bottom: 1px solid black;border-top: 1px solid black;border-right: 1px solid black; width: 20px"><span style="color:lightgray">tt</span></td>
+        <th style="background: lightgray;border-bottom: 1px solid black;border-top: 1px solid black;width: 70px;border-left: 1px solid black; text-align: left">Brand</th>
+        <th style="background: lightgray;border-bottom: 1px solid black;border-top: 1px solid black;width: 120px; text-align: left">Part number</th>
+        <th style="background: lightgray;border-bottom: 1px solid black;border-top: 1px solid black; text-align: left">Description</th>
+        <th style="background: lightgray;border-bottom: 1px solid black;border-top: 1px solid black; text-align: right">Quantity</th>
+        <th style="background: lightgray;border-bottom: 1px solid black;border-top: 1px solid black; text-align: right">Price</th>
+        <th style="background: lightgray;border-bottom: 1px solid black;border-top: 1px solid black; text-align: right">Amount</th>
+        <td style="background: lightgray;border-bottom: 1px solid black;border-top: 1px solid black;border-right: 1px solid black; width: 20px;"><span style="color:lightgray">tt</span></td>
     </tr>
 
 @foreach(json_decode($orderInfo, true) as $order)
     <tr>
-        <td style="border-bottom: 1px solid black;white-space: pre-wrap;">{{ $order["brand_name"] }}</td>
-        <td style="border-bottom: 1px solid black;white-space: pre-wrap;">{{ $order["part_number"] }}</td>
-        <td style="border-bottom: 1px solid black;white-space: pre-wrap;">{{ $order["description"] }}</td>
-        <td style="border-bottom: 1px solid black;white-space: pre-wrap;">{{ $order["qty"] }}</td>
-        <td style="border-bottom: 1px solid black;white-space: pre-wrap;">${{ round($order["price"] * $exchange, 2) }}</td>
-        <td style="border-bottom: 1px solid black;white-space: pre-wrap;">${{ round($order["total_price"] * $exchange, 2) }}</td>
+        <td style="border-bottom: 1px solid black;white-space: pre-wrap;text-align: left">{{ $order["brand_name"] }}</td>
+        <td style="border-bottom: 1px solid black;white-space: pre-wrap;text-align: left">{{ $order["part_number"] }}</td>
+        <td style="border-bottom: 1px solid black;white-space: pre-wrap;text-align: left">{{ $order["description"] }}</td>
+        <td style="border-bottom: 1px solid black;white-space: pre-wrap; text-align: right">{{ $order["qty"] }}</td>
+        <td style="border-bottom: 1px solid black;white-space: pre-wrap; text-align: right">${{ round($order["price"] * $exchange, 2) }}</td>
+        <td style="border-bottom: 1px solid black;white-space: pre-wrap; text-align: right">${{ round($order["total_price"] * $exchange, 2) }}</td>
         <td style="border-bottom: 1px solid black;white-space: pre-wrap;"> W{{ $order["warehouse"] }}</td>
     </tr>
 @endforeach

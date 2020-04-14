@@ -114,7 +114,7 @@
         }
     }
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
     .vs-dialog{
         width: 300px!important;
     }

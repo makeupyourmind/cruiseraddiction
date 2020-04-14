@@ -561,4 +561,10 @@
     .examplex{
         font-size: 18px;
     }
+    .vx-card__collapsible-content, .vx-card{
+        height: 104% !important;
+    }
+    .ag-grid-table{
+        height: 84% !important;
+    }
 </style>

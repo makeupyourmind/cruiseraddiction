@@ -60,7 +60,7 @@ class BundlesController extends BaseController
             ]);
 
         }
-    
+
 
         $arr = array_filter(
             $arr,
@@ -68,7 +68,12 @@ class BundlesController extends BaseController
                 return $value > -1;
             }
         );
-       $arr = min($arr);
+        if(!empty($arr)){
+            $arr = max($arr);
+        } else {
+            $arr = 0;
+        };
+
 
        $newBundle->update(['qty' => $arr]);
 
