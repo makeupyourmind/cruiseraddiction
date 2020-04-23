@@ -87,10 +87,10 @@
     <tr>
         <td style="border-bottom: 1px solid white"><span style="color:white">tt</span></td>
         <td style="border-bottom: 1px solid white"><span style="color:white">tt</span></td>
-        <td style="border-left:1px solid black;">Shipping W1</td>
+        <td style="border-left:1px solid black;text-align: left">Shipping W1</td>
         <td></td>
         <td></td>
-        <td >${{ $shipping_total_price }}</td>
+        <td  style="text-align: left">${{ $shipping_total_price }}</td>
         <td  style="border-right:1px solid black"></td>
     </tr>
 {{--    <tr>--}}
@@ -106,21 +106,21 @@
     <tr>
         <td style="border-bottom: 1px solid white"><span style="color:white">tt</span></td>
         <td style="border-bottom: 1px solid white"><span style="color:white">tt</span></td>
-        <td  style="border-left:1px solid black;">ON-HST ({{$tax_rate}}%)</td>
+        <td  style="border-left:1px solid black;text-align: left">ON-HST ({{$tax_rate}}%)</td>
         <td ></td>
         <td ></td>
-        <td >${{ $taxe_price }}</td>
+        <td style="text-align: right">${{ $taxe_price }}</td>
         <td  style="border-right:1px solid black"></td>
     </tr>
     @endif
     <tr>
         <td style="border-bottom: 1px solid white"><span style="color:white">tt</span></td>
         <td style="border-bottom: 1px solid white"><span style="color:white">tt</span></td>
-        <th style="border-bottom: 1px solid black;border-left:1px solid black;">TOTAL</th>
+        <th style="border-bottom: 1px solid black;border-left:1px solid black;text-align: left">TOTAL</th>
         <th style="border-bottom: 1px solid black"></th>
         <th style="border-bottom: 1px solid black"></th>
-        <th style="border-bottom: 1px solid black">${{ $total_price_order }}</th>
-        <th style="border-bottom: 1px solid black;border-right:1px solid black">{{ $currency }}</th>
+        <th style="border-bottom: 1px solid black;text-align: right">${{ $total_price_order }}</th>
+        <th style="border-bottom: 1px solid black;border-right:1px solid black;text-align: right">{{ $currency }}</th>
     </tr>
 </table>
 <br>
